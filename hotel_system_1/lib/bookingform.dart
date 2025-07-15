@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// Define the main green color and its variations for consistency based on image_24f71b.png
+const Color kPrimaryGreen = Color(0xFF73C088); // A refreshing mid-green
+const Color kDarkGreen = Color(0xFF235D3A); // A darker shade for text/icons
+const Color kLightGreen = Color(
+  0xFFC8EAD1,
+); // A very light green for backgrounds
+const Color kAppBarTitleGreen = Color(
+  0xFF397D54,
+); // A darker green for high contrast titles
+const Color kButtonGreen = Color(0xFFA8E0B7); // A mid-light green for buttons
+
 class Amenity {
   final IconData icon;
   final String label;
@@ -93,13 +104,17 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
   }
 
   InputDecoration _inputBox(String label) => InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        filled: true,
-        fillColor: Colors.white,
-      );
+    labelText: label,
+    border: const OutlineInputBorder(),
+    filled: true,
+    fillColor: kLightGreen, // Changed to kLightGreen
+  );
 
-  Widget _buildTextField(TextEditingController controller, String label, TextInputType type) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    TextInputType type,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: TextFormField(
@@ -111,9 +126,16 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
     );
   }
 
-  Widget _buildDateTimeField(String label, DateTime? date, TimeOfDay? time,
-      VoidCallback onDateTap, VoidCallback onTimeTap) {
-    final dateStr = date != null ? DateFormat('yyyy-MM-dd').format(date) : 'Select Date';
+  Widget _buildDateTimeField(
+    String label,
+    DateTime? date,
+    TimeOfDay? time,
+    VoidCallback onDateTap,
+    VoidCallback onTimeTap,
+  ) {
+    final dateStr = date != null
+        ? DateFormat('yyyy-MM-dd').format(date)
+        : 'Select Date';
     final timeStr = time != null ? time.format(context) : 'Select Time';
 
     return Column(
@@ -126,14 +148,20 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
             Expanded(
               child: InkWell(
                 onTap: onDateTap,
-                child: InputDecorator(decoration: _inputBox('Date'), child: Text(dateStr)),
+                child: InputDecorator(
+                  decoration: _inputBox('Date'),
+                  child: Text(dateStr),
+                ),
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: InkWell(
                 onTap: onTimeTap,
-                child: InputDecorator(decoration: _inputBox('Time'), child: Text(timeStr)),
+                child: InputDecorator(
+                  decoration: _inputBox('Time'),
+                  child: Text(timeStr),
+                ),
               ),
             ),
           ],
@@ -159,7 +187,12 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
             'Check-out: ${DateFormat('yMMMd').format(_checkOutDate!)} at ${_checkOutTime!.format(context)}\n'
             'Adults: ${_adults.text}, Kids: ${_kids.text}\nPayment: $_paymentMethod',
           ),
-          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
         ),
       );
     } else {
@@ -187,8 +220,16 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
         title: const Text('Address'),
         content: Column(
           children: [
-            _buildTextField(_street1, 'Street Address', TextInputType.streetAddress),
-            _buildTextField(_street2, 'Street Address Line 2', TextInputType.streetAddress),
+            _buildTextField(
+              _street1,
+              'Street Address',
+              TextInputType.streetAddress,
+            ),
+            _buildTextField(
+              _street2,
+              'Street Address Line 2',
+              TextInputType.streetAddress,
+            ),
             _buildTextField(_city, 'City', TextInputType.text),
             _buildTextField(_state, 'State / Province', TextInputType.text),
             _buildTextField(_zip, 'Postal / Zip Code', TextInputType.text),
@@ -200,10 +241,20 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
         title: const Text('Booking Info'),
         content: Column(
           children: [
-            _buildDateTimeField('Arrival', _checkInDate, _checkInTime,
-                () => _pickDate(true), () => _pickTime(true)),
-            _buildDateTimeField('Departure', _checkOutDate, _checkOutTime,
-                () => _pickDate(false), () => _pickTime(false)),
+            _buildDateTimeField(
+              'Arrival',
+              _checkInDate,
+              _checkInTime,
+              () => _pickDate(true),
+              () => _pickTime(true),
+            ),
+            _buildDateTimeField(
+              'Departure',
+              _checkOutDate,
+              _checkOutTime,
+              () => _pickDate(false),
+              () => _pickTime(false),
+            ),
             _buildTextField(_adults, 'Number of Adults', TextInputType.number),
             _buildTextField(_kids, 'Number of Kids', TextInputType.number),
           ],
@@ -215,7 +266,10 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Payment Method:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              'Payment Method:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             Row(
               children: [
                 Radio<String>(
@@ -234,7 +288,11 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
             ),
             if (_paymentMethod == 'Credit Card') ...[
               _buildTextField(_cardNumber, 'Card Number', TextInputType.number),
-              _buildTextField(_cardExpiry, 'Expiry Date (MM/YY)', TextInputType.datetime),
+              _buildTextField(
+                _cardExpiry,
+                'Expiry Date (MM/YY)',
+                TextInputType.datetime,
+              ),
               _buildTextField(_cardCVV, 'CVV', TextInputType.number),
             ],
             const SizedBox(height: 10),
@@ -254,11 +312,14 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Booking Form', style: TextStyle(color: Color(0xFF5D4037))),
-        iconTheme: const IconThemeData(color: Color(0xFF5D4037)),
-        backgroundColor: const Color(0xFFFFCCBC),
+        title: const Text(
+          'Booking Form',
+          style: TextStyle(color: Colors.white),
+        ), // Changed to white
+        iconTheme: const IconThemeData(color: Colors.white), // Changed to white
+        backgroundColor: kPrimaryGreen, // Changed to kPrimaryGreen
       ),
-      backgroundColor: const Color(0xFFFBE9E7),
+      backgroundColor: kLightGreen, // Changed to kLightGreen
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -267,14 +328,20 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
               if (widget.roomImagePath.isNotEmpty)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(widget.roomImagePath,
-                      height: 180, width: double.infinity, fit: BoxFit.cover),
+                  child: Image.asset(
+                    widget.roomImagePath,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(widget.roomDescription,
-                    style: TextStyle(color: Colors.grey[700], fontSize: 14)),
+                child: Text(
+                  widget.roomDescription,
+                  style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                ),
               ),
               const SizedBox(height: 10),
               if (widget.amenities.isNotEmpty)
@@ -283,8 +350,10 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Amenities',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Amenities',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 6),
                       Wrap(
                         spacing: 12,
@@ -298,15 +367,14 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                 ),
               const SizedBox(height: 10),
               Text(
-  'Room Price: ₱${widget.price} / night',
-  style: const TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    color: Color(0xFF4E342E),
-  ),
-),
-
-const SizedBox(height: 10),
+                'Room Price: ₱${widget.price} / night',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: kDarkGreen, // Changed to kDarkGreen
+                ),
+              ),
+              const SizedBox(height: 10),
               Stepper(
                 type: StepperType.vertical,
                 currentStep: _currentStep,
@@ -329,10 +397,13 @@ const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: details.onStepContinue,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF4CAF50),
+                          backgroundColor:
+                              kButtonGreen, // Changed to kButtonGreen
                         ),
                         child: Text(
-                          _currentStep == _buildSteps().length - 1 ? 'Submit' : 'Next',
+                          _currentStep == _buildSteps().length - 1
+                              ? 'Submit'
+                              : 'Next',
                         ),
                       ),
                       if (_currentStep > 0)
@@ -360,7 +431,11 @@ class _AmenityDisplayIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(amenity.icon, size: 28, color: Colors.teal),
+        Icon(
+          amenity.icon,
+          size: 28,
+          color: kDarkGreen,
+        ), // Changed to kDarkGreen
         const SizedBox(height: 4),
         Text(amenity.label, style: const TextStyle(fontSize: 12)),
       ],
