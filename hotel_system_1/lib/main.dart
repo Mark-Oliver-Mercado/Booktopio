@@ -1,8 +1,13 @@
+// main.dart excerpt
 import 'package:flutter/material.dart';
-import 'singup.dart'; // ✅ Make sure the file name is correct
-import 'roomlist.dart';
-import 'login.dart';
-import 'home.dart'; // ✅ Add this if you want to go to the home screen after login/signup
+import 'home.dart';
+import 'login.dart'; // Assuming you have a login screen
+//import 'settings_screen.dart';//
+import 'support_screen.dart';
+import 'about_us_screen.dart';
+import 'feedback_screen.dart';
+import 'terms_conditions_screen.dart';
+import 'notification_screen.dart'; // Make sure this is also imported if used elsewhere
 
 void main() {
   runApp(const MyApp());
@@ -14,18 +19,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hotelio',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Roboto',
-        primarySwatch: Colors.teal,
-      ),
-      initialRoute: '/signup', // 👈 Start from SignUp
+      title: 'Hotel Booking App',
+      theme: ThemeData(primarySwatch: Colors.brown),
+      initialRoute: '/', // Or '/login' if you want to start there
       routes: {
-        '/signup': (context) => const SignUpScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/home': (context) => const HomePage(),
-        '/roomlist': (context) => const RoomListScreen(hotelName: 'Hotel Name'),
+        '/': (context) => const HomePage(),
+        '/login': (context) =>
+            const LoginScreen(), // Replace with your actual Login page
+        //'/settings': (context) => const SettingsScreen(),
+        '/support': (context) => const SupportScreen(),
+        '/about_us': (context) => const AboutUsScreen(),
+        '/feedback': (context) => const FeedbackScreen(),
+        '/terms_conditions': (context) => const TermsConditionsScreen(),
+        '/notifications': (context) =>
+            const NotificationsScreen(), // For notifications from profile
+        // Add other routes like /roomlist, etc.
       },
     );
   }
