@@ -14,10 +14,7 @@ class LoginScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Logo
-              Image.asset(
-                'assets/logo.png',
-                height: 90,
-              ),
+              Image.asset('assets/logo.png', height: 90),
               const SizedBox(height: 16),
 
               // Title
@@ -34,10 +31,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 10),
               const Text(
                 'Welcome back! Book your stay with comfort.',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Color(0xFF757575),
-                ),
+                style: TextStyle(fontSize: 15, color: Color(0xFF757575)),
               ),
 
               const SizedBox(height: 30),
@@ -45,7 +39,10 @@ class LoginScreen extends StatelessWidget {
               // Email Field
               TextField(
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF795548)),
+                  prefixIcon: const Icon(
+                    Icons.email_outlined,
+                    color: Color(0xFF795548),
+                  ),
                   labelText: 'Email Address',
                   labelStyle: const TextStyle(color: Color(0xFF5D4037)),
                   hintText: 'Enter your email',
@@ -60,7 +57,10 @@ class LoginScreen extends StatelessWidget {
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF795548)),
+                  prefixIcon: const Icon(
+                    Icons.lock_outline,
+                    color: Color(0xFF795548),
+                  ),
                   labelText: 'Password',
                   labelStyle: const TextStyle(color: Color(0xFF5D4037)),
                   hintText: 'Enter your password',
@@ -116,7 +116,10 @@ class LoginScreen extends StatelessWidget {
                   Expanded(child: Divider()),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text('Or sign in with', style: TextStyle(color: Colors.grey)),
+                    child: Text(
+                      'Or sign in with',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
                   Expanded(child: Divider()),
                 ],
@@ -177,14 +180,10 @@ class LoginScreen extends StatelessWidget {
               color: Colors.black12,
               blurRadius: 3,
               offset: Offset(1, 1),
-            )
+            ),
           ],
         ),
-        child: Image.asset(
-          assetPath,
-          width: 22,
-          height: 22,
-        ),
+        child: Image.asset(assetPath, width: 22, height: 22),
       ),
     );
   }
