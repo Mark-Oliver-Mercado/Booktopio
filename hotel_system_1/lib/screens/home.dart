@@ -16,10 +16,14 @@ import 'support_screen.dart';
 import 'notification_screen.dart'; // Make sure this is also imported if used elsewhere
 
 // Define the new blue and white color scheme constants
-const Color kPrimaryBlue = Color(0xFF0065FF); // A vibrant blue for primary elements
+const Color kPrimaryBlue = Color(
+  0xFF0065FF,
+); // A vibrant blue for primary elements
 const Color kDarkBlue = Color(0xFF003C99); // A darker blue for text/icons
 const Color kLightBlue = Color(0xFFE6F2FF); // A very light blue for backgrounds
-const Color kAccentBlue = Color(0xFF007BFF); // An accent blue for highlights (not directly used here but good for consistency)
+const Color kAccentBlue = Color(
+  0xFF007BFF,
+); // An accent blue for highlights (not directly used here but good for consistency)
 
 // Define a simple Hotel data model
 class Hotel {
@@ -34,7 +38,8 @@ class Hotel {
   bool isFavorite; // This field is not final
 
   // Remove 'const' from here because 'isFavorite' is not final
-  Hotel({ // <--- REMOVE 'const' here
+  Hotel({
+    // <--- REMOVE 'const' here
     required this.image,
     required this.name,
     required this.location,
@@ -52,8 +57,9 @@ final GlobalKey<HomePageState> homePageKey = GlobalKey<HomePageState>();
 
 class HomePage extends StatefulWidget {
   // Pass the key to the super constructor explicitly as a named argument
-  const HomePage({super.key}); // This correctly passes the key to the StatefulWidget's constructor
-
+  const HomePage({
+    super.key,
+  }); // This correctly passes the key to the StatefulWidget's constructor
 
   @override
   State<HomePage> createState() => HomePageState();
@@ -74,21 +80,26 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _tabs = [
-      HomeContent(onTabSelected: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
-      }), // Displays the main dashboard/explore content
+      HomeContent(
+        onTabSelected: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      ), // Displays the main dashboard/explore content
       const BookingsScreen(), // Shows user's booking history
       // FavoritesScreen now takes a callback to refresh itself if needed
-      FavoritesScreen(onFavoriteChanged: () {
-        // This callback will be triggered from HomeContent when a hotel's favorite status changes
-        // If FavoritesScreen is the current tab, we need to ensure it rebuilds.
-        // A simple setState on HomePageState will cause its children (including FavoritesScreen) to rebuild.
-        if (_currentIndex == 2) { // Assuming 2 is the index for FavoritesScreen
-          setState(() {});
-        }
-      }),
+      FavoritesScreen(
+        onFavoriteChanged: () {
+          // This callback will be triggered from HomeContent when a hotel's favorite status changes
+          // If FavoritesScreen is the current tab, we need to ensure it rebuilds.
+          // A simple setState on HomePageState will cause its children (including FavoritesScreen) to rebuild.
+          if (_currentIndex == 2) {
+            // Assuming 2 is the index for FavoritesScreen
+            setState(() {});
+          }
+        },
+      ),
       const ProfileScreen(), // Displays user profile information
     ];
   }
@@ -100,7 +111,9 @@ class HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white.withAlpha((255 * 0.6).round()), // FIX: Used withAlpha
+        unselectedItemColor: Colors.white.withAlpha(
+          (255 * 0.6).round(),
+        ), // FIX: Used withAlpha
         backgroundColor: kPrimaryBlue,
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
@@ -132,7 +145,8 @@ class HomeContent extends StatefulWidget {
       name: 'Seaside Resort Boracay',
       location: 'Boracay, PH',
       rating: '4.8 (1200 reviews)',
-      description: 'A beachfront paradise with sparkling pools, vibrant tropical vibes, and exceptionally friendly service.',
+      description:
+          'A beachfront paradise with sparkling pools, vibrant tropical vibes, and exceptionally friendly service.',
       categories: ['Beach', 'Top Rated', 'Family'],
       amenities: ['Wi-Fi', 'Pool', 'Beach Access', 'Spa'],
       priceRange: '₱3,000 - ₱8,000',
@@ -143,7 +157,8 @@ class HomeContent extends StatefulWidget {
       name: 'Malvar Mountain Retreat',
       location: 'Malvar, PH',
       rating: '4.9 (500 reviews)',
-      description: 'Escape to nature with breathtaking mountain views and serene surroundings, perfect for relaxation and hiking.',
+      description:
+          'Escape to nature with breathtaking mountain views and serene surroundings, perfect for relaxation and hiking.',
       categories: ['Nature', 'Top Rated', 'Family'],
       amenities: ['Wi-Fi', 'Hiking Trails', 'Restaurant', 'Parking'],
       priceRange: '₱2,000 - ₱5,000',
@@ -154,7 +169,8 @@ class HomeContent extends StatefulWidget {
       name: 'El Nido Island Paradise',
       location: 'Palawan, PH',
       rating: '4.7 (950 reviews)',
-      description: 'An exclusive island paradise offering pristine beaches, world-class diving, and eco-friendly accommodations.',
+      description:
+          'An exclusive island paradise offering pristine beaches, world-class diving, and eco-friendly accommodations.',
       categories: ['Beach', 'Luxury', 'Nature'],
       amenities: ['Wi-Fi', 'Diving Center', 'Private Beach', 'Eco-friendly'],
       priceRange: '₱7,000 - ₱15,000',
@@ -165,7 +181,8 @@ class HomeContent extends StatefulWidget {
       name: 'Cebu City Business Hotel',
       location: 'Cebu, PH',
       rating: '4.2 (780 reviews)',
-      description: 'Strategically located in the city center, ideal for business travelers with modern facilities and conference rooms.',
+      description:
+          'Strategically located in the city center, ideal for business travelers with modern facilities and conference rooms.',
       categories: ['City', 'Business', 'Budget'],
       amenities: ['Wi-Fi', 'Conference Rooms', 'Fitness Center', 'Restaurant'],
       priceRange: '₱1,800 - ₱4,500',
@@ -176,7 +193,8 @@ class HomeContent extends StatefulWidget {
       name: 'Tagaytay Lakeview Suites',
       location: 'Tagaytay, PH',
       rating: '4.6 (620 reviews)',
-      description: 'Enjoy the cool climate and stunning Taal Lake views from our elegant suites, perfect for a romantic getaway.',
+      description:
+          'Enjoy the cool climate and stunning Taal Lake views from our elegant suites, perfect for a romantic getaway.',
       categories: ['Nature', 'Romantic', 'Luxury'],
       amenities: ['Wi-Fi', 'Lake View', 'Spa', 'Balcony'],
       priceRange: '₱2,500 - ₱7,000',
@@ -187,9 +205,15 @@ class HomeContent extends StatefulWidget {
       name: 'Siargao Surfer\'s Haven',
       location: 'Siargao, PH',
       rating: '4.5 (800 reviews)',
-      description: 'The ultimate spot for surfers and adventurers, offering easy access to famous surf breaks and island hopping tours.',
+      description:
+          'The ultimate spot for surfers and adventurers, offering easy access to famous surf breaks and island hopping tours.',
       categories: ['Beach', 'Adventure', 'Budget'],
-      amenities: ['Wi-Fi', 'Surf Lessons', 'Island Hopping', 'Motorbike Rental'],
+      amenities: [
+        'Wi-Fi',
+        'Surf Lessons',
+        'Island Hopping',
+        'Motorbike Rental',
+      ],
       priceRange: '₱1,200 - ₱3,500',
       isFavorite: false,
     ),
@@ -198,7 +222,8 @@ class HomeContent extends StatefulWidget {
       name: 'Manila Urban Grand',
       location: 'Manila, PH',
       rating: '4.3 (1500 reviews)',
-      description: 'Experience urban luxury with exquisite dining options and vibrant nightlife right at your doorstep.',
+      description:
+          'Experience urban luxury with exquisite dining options and vibrant nightlife right at your doorstep.',
       categories: ['City', 'Luxury', 'Nightlife'],
       amenities: ['Wi-Fi', 'Fine Dining', 'Bar', 'Valet Parking'],
       priceRange: '₱4,000 - ₱10,000',
@@ -209,7 +234,8 @@ class HomeContent extends StatefulWidget {
       name: 'Baguio Pine Forest Lodge',
       location: 'Baguio, PH',
       rating: '4.7 (700 reviews)',
-      description: 'A cozy lodge nestled among pine trees, offering a refreshing cool weather escape and a peaceful atmosphere.',
+      description:
+          'A cozy lodge nestled among pine trees, offering a refreshing cool weather escape and a peaceful atmosphere.',
       categories: ['Nature', 'Family', 'Relaxation'],
       amenities: ['Wi-Fi', 'Fireplace', 'Garden', 'Pet-friendly'],
       priceRange: '₱2,200 - ₱5,500',
@@ -220,7 +246,8 @@ class HomeContent extends StatefulWidget {
       name: 'Davao Nature Park Hotel',
       location: 'Davao, PH',
       rating: '4.4 (550 reviews)',
-      description: 'Close to nature parks and cultural sites, offering a unique blend of adventure and local experiences.',
+      description:
+          'Close to nature parks and cultural sites, offering a unique blend of adventure and local experiences.',
       categories: ['Nature', 'Cultural', 'Adventure'],
       amenities: ['Wi-Fi', 'Nature Tours', 'Local Cuisine', 'Airport Shuttle'],
       priceRange: '₱1,500 - ₱4,000',
@@ -231,7 +258,8 @@ class HomeContent extends StatefulWidget {
       name: 'Iloilo Heritage Inn',
       location: 'Iloilo, PH',
       rating: '4.1 (480 reviews)',
-      description: 'Step back in time in this heritage city, perfect for culinary tours and exploring historical landmarks.',
+      description:
+          'Step back in time in this heritage city, perfect for culinary tours and exploring historical landmarks.',
       categories: ['Cultural', 'Budget', 'Historical'],
       amenities: ['Wi-Fi', 'Historical Tours', 'Cafe', 'Laundry Service'],
       priceRange: '₱1,000 - ₱3,000',
@@ -288,7 +316,6 @@ class _HomeContentState extends State<HomeContent> {
     'Laundry Service': Icons.local_laundry_service,
   };
 
-
   @override
   void initState() {
     super.initState();
@@ -324,10 +351,14 @@ class _HomeContentState extends State<HomeContent> {
       } else {
         final lowerCaseQuery = queryOrCategory.toLowerCase();
         _displayedHotels = HomeContent._allHotels.where((hotel) {
-          return hotel.categories.any((category) => category.toLowerCase().contains(lowerCaseQuery)) ||
+          return hotel.categories.any(
+                (category) => category.toLowerCase().contains(lowerCaseQuery),
+              ) ||
               hotel.name.toLowerCase().contains(lowerCaseQuery) ||
               hotel.location.toLowerCase().contains(lowerCaseQuery) ||
-              hotel.amenities.any((amenity) => amenity.toLowerCase().contains(lowerCaseQuery)) ||
+              hotel.amenities.any(
+                (amenity) => amenity.toLowerCase().contains(lowerCaseQuery),
+              ) ||
               hotel.priceRange.toLowerCase().contains(lowerCaseQuery);
         }).toList();
       }
@@ -347,7 +378,11 @@ class _HomeContentState extends State<HomeContent> {
     });
   }
 
-  Widget _buildQuickAccessButton(IconData icon, String label, {VoidCallback? onPressed}) {
+  Widget _buildQuickAccessButton(
+    IconData icon,
+    String label, {
+    VoidCallback? onPressed,
+  }) {
     return GestureDetector(
       onTap: onPressed,
       child: Padding(
@@ -363,10 +398,7 @@ class _HomeContentState extends State<HomeContent> {
               child: Icon(icon, size: 30, color: kDarkBlue),
             ),
             const SizedBox(height: 6),
-            Text(
-              label,
-              style: const TextStyle(color: kDarkBlue),
-            ),
+            Text(label, style: const TextStyle(color: kDarkBlue)),
           ],
         ),
       ),
@@ -374,17 +406,18 @@ class _HomeContentState extends State<HomeContent> {
   }
 
   Widget _buildHotelCard(
-      BuildContext context, {
-        required String image,
-        required String name,
-        required String location,
-        required String rating,
-        required String description,
-        required List<String> amenities,
-        required String priceRange,
-        required bool isFavorite, // New parameter for favorite status
-        required ValueChanged<bool> onFavoriteChanged, // New callback for favorite changes
-      }) {
+    BuildContext context, {
+    required String image,
+    required String name,
+    required String location,
+    required String rating,
+    required String description,
+    required List<String> amenities,
+    required String priceRange,
+    required bool isFavorite, // New parameter for favorite status
+    required ValueChanged<bool>
+    onFavoriteChanged, // New callback for favorite changes
+  }) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -399,7 +432,8 @@ class _HomeContentState extends State<HomeContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Stack( // Use Stack to position the heart icon on top of the image
+            Stack(
+              // Use Stack to position the heart icon on top of the image
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(
@@ -424,16 +458,22 @@ class _HomeContentState extends State<HomeContent> {
                     },
                   ),
                 ),
-                Positioned( // Position the IconButton for favorite
+                Positioned(
+                  // Position the IconButton for favorite
                   top: 8,
                   right: 8,
                   child: IconButton(
                     icon: Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite ? Colors.red : Colors.white, // Changed color for visibility on image
+                      color: isFavorite
+                          ? Colors.red
+                          : Colors
+                                .white, // Changed color for visibility on image
                     ),
                     onPressed: () {
-                      onFavoriteChanged(!isFavorite); // Toggle the favorite status
+                      onFavoriteChanged(
+                        !isFavorite,
+                      ); // Toggle the favorite status
                     },
                   ),
                 ),
@@ -474,7 +514,10 @@ class _HomeContentState extends State<HomeContent> {
                         ],
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: kLightBlue,
                           borderRadius: BorderRadius.circular(8),
@@ -493,11 +536,7 @@ class _HomeContentState extends State<HomeContent> {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.orange,
-                        size: 18,
-                      ),
+                      const Icon(Icons.star, color: Colors.orange, size: 18),
                       const SizedBox(width: 5),
                       Text(rating, style: const TextStyle(fontSize: 14)),
                     ],
@@ -543,19 +582,13 @@ class _HomeContentState extends State<HomeContent> {
       appBar: AppBar(
         title: const Text(
           'Explore Hotels',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: kPrimaryBlue,
         leading: Builder(
           builder: (BuildContext innerContext) {
             return IconButton(
-              icon: const Icon(
-                Icons.menu,
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.menu, color: Colors.white),
               onPressed: () {
                 Scaffold.of(innerContext).openDrawer();
               },
@@ -564,10 +597,7 @@ class _HomeContentState extends State<HomeContent> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.favorite_border,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.favorite_border, color: Colors.white),
             onPressed: () {
               widget.onTabSelected(2); // Navigate to Favorites tab (index 2)
             },
@@ -575,14 +605,13 @@ class _HomeContentState extends State<HomeContent> {
           Stack(
             children: [
               IconButton(
-                icon: const Icon(
-                  Icons.notifications_none,
-                  color: Colors.white,
-                ),
+                icon: const Icon(Icons.notifications_none, color: Colors.white),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationScreen(),
+                    ),
                   );
                 },
               ),
@@ -595,7 +624,10 @@ class _HomeContentState extends State<HomeContent> {
                     decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white.withAlpha((255 * 1.0).round()), width: 1.5),
+                      border: Border.all(
+                        color: Colors.white.withAlpha((255 * 1.0).round()),
+                        width: 1.5,
+                      ),
                     ),
                     constraints: const BoxConstraints(
                       minWidth: 16,
@@ -611,7 +643,7 @@ class _HomeContentState extends State<HomeContent> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                )
+                ),
             ],
           ),
         ],
@@ -631,9 +663,7 @@ class _HomeContentState extends State<HomeContent> {
               decoration: BoxDecoration(
                 color: kPrimaryBlue,
                 image: DecorationImage(
-                  image: const AssetImage(
-                    'assets/hotel_drawer_bg.jpg',
-                  ),
+                  image: const AssetImage('assets/hotel_drawer_bg.jpg'),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     kPrimaryBlue.withAlpha((255 * 0.5).round()),
@@ -662,7 +692,10 @@ class _HomeContentState extends State<HomeContent> {
                   ),
                   Text(
                     'johndoe@example.com',
-                    style: TextStyle(color: Color.fromARGB(178, 255, 255, 255), fontSize: 14),
+                    style: TextStyle(
+                      color: Color.fromARGB(178, 255, 255, 255),
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),
@@ -674,7 +707,9 @@ class _HomeContentState extends State<HomeContent> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
+                  ),
                 );
               },
             ),
@@ -685,7 +720,9 @@ class _HomeContentState extends State<HomeContent> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SupportScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const SupportScreen(),
+                  ),
                 );
               },
             ),
@@ -696,7 +733,9 @@ class _HomeContentState extends State<HomeContent> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AboutUsScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const AboutUsScreen(),
+                  ),
                 );
               },
             ),
@@ -707,18 +746,25 @@ class _HomeContentState extends State<HomeContent> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FeedbackScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const FeedbackScreen(),
+                  ),
                 );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.contact_mail_outlined, color: kDarkBlue),
+              leading: const Icon(
+                Icons.contact_mail_outlined,
+                color: kDarkBlue,
+              ),
               title: const Text('Contact Us'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ContactUsScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const ContactUsScreen(),
+                  ),
                 );
               },
             ),
@@ -729,59 +775,72 @@ class _HomeContentState extends State<HomeContent> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const TermsConditionsScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const TermsConditionsScreen(),
+                  ),
                 );
               },
             ),
             const Divider(),
-             ListTile(
-            leading: const Icon(Icons.logout, color: Colors.redAccent),
-            title: const Text('Logout', style: TextStyle(color: Colors.redAccent)),
-            onTap: () {
-              // Close the drawer first
-              Navigator.pop(context); 
-              
-              // Show the logout confirmation dialog
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Confirm Logout'),
-                    content: const Text('Are you sure you want to log out?'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          // Dismiss the dialog
-                          Navigator.of(context).pop(); 
-                        },
-                        child: const Text('Cancel'),
-                      ),
-                      ElevatedButton( // Changed to ElevatedButton
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE74C3C), // Red color
-                          foregroundColor: Colors.white, // White text color
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.redAccent),
+              title: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.redAccent),
+              ),
+              onTap: () {
+                // Close the drawer first
+                Navigator.pop(context);
+
+                // Show the logout confirmation dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Confirm Logout'),
+                      content: const Text('Are you sure you want to log out?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            // Dismiss the dialog
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Cancel'),
                         ),
-                        onPressed: () {
-                          // Dismiss the dialog
-                          Navigator.of(context).pop(); 
-                          // Perform the actual logout action and navigate
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                            (Route<dynamic> route) => false, // Clears all previous routes
-                          );
-                          // Show a SnackBar notification
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('You have been logged out.')),
-                          );
-                        },
-                        child: const Text('Logout'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
+                        ElevatedButton(
+                          // Changed to ElevatedButton
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(
+                              0xFFE74C3C,
+                            ), // Red color
+                            foregroundColor: Colors.white, // White text color
+                          ),
+                          onPressed: () {
+                            // Dismiss the dialog
+                            Navigator.of(context).pop();
+                            // Perform the actual logout action and navigate
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignUpScreen(),
+                              ),
+                              (Route<dynamic> route) =>
+                                  false, // Clears all previous routes
+                            );
+                            // Show a SnackBar notification
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('You have been logged out.'),
+                              ),
+                            );
+                          },
+                          child: const Text('Logout'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),
@@ -817,13 +876,13 @@ class _HomeContentState extends State<HomeContent> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search hotels...',
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: kDarkBlue,
-                  ),
+                  prefixIcon: const Icon(Icons.search, color: kDarkBlue),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 0,
+                    horizontal: 15,
+                  ),
                   border: InputBorder.none,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -841,12 +900,36 @@ class _HomeContentState extends State<HomeContent> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _buildQuickAccessButton(Icons.all_inclusive, 'All', onPressed: () => _filterHotels('All')),
-                  _buildQuickAccessButton(Icons.diamond, 'Luxury', onPressed: () => _filterHotels('Luxury')),
-                  _buildQuickAccessButton(Icons.money, 'Budget', onPressed: () => _filterHotels('Budget')),
-                  _buildQuickAccessButton(Icons.place, 'Near Me', onPressed: () => _filterHotels('Malvar')),
-                  _buildQuickAccessButton(Icons.star, 'Top Rated', onPressed: () => _filterHotels('Top Rated')),
-                  _buildQuickAccessButton(Icons.family_restroom, 'Family', onPressed: () => _filterHotels('Family')),
+                  _buildQuickAccessButton(
+                    Icons.all_inclusive,
+                    'All',
+                    onPressed: () => _filterHotels('All'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.diamond,
+                    'Luxury',
+                    onPressed: () => _filterHotels('Luxury'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.money,
+                    'Budget',
+                    onPressed: () => _filterHotels('Budget'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.place,
+                    'Near Me',
+                    onPressed: () => _filterHotels('Malvar'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.star,
+                    'Top Rated',
+                    onPressed: () => _filterHotels('Top Rated'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.family_restroom,
+                    'Family',
+                    onPressed: () => _filterHotels('Family'),
+                  ),
                 ],
               ),
             ),
@@ -875,7 +958,10 @@ class _HomeContentState extends State<HomeContent> {
                     priceRange: hotel.priceRange,
                     isFavorite: hotel.isFavorite, // Pass the favorite status
                     onFavoriteChanged: (isFavorite) {
-                      _toggleHotelFavorite(hotel, isFavorite); // Handle favorite toggle
+                      _toggleHotelFavorite(
+                        hotel,
+                        isFavorite,
+                      ); // Handle favorite toggle
                     },
                   ),
                 );

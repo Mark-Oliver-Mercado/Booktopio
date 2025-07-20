@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+// Corrected import to use a relative path instead of 'package:'
+import 'contact_us_screen.dart';
 
-// Assuming these colors are defined in home.dart and accessible here,
-// or you can define them directly in this file if home.dart is not imported.
-import 'home.dart'; // Import home.dart to access the color constants
+// Define color constants directly in this file for self-containment
+const Color kPrimaryBlue = Color(
+  0xFF1E88E5,
+); // A distinct blue for app bars and accents
+const Color kDarkBlue = Color(0xFF1565C0); // A darker shade for text/icons
+const Color kLightBlue = Color(0xFFE3F2FD); // A very light blue for backgrounds
+const Color kWhite = Colors.white; // Pure white for elements
+const Color kGreyText = Color(0xFF757575); // A medium grey for secondary text
 
 class SupportScreen extends StatelessWidget {
   const SupportScreen({super.key});
@@ -10,21 +17,12 @@ class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kLightBlue, // Changed to kLightBlue
+      backgroundColor: kLightBlue,
       appBar: AppBar(
-        title: const Text(
-          'Support',
-          style: TextStyle(
-            color: Colors.white,
-          ), // Set app bar title color to white
-        ),
-        backgroundColor:
-            kPrimaryBlue, // Set app bar background color to kPrimaryBlue
+        title: const Text('Support', style: TextStyle(color: Colors.white)),
+        backgroundColor: kPrimaryBlue,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ), // Set back icon color to white
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -39,15 +37,15 @@ class SupportScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
-                color: Colors.white, // Changed to white
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(color: Colors.grey.shade300), // Added subtle border
+                border: Border.all(color: Colors.grey.shade300),
               ),
-              child: TextField( // Changed to TextField for consistency with other input fields
+              child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Search support articles...',
                   border: InputBorder.none,
-                  icon: Icon(Icons.search, color: kDarkBlue), // Changed icon color to kDarkBlue
+                  icon: Icon(Icons.search, color: kDarkBlue),
                 ),
               ),
             ),
@@ -56,7 +54,11 @@ class SupportScreen extends StatelessWidget {
             // Common Topics
             Text(
               'Common Topics',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: kDarkBlue), // Changed text color to kDarkBlue
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: kDarkBlue,
+              ),
             ),
             _buildTopicItem(context, 'Troubleshooting', Icons.build_outlined),
             _buildTopicItem(context, 'Account & Profile', Icons.person_outline),
@@ -66,28 +68,32 @@ class SupportScreen extends StatelessWidget {
             // Contact Us
             Text(
               'Contact Us',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: kDarkBlue), // Changed text color to kDarkBlue
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: kDarkBlue,
+              ),
             ),
             const SizedBox(height: 16.0),
             _buildContactButton(
               context,
               'Email Support',
               Icons.email_outlined,
-              kPrimaryBlue, // Use kPrimaryBlue for button color
+              kPrimaryBlue,
             ),
             const SizedBox(height: 12.0),
             _buildContactButton(
               context,
               'Live Chat',
               Icons.chat_bubble_outline,
-              kPrimaryBlue, // Use kPrimaryBlue for button color
+              kPrimaryBlue,
             ),
             const SizedBox(height: 12.0),
             _buildContactButton(
               context,
               'Call Us',
               Icons.call_outlined,
-              kPrimaryBlue, // Use kPrimaryBlue for button color
+              kPrimaryBlue,
             ),
           ],
         ),
@@ -99,21 +105,21 @@ class SupportScreen extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          leading: Icon(
-            icon,
-            color: kDarkBlue, // Set topic item icon color to kDarkBlue
-          ),
-          title: Text(title, style: TextStyle(color: kDarkBlue)), // Changed title text color to kDarkBlue
+          leading: Icon(icon, color: kDarkBlue),
+          title: Text(title, style: TextStyle(color: kDarkBlue)),
           trailing: const Icon(
             Icons.arrow_forward_ios,
             size: 16.0,
-            color: kDarkBlue, // Set trailing icon color to kDarkBlue
+            color: kDarkBlue,
           ),
           onTap: () {
             // Handle navigation for each topic
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Navigating to $title topic...')),
+            );
           },
         ),
-        const Divider(height: 1.0, color: Colors.grey), // Added color to divider for better visibility
+        const Divider(height: 1.0, color: Colors.grey),
       ],
     );
   }
@@ -128,7 +134,11 @@ class SupportScreen extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: () {
-          // Handle button press
+          // Navigate to ContactUsScreen when any of these buttons are pressed
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ContactUsScreen()),
+          );
         },
         icon: Icon(icon, color: Colors.white),
         label: Text(text, style: const TextStyle(color: Colors.white)),

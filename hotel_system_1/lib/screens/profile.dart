@@ -1,112 +1,293 @@
-// lib/screens/profile.dart
+// lib/screens/profile_screen.dart
 import 'package:flutter/material.dart';
 
 // Corrected and updated color definitions based on the provided image palette
-const Color kPrimaryBlue = Color(0xFF1E88E5); // A distinct blue for app bars and accents (from image)
-const Color kDarkBlue = Color(0xFF1565C0); // A darker shade for text/icons (from image)
-const Color kLightBlue = Color(0xFFE3F2FD); // A very light blue for backgrounds (from image)
+const Color kPrimaryBlue = Color(
+  0xFF1E88E5,
+); // A distinct blue for app bars and accents (from image)
+const Color kDarkBlue = Color(
+  0xFF1565C0,
+); // A darker shade for text/icons (from image)
+const Color kLightBlue = Color(
+  0xFFE3F2FD,
+); // A very light blue for backgrounds (from image)
 const Color kWhite = Colors.white; // Pure white for elements
-const Color kGreyText = Color(0xFF757575); // A medium grey for secondary text (from image/common practice)
+const Color kGreyText = Color(
+  0xFF757575,
+); // A medium grey for secondary text (from image/common practice)
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  // Controllers for editable fields
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+
+  // Initial values (you'd load these from a user model or database)
+  String _memberName = 'John Doe';
+  String _memberEmail = 'johndoe@example.com';
+  String _memberPhone = '+63 912 345 6789';
+  String _memberAddress = '123 Main St, Malvar, Batangas';
+  final String _memberSince = 'January 2023'; // This likely won't be editable
+
+  bool _isEditing = false; // To toggle between view and edit mode
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers with current profile data
+    _nameController.text = _memberName;
+    _emailController.text = _memberEmail;
+    _phoneController.text = _memberPhone;
+    _addressController.text = _memberAddress;
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers to prevent memory leaks
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  void _toggleEdit() {
+    setState(() {
+      _isEditing = !_isEditing;
+    });
+  }
+
+  void _saveProfile() {
+    setState(() {
+      _memberName = _nameController.text;
+      _memberEmail = _emailController.text;
+      _memberPhone = _phoneController.text;
+      _memberAddress = _addressController.text;
+      _isEditing = false; // Exit edit mode after saving
+
+      // In a real application, you would send this data to a backend
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile saved successfully!')),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true, // Show a back button
         title: const Text(
-          'My Profileadsas',
-          style: TextStyle(
-            color: kWhite,
-            fontWeight: FontWeight.bold,
-          ),
+          'My Profile',
+          style: TextStyle(color: kWhite, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: kPrimaryBlue, // Set app bar background to kPrimaryBlue
+        backgroundColor: kPrimaryBlue,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(_isEditing ? Icons.save : Icons.edit, color: kWhite),
+            onPressed: () {
+              if (_isEditing) {
+                _saveProfile();
+              } else {
+                _toggleEdit();
+              }
+            },
+          ),
+        ],
       ),
       body: Container(
-        color: kLightBlue, // Consistent light blue background
+        color: kLightBlue,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircleAvatar(
-                radius: 60,
-                backgroundImage: AssetImage('assets/profile_placeholder.png'), // Placeholder image
-                backgroundColor: kWhite, // Ensures white background for avatar if image is transparent
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'John Doe',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: kDarkBlue, // Changed to kDarkBlue
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment
+                  .center, // Keep this for overall column centering
+              children: [
+                const CircleAvatar(
+                  radius: 60,
+                  backgroundImage: AssetImage('assets/profile_placeholder.png'),
+                  backgroundColor: kWhite,
                 ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'johndoe@example.com',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: kGreyText, // Using kGreyText
+                const SizedBox(height: 20),
+                _isEditing
+                    ? SizedBox(
+                        // Wrap TextField in SizedBox to control width
+                        width:
+                            MediaQuery.of(context).size.width *
+                            0.7, // Adjust width as needed
+                        child: TextField(
+                          controller: _nameController,
+                          textAlign: TextAlign
+                              .center, // Center the text within the TextField
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: kDarkBlue,
+                          ),
+                          decoration: const InputDecoration(
+                            hintText: 'Enter Name',
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        _memberName,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: kDarkBlue,
+                        ),
+                      ),
+                const SizedBox(height: 8),
+                _isEditing
+                    ? SizedBox(
+                        // Wrap TextField in SizedBox to control width
+                        width:
+                            MediaQuery.of(context).size.width *
+                            0.7, // Adjust width as needed
+                        child: TextField(
+                          controller: _emailController,
+                          textAlign: TextAlign
+                              .center, // Center the text within the TextField
+                          keyboardType: TextInputType.emailAddress,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: kGreyText,
+                          ),
+                          decoration: const InputDecoration(
+                            hintText: 'Enter Email',
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        _memberEmail,
+                        style: const TextStyle(fontSize: 16, color: kGreyText),
+                      ),
+                const SizedBox(height: 30),
+                // All rows now use the same _buildProfileInfoRow for consistent alignment
+                _buildProfileInfoRow(
+                  Icons.phone,
+                  'Phone',
+                  _memberPhone,
+                  isEditable: _isEditing,
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
                 ),
-              ),
-              const SizedBox(height: 30),
-              _buildProfileInfoRow(Icons.phone, 'Phone', '+63 912 345 6789'),
-              _buildProfileInfoRow(Icons.location_on, 'Address', '123 Main St, Malvar, Batangas'),
-              _buildProfileInfoRow(Icons.calendar_month, 'Member Since', 'January 2023'),
-              const SizedBox(height: 30),
-              // Add more profile details or options here
-              ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Edit Profile button pressed!')),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kPrimaryBlue, // Changed to kPrimaryBlue for button
-                  foregroundColor: kWhite,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                _buildProfileInfoRow(
+                  Icons.location_on,
+                  'Address',
+                  _memberAddress,
+                  isEditable: _isEditing,
+                  controller: _addressController,
+                ),
+                _buildProfileInfoRow(
+                  Icons.calendar_month,
+                  'Member Since',
+                  _memberSince,
+                  isEditable: false, // This one is never editable
+                ),
+                const SizedBox(height: 30),
+                if (!_isEditing)
+                  ElevatedButton(
+                    onPressed: _toggleEdit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryBlue,
+                      foregroundColor: kWhite,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 15,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Edit Profile',
+                      style: TextStyle(fontSize: 18),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Edit Profile',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            ],
+                if (_isEditing)
+                  ElevatedButton(
+                    onPressed: _saveProfile,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryBlue,
+                      foregroundColor: kWhite,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 15,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Save Profile',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildProfileInfoRow(IconData icon, String label, String value) {
+  // Unified Helper for all profile information rows
+  Widget _buildProfileInfoRow(
+    IconData icon,
+    String label,
+    String value, {
+    bool isEditable = true,
+    TextEditingController? controller, // Make controller nullable
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center, // Center the whole row
         children: [
-          Icon(icon, color: kDarkBlue, size: 20), // Changed to kDarkBlue
+          Icon(icon, color: kDarkBlue, size: 20),
           const SizedBox(width: 10),
           Text(
             '$label: ',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: kDarkBlue, // Changed to kDarkBlue
+              color: kDarkBlue,
             ),
           ),
-          Text(
-            value,
-            style: const TextStyle(
-              color: kGreyText, // Using kGreyText
-            ),
+          // Use Flexible instead of Expanded here for better content wrapping
+          Flexible(
+            child: isEditable && _isEditing && controller != null
+                ? TextField(
+                    controller: controller,
+                    textAlign: TextAlign
+                        .center, // NOW CENTERED HERE for full row centering
+                    keyboardType: keyboardType,
+                    style: const TextStyle(color: kGreyText),
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                      border: InputBorder.none,
+                    ),
+                  )
+                : Text(
+                    value,
+                    textAlign: TextAlign
+                        .center, // NOW CENTERED HERE for full row centering
+                    style: const TextStyle(color: kGreyText),
+                  ),
           ),
         ],
       ),
