@@ -4,7 +4,6 @@ import 'auth/login.dart'; // Assuming this is your LoginScreen
 import 'screens/home.dart'; // Assuming this is your HomePage
 import 'screens/settings_screen.dart';
 import 'screens/support_screen.dart'; // Renamed from customer_support_screen.dart in previous examples?
-import 'screens/about_us_screen.dart';
 import 'screens/feedback_screen.dart'; // Renamed from send_feedback_screen.dart in previous examples?
 import 'screens/terms_conditions_screen.dart';
 import 'screens/notification.dart'; // Corrected import for NotificationsScreen

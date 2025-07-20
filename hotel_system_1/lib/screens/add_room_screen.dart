@@ -6,14 +6,15 @@ const Color kLightGreen = Color(0xFFE8F5E9); // Light green for accents/backgrou
 const Color kDarkText = Color(0xFF333333); // Dark text color
 
 class AddRoomScreen extends StatefulWidget {
-  final VoidCallback onRoomAdded;
+  // MODIFIED: Changed onRoomAdded to accept a String
+  final ValueChanged<String> onRoomAdded; // Changed from VoidCallback
   // Add a list of existing room names for validation
   final List<String> existingRoomNames;
 
   const AddRoomScreen({
     Key? key,
     required this.onRoomAdded,
-    required this.existingRoomNames, // New required parameter
+    required this.existingRoomNames,
   }) : super(key: key);
 
   @override
@@ -40,13 +41,10 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
       final String roomType = _roomTypeController.text.trim();
       final int? roomCapacity = int.tryParse(_roomCapacityController.text.trim());
 
-      ('Adding Room: $roomName, Type: $roomType, Capacity: $roomCapacity'); // Avoid print in production code
+      debugPrint('Adding Room: $roomName, Type: $roomType, Capacity: $roomCapacity'); // Changed to debugPrint
 
-      // Notify the AdminDashboard that a room has been added.
-      // In a real app, this would return the actual new room name from a backend.
-      // For this example, we'll just indicate a room was added, and AdminDashboard
-      // will generate a new dummy name for its static list.
-      widget.onRoomAdded();
+      // Notify the AdminDashboard that a room has been added, passing the new room name.
+      widget.onRoomAdded(roomName); // MODIFIED: Now passes the roomName
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -58,6 +56,8 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
       _roomNameController.clear();
       _roomTypeController.clear();
       _roomCapacityController.clear();
+
+      Navigator.of(context).pop(); // Navigate back to the previous screen (AdminDashboard)
     }
   }
 
@@ -101,12 +101,28 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                   ),
                   filled: true,
                   fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16), // Enhanced padding
+                  enabledBorder: OutlineInputBorder( // Consistent border for enabled state
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder( // Highlight focused state
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: kPrimaryGreen, width: 2),
+                  ),
+                  errorBorder: OutlineInputBorder( // Red border for error state
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.red, width: 2),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder( // Red border for focused error state
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.red, width: 2),
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter a room name';
                   }
-                  // Now access existing room names via widget.existingRoomNames
                   if (widget.existingRoomNames.contains(value.trim())) {
                     return 'This room name already exists.';
                   }
@@ -126,6 +142,23 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                   ),
                   filled: true,
                   fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: kPrimaryGreen, width: 2),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.red, width: 2),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.red, width: 2),
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -148,6 +181,23 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                   ),
                   filled: true,
                   fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: kPrimaryGreen, width: 2),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.red, width: 2),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.red, width: 2),
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -177,6 +227,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 5,
+                    minimumSize: const Size(double.infinity, 50), // Ensure consistent height
                   ),
                 ),
               ),
