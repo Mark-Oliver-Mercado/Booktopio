@@ -1,15 +1,36 @@
 // lib/screens/settings_screen.dart
 import 'package:flutter/material.dart';
+import '../screens/profile.dart'; // Ensure correct path for ProfileScreen
+import '../screens/change_password_screen.dart'; // New import
+import '../screens/language_screen.dart'; // New import
+import 'notification.dart'; // New import
 
 // Updated color definitions based on the provided image palette
-const Color kPrimaryBlue = Color(0xFF1E88E5); // A distinct blue for app bars and accents (from image)
-const Color kDarkBlue = Color(0xFF1565C0); // A darker shade for text/icons (from image)
-const Color kLightBlue = Color(0xFFE3F2FD); // A very light blue for backgrounds (from image)
+const Color kPrimaryBlue = Color(
+  0xFF1E88E5,
+); // A distinct blue for app bars and accents (from image)
+const Color kDarkBlue = Color(
+  0xFF1565C0,
+); // A darker shade for text/icons (from image)
+const Color kLightBlue = Color(
+  0xFFE3F2FD,
+); // A very light blue for backgrounds (from image)
 const Color kWhite = Colors.white; // Pure white for elements
-const Color kGreyText = Color(0xFF757575); // A medium grey for secondary text (from image/common practice)
+const Color kGreyText = Color(
+  0xFF757575,
+); // A medium grey for secondary text (from image/common practice)
 
-class SettingsScreen extends StatelessWidget {
+// Change StatelessWidget to StatefulWidget
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  // Add state variable for dark mode
+  bool _darkModeEnabled = false; // Initialize with default theme preference
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +62,11 @@ class SettingsScreen extends StatelessWidget {
             title: 'Edit Profile',
             onTap: () {
               // Navigate to edit profile screen
-              // Consider using Navigator.push to a dedicated EditProfileScreen
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edit Profile tapped!')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileScreen(),
+                ), // Navigate to ProfileScreen
               );
             },
           ),
@@ -52,8 +75,11 @@ class SettingsScreen extends StatelessWidget {
             title: 'Change Password',
             onTap: () {
               // Navigate to change password screen
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Change Password tapped!')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChangePasswordScreen(),
+                ), // Navigate to ChangePasswordScreen
               );
             },
           ),
@@ -67,8 +93,11 @@ class SettingsScreen extends StatelessWidget {
             subtitle: 'English',
             onTap: () {
               // Navigate to language settings
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Language settings tapped!')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LanguageScreen(),
+                ), // Navigate to LanguageScreen
               );
             },
           ),
@@ -77,8 +106,11 @@ class SettingsScreen extends StatelessWidget {
             title: 'Notifications',
             onTap: () {
               // Navigate to notification settings
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Notification settings tapped!')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationsScreen(),
+                ), // Navigate to NotificationSettingsScreen
               );
             },
           ),
@@ -86,16 +118,31 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.dark_mode,
             title: 'Dark Mode',
             trailing: Switch(
-              value: false, // Replace with real theme toggle state
+              value: _darkModeEnabled, // Bind switch value to state variable
               onChanged: (value) {
+                setState(() {
+                  _darkModeEnabled = value; // Update state on change
+                });
                 // Handle dark mode toggle
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Dark Mode toggled: $value')),
                 );
+                // In a real app, you would notify a global theme provider here.
+                // Example: Provider.of<ThemeProvider>(context, listen: false).toggleTheme(value);
               },
-              activeColor: kPrimaryBlue, // Set switch active color to kPrimaryBlue
+              activeColor:
+                  kPrimaryBlue, // Set switch active color to kPrimaryBlue
             ),
-            onTap: () {}, // Placeholder to satisfy required parameter for ListTile
+            // The onTap for a tile with a trailing switch usually handles
+            // navigating to a detailed screen if there are more dark mode options.
+            // If it's just a toggle, you might make onTap do nothing or
+            // trigger the switch's functionality (though the switch already handles it).
+            onTap: () {
+              // Optionally, you can toggle the switch programmatically here
+              // setState(() {
+              //   _darkModeEnabled = !_darkModeEnabled;
+              // });
+            },
           ),
 
           const Divider(color: kLightBlue), // Changed divider color
@@ -105,6 +152,7 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.description,
             title: 'Terms & Conditions',
             onTap: () {
+              // This is already working, no change
               Navigator.pushNamed(context, '/terms_conditions');
             },
           ),
@@ -112,10 +160,7 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.privacy_tip,
             title: 'Privacy Policy',
             onTap: () {
-              // Navigate to privacy policy screen
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Privacy Policy tapped!')),
-              );
+              Navigator.pushNamed(context, '/privacy_policy');
             },
           ),
 
@@ -126,6 +171,7 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.support_agent,
             title: 'Customer Support',
             onTap: () {
+              // This is already working, no change
               Navigator.pushNamed(context, '/support');
             },
           ),
@@ -133,6 +179,7 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.feedback_outlined,
             title: 'Send Feedback',
             onTap: () {
+              // This is already working, no change
               Navigator.pushNamed(context, '/feedback');
             },
           ),
@@ -145,22 +192,33 @@ class SettingsScreen extends StatelessWidget {
             textColor: Colors.red, // Keep logout red for emphasis
             iconColor: Colors.red, // Keep logout icon red
             onTap: () {
+              // This is already working, no change
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text('Confirm Logout', style: TextStyle(color: kDarkBlue)), // Changed title color
-                  content: const Text('Are you sure you want to logout?', style: TextStyle(color: kGreyText)), // Changed content color
+                  title: const Text(
+                    'Confirm Logout',
+                    style: TextStyle(color: kDarkBlue),
+                  ), // Changed title color
+                  content: const Text(
+                    'Are you sure you want to logout?',
+                    style: TextStyle(color: kGreyText),
+                  ), // Changed content color
                   actions: [
                     TextButton(
-                      style: TextButton.styleFrom(foregroundColor: kDarkBlue), // Changed button text color
+                      style: TextButton.styleFrom(
+                        foregroundColor: kDarkBlue,
+                      ), // Changed button text color
                       child: const Text('Cancel'),
                       onPressed: () => Navigator.pop(context),
                     ),
                     TextButton(
-                      style: TextButton.styleFrom(foregroundColor: Colors.red), // Keep logout button red
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.red,
+                      ), // Keep logout button red
                       child: const Text('Logout'),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pop(context); // Close the dialog
                         Navigator.pushReplacementNamed(context, '/login');
                       },
                     ),
@@ -188,7 +246,9 @@ class SettingsScreen extends StatelessWidget {
     return ListTile(
       leading: Icon(icon, color: iconColor),
       title: Text(title, style: TextStyle(color: textColor)),
-      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(color: kGreyText)) : null, // Subtitle color
+      subtitle: subtitle != null
+          ? Text(subtitle, style: const TextStyle(color: kGreyText))
+          : null, // Subtitle color
       trailing:
           trailing ??
           const Icon(

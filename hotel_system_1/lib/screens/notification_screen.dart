@@ -5,21 +5,23 @@ import 'package:hotel_system_1/models/app_notification.dart'; // Import AppNotif
 import 'package:hotel_system_1/services/notification_service.dart'; // Import NotificationService
 
 // Updated color definitions based on the consistent blue/white palette
-const Color kPrimaryBlue = Color(0xFF1E88E5); // A distinct blue for app bars and accents
+const Color kPrimaryBlue = Color(
+  0xFF1E88E5,
+); // A distinct blue for app bars and accents
 const Color kDarkBlue = Color(0xFF1565C0); // A darker shade for text/icons
 const Color kLightBlue = Color(0xFFE3F2FD); // A very light blue for backgrounds
 const Color kWhite = Colors.white; // Pure white for elements
 const Color kGreyText = Color(0xFF757575); // A medium grey for secondary text
 
 // Converted to StatefulWidget to listen for changes
-class NotificationsScreen extends StatefulWidget {
-  const NotificationsScreen({super.key});
+class NotificationScreen extends StatefulWidget {
+  const NotificationScreen({super.key});
 
   @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
+  State<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _NotificationsScreenState extends State<NotificationsScreen> {
+class _NotificationScreenState extends State<NotificationScreen> {
   final NotificationService _notificationService = NotificationService();
   List<AppNotification> _notifications = [];
 
@@ -100,11 +102,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   const SizedBox(height: 20),
                   const Text(
                     'No new notifications.',
-                    style: TextStyle(fontSize: 18, color: kDarkBlue), // Changed to kDarkBlue
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: kDarkBlue,
+                    ), // Changed to kDarkBlue
                   ),
                   const Text(
                     'All clear here!',
-                    style: TextStyle(fontSize: 14, color: kGreyText), // Changed to kGreyText
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: kGreyText,
+                    ), // Changed to kGreyText
                   ),
                 ],
               ),
@@ -122,8 +130,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     notification.type == 'booking'
                         ? Icons.event_available_outlined
                         : notification.type == 'offer'
-                            ? Icons.local_offer_outlined
-                            : Icons.info_outline,
+                        ? Icons.local_offer_outlined
+                        : Icons.info_outline,
                     notification.title,
                     notification.message,
                     _formatTimeDifference(notification.timestamp),
@@ -148,7 +156,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1), // Adjusted to black with opacity for softer shadow
+            color: Colors.black.withValues(
+              alpha: 0.1,
+            ), // Adjusted to black with opacity for softer shadow
             spreadRadius: 1,
             blurRadius: 5, // Slightly increased blur for softer shadow
             offset: const Offset(0, 3), // Adjusted offset
@@ -158,7 +168,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: kPrimaryBlue, size: 30.0), // Changed icon color to kPrimaryBlue
+          Icon(
+            icon,
+            color: kPrimaryBlue,
+            size: 30.0,
+          ), // Changed icon color to kPrimaryBlue
           const SizedBox(width: 16.0),
           Expanded(
             child: Column(
@@ -175,14 +189,20 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 const SizedBox(height: 4.0),
                 Text(
                   subtitle,
-                  style: const TextStyle(fontSize: 14.0, color: kGreyText), // Changed subtitle color to kGreyText
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    color: kGreyText,
+                  ), // Changed subtitle color to kGreyText
                 ),
                 const SizedBox(height: 8.0),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
                     time,
-                    style: const TextStyle(fontSize: 12.0, color: kGreyText), // Changed time color to kGreyText
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      color: kGreyText,
+                    ), // Changed time color to kGreyText
                   ),
                 ),
               ],
