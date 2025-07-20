@@ -237,7 +237,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 decoration: InputDecoration(
                   hintText: 'Share your experience...',
                   border: InputBorder.none,
-                  hintStyle: TextStyle(color: kGreyText.withOpacity(0.7)),
+                  hintStyle: TextStyle(color: kGreyText.withValues(alpha: 0.7)),
                 ),
                 style: TextStyle(color: kDarkBlue),
               ),
@@ -308,7 +308,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2), // Corrected alpha usage
+            color: Colors.grey.withValues(alpha: 0.2), // Corrected alpha usage
             spreadRadius: 2,
             blurRadius: 5,
             offset: const Offset(0, 3),
@@ -366,30 +366,4 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   }
 }
 
-// Example of how to integrate FeedbackScreen with FeedbackProvider in your main.dart
-// You would typically put this in your main.dart file.
-/*
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => FeedbackProvider(),
-      child: const MyApp(),
-    ),
-  );
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hotel System',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const FeedbackScreen(), // Or your main screen that can navigate to FeedbackScreen
-    );
-  }
-}
-*/
