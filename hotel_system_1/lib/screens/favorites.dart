@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'home.dart'; // Import home.dart to access its color constants and Hotel model
 import '../bookings/roomlist.dart'; // ADDED: Import for RoomListScreen
+import '../utils/constants.dart';
 
-const Color kPrimaryBlue = Color(0xFF0065FF); // A vibrant blue for primary elements
-const Color kDarkBlue = Color(0xFF003C99); // A darker blue for text/icons
-const Color kLightBlue = Color(0xFFE6F2FF); // A very light blue for backgrounds
-const Color kAccentBlue = Color(0xFF007BFF); // An accent blue for highlights (not directly used here but good for consistency)
 
 class FavoritesScreen extends StatefulWidget {
   final VoidCallback? onFavoriteChanged; // Callback to notify HomePage of changes

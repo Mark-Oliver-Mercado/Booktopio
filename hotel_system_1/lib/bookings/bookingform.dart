@@ -4,15 +4,8 @@ import '../models/booking.dart'; // Import your Booking model
 import '../services/booking_service.dart'; // Import the BookingService
 import '../services/notification_service.dart'; // Import NotificationService
 import '../models/app_notification.dart'; // Import AppNotification model
-// Removed import for home.dart as we no longer need to explicitly navigate to it as a new root
+import '../utils/constants.dart';
 
-// Define the main blue and white colors for consistency
-const Color kPrimaryBlue = Color(0xFF0065FF); // A vibrant blue for primary elements
-const Color kDarkBlue = Color(0xFF003C99); // A darker blue for text/icons
-const Color kLightBlue = Color(0xFFE6F2FF); // A very light blue for backgrounds
-const Color kAppBarTitleBlue = Color(0xFF1565C0); // A darker blue for high contrast titles
-const Color kButtonBlue = Color(0xFF90CAF9); // A mid-light blue for buttons
-const Color kWhite = Colors.white; // Pure white for elements
 
 class Amenity {
   final IconData icon;

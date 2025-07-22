@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-
-// Define the colors used in your AdminDashboard for consistency
-const Color kPrimaryGreen = Color(0xFF2E7D32); // App bar green
-const Color kLightGreen = Color(
-  0xFFE8F5E9,
-); // Light green for accents/backgrounds
-const Color kDarkText = Color(0xFF333333); // Dark text color
+import '../utils/constants.dart';
 
 // Renamed from AddRoomScreen to AddRoomScreenContent
 // MODIFIED: This is now just the content, not a full Scaffold

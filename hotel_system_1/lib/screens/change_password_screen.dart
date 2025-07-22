@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-
-const Color kPrimaryBlue = Color(0xFF1E88E5);
-const Color kDarkBlue = Color(0xFF1565C0);
-const Color kLightBlue = Color(0xFFE3F2FD);
-const Color kWhite = Colors.white;
-const Color kGreyText = Color(0xFF757575);
+import '../utils/constants.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
