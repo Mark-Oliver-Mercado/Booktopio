@@ -1,13 +1,7 @@
 // forgot_password_screen.dart
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 
-// Define the blue color scheme based on the new login screen image (image_20bf2c.png)
-const Color kPrimaryBlue = Color(0xFF1A73E8); // A strong, vibrant blue for main elements
-const Color kDarkBlueText = Color(0xFF202124); // Dark text color for headings/labels
-const Color kLightBlue = Color(0xFFE6F2FF); // Very light blue background
-const Color kCardBackgroundColor = Colors.white; // White for the card background
-const Color kHintTextColor = Color(0xFF80868B); // Greyish color for hint text
-const Color kBorderColor = Color(0xFFDADCE0); // Light grey for borders
 
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});

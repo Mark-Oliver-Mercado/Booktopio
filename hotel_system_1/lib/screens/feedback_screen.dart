@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
-// Import the color constants from home.dart
-import 'home.dart'; // Make sure home.dart is in the same directory or accessible via path
+import '../utils/constants.dart';
 
 class FeedbackScreen extends StatelessWidget {
   const FeedbackScreen({super.key});

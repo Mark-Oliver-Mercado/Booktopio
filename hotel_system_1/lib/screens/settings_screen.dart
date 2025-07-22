@@ -4,21 +4,8 @@ import '../screens/profile.dart'; // Ensure correct path for ProfileScreen
 import '../screens/change_password_screen.dart'; // New import
 import '../screens/language_screen.dart'; // New import
 import 'notification.dart'; // New import
+import '../utils/constants.dart';
 
-// Updated color definitions based on the provided image palette
-const Color kPrimaryBlue = Color(
-  0xFF1E88E5,
-); // A distinct blue for app bars and accents (from image)
-const Color kDarkBlue = Color(
-  0xFF1565C0,
-); // A darker shade for text/icons (from image)
-const Color kLightBlue = Color(
-  0xFFE3F2FD,
-); // A very light blue for backgrounds (from image)
-const Color kWhite = Colors.white; // Pure white for elements
-const Color kGreyText = Color(
-  0xFF757575,
-); // A medium grey for secondary text (from image/common practice)
 
 // Change StatelessWidget to StatefulWidget
 class SettingsScreen extends StatefulWidget {

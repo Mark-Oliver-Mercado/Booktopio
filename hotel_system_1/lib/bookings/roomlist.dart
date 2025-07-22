@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
 import 'bookingform.dart';
 import '../filter.dart'; // This file is expected to contain Room and Amenity class definitions
+import '../utils/constants.dart';
 
-// Define the main blue and white colors for consistency
-const Color kPrimaryBlue = Color(0xFF0065FF); // A vibrant blue for primary elements
-const Color kDarkBlue = Color(0xFF003C99); // A darker blue for text/icons
-const Color kLightBlue = Color(0xFFE6F2FF); // A very light blue for backgrounds
-const Color kWhite = Colors.white; // Pure white for elements
-
-// It is assumed that Room and Amenity classes are defined in filter.dart
-// If they are not, please move their definitions from here to filter.dart
-// to avoid duplicate definitions and type conflicts.
 
 class RoomListScreen extends StatefulWidget {
   final String hotelName;

@@ -14,16 +14,8 @@ import 'settings_screen.dart';
 import 'terms_conditions_screen.dart';
 import 'support_screen.dart';
 import 'notification_screen.dart'; // Make sure this is also imported if used elsewhere
+import '../utils/constants.dart';
 
-// Define the new blue and white color scheme constants
-const Color kPrimaryBlue = Color(
-  0xFF0065FF,
-); // A vibrant blue for primary elements
-const Color kDarkBlue = Color(0xFF003C99); // A darker blue for text/icons
-const Color kLightBlue = Color(0xFFE6F2FF); // A very light blue for backgrounds
-const Color kAccentBlue = Color(
-  0xFF007BFF,
-); // An accent blue for highlights (not directly used here but good for consistency)
 
 // Define a simple Hotel data model
 class Hotel {

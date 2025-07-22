@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 
-// Updated color definitions based on the consistent blue/white palette
-const Color kPrimaryBlue = Color(
-  0xFF1E88E5,
-); // A distinct blue for app bars and accents
-const Color kDarkBlue = Color(0xFF1565C0); // A darker shade for text/icons
-const Color kLightBlue = Color(0xFFE3F2FD); // A very light blue for backgrounds
-const Color kWhite = Colors.white; // Pure white for elements
-const Color kGreyText = Color(0xFF757575); // A medium grey for secondary text
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});

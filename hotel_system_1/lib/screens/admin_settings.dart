@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 
-// Define the colors used in your AdminDashboard for consistency
-const Color kPrimaryGreen = Color(0xFF2E7D32); // App bar green
-const Color kDarkText = Color(0xFF333333); // Dark text color
 
 class AdminSettingsScreenContent extends StatefulWidget {
   const AdminSettingsScreenContent({Key? key}) : super(key: key);

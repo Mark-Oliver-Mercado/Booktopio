@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 
-const Color kPrimaryBlue = Color(0xFF1E88E5);
-const Color kWhite = Colors.white;
 
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});

@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart'; // Import for TapGestureRecognizer
 import '../screens/terms_conditions_screen.dart'; // Assuming this screen exists for navigation
 import '../screens/admin.dart'; // Import your admin screen
+import '../utils/constants.dart';
 
-// Define the new blue and white color scheme constants
-const Color kPrimaryBlue = Color(0xFF0065FF); // A vibrant blue for primary elements
-const Color kDarkBlue = Color(0xFF003C99); // A darker blue for text/icons
-const Color kLightBlue = Color(0xFFE6F2FF); // A very light blue for backgrounds
-const Color kAccentBlue = Color(0xFF007BFF); // An accent blue for highlights
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
