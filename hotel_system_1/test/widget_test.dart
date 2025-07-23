@@ -1,30 +1,44 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+// test/widget_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:hotel_system_1/main.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Needed for MyApp constructor
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  // Ensure Flutter bindings are initialized for tests, especially for SharedPreferences
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('App starts at Login Screen and displays login elements', (WidgetTester tester) async {
+    // Mock SharedPreferences for testing initial app state.
+    // This ensures 'isLoggedIn' is false at the start of the test,
+    // directing the app to the LoginScreen as intended by your main.dart logic.
+    SharedPreferences.setMockInitialValues({});
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Build our app. Pass the required arguments to MyApp's constructor.
+    // We set isLoggedIn to false to simulate a fresh start where no user is logged in.
+    await tester.pumpWidget(
+      MyApp(
+        isLoggedIn: false,
+        initialUserRole: null, // No specific role as user isn't logged in yet
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Allow time for any initial animations or route pushes to complete.
+    // If your LoginScreen has an initial animation or a FutureBuilder, this helps.
+    await tester.pumpAndSettle();
+
+    // Verify that elements from the LoginScreen are displayed.
+    // These checks should match the actual text/widgets on your LoginScreen.
+    expect(find.text('Email Address'), findsOneWidget); // Assuming your LoginScreen has this label
+    expect(find.text('Password'), findsOneWidget);     // Assuming your LoginScreen has this label
+    expect(find.byType(ElevatedButton), findsOneWidget); // Find the main login button (by type)
+    expect(find.text('Login'), findsOneWidget);         // Assuming the login button has 'Login' text
+    expect(find.text("Don't have an account?"), findsOneWidget); // Find the signup prompt
+    expect(find.text('Forgot Password?'), findsOneWidget); // Assuming your LoginScreen has this link
   });
+
+  // You can add more specific tests later for different scenarios:
+  // - testWidgets('Guest login successful', ...)
+  // - testWidgets('Owner login successful and navigates to admin dashboard', ...)
+  // - testWidgets('Signup screen displays correctly', ...)
 }

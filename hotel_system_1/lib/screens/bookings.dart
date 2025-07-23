@@ -90,72 +90,180 @@ class _BookingsScreenState extends State<BookingsScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Colored header bar with hotel name
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: kPrimaryBlue,
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          child: Text(
                             booking.hotelName,
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: kDarkBlue, // Changed to kDarkBlue
+                              color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Room Type: ${booking.roomType}',
-                            style: const TextStyle(fontSize: 16, color: kGreyText), // Using kGreyText
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              final bool isWide = constraints.maxWidth > 500;
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  isWide
+                                      ? Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      const Icon(Icons.bed, color: kDarkBlue, size: 18),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        booking.roomType,
+                                                        style: const TextStyle(fontSize: 16, color: kGreyText),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Row(
+                                                    children: [
+                                                      const Icon(Icons.nights_stay, color: kDarkBlue, size: 18),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        'Nights: ${booking.numberOfNights}',
+                                                        style: const TextStyle(fontSize: 16, color: kGreyText),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 24),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      const Icon(Icons.price_check, color: kDarkBlue, size: 18),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        '₱${booking.pricePerNight}',
+                                                        style: const TextStyle(fontSize: 16, color: kGreyText),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Row(
+                                                    children: [
+                                                      const Icon(Icons.attach_money, color: kPrimaryBlue, size: 18),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        '₱${booking.totalPrice}',
+                                                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryBlue),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.bed, color: kDarkBlue, size: 18),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  booking.roomType,
+                                                  style: const TextStyle(fontSize: 16, color: kGreyText),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.nights_stay, color: kDarkBlue, size: 18),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  'Nights: ${booking.numberOfNights}',
+                                                  style: const TextStyle(fontSize: 16, color: kGreyText),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.price_check, color: kDarkBlue, size: 18),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  '₱${booking.pricePerNight}',
+                                                  style: const TextStyle(fontSize: 16, color: kGreyText),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.attach_money, color: kPrimaryBlue, size: 18),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  '₱${booking.totalPrice}',
+                                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryBlue),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                  const Divider(height: 24, thickness: 1, color: kLightBlue),
+                                  const Text('Booking Details', style: TextStyle(fontWeight: FontWeight.bold, color: kDarkBlue)),
+                                  const SizedBox(height: 8),
+                                  _buildBookingDetailRow(
+                                    'Check-in:',
+                                    '${DateFormat('yMMMd').format(booking.checkInDate)} at ${booking.checkInTime.format(context)}',
+                                    Icons.calendar_today,
+                                  ),
+                                  _buildBookingDetailRow(
+                                    'Check-out:',
+                                    '${DateFormat('yMMMd').format(booking.checkOutDate)} at ${booking.checkOutTime.format(context)}',
+                                    Icons.calendar_today,
+                                  ),
+                                  _buildBookingDetailRow(
+                                    'Payment Method:',
+                                    '${booking.paymentMethod} (${booking.cardType})',
+                                    Icons.payment,
+                                  ),
+                                  _buildBookingDetailRow(
+                                    'Cardholder:',
+                                    booking.cardholderName,
+                                    Icons.person,
+                                  ),
+                                  if (booking.specialRequests != null && booking.specialRequests!.isNotEmpty)
+                                    _buildBookingDetailRow(
+                                      'Requests:',
+                                      booking.specialRequests!,
+                                      Icons.notes,
+                                    ),
+                                ],
+                              );
+                            },
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Price per night: ₱${booking.pricePerNight}',
-                            style: const TextStyle(fontSize: 16, color: kGreyText), // Using kGreyText
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Nights: ${booking.numberOfNights}',
-                            style: const TextStyle(fontSize: 16, color: kGreyText), // Using kGreyText
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Total Price: ₱${booking.totalPrice}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: kPrimaryBlue, // Changed to kPrimaryBlue
-                            ),
-                          ),
-                          const Divider(height: 20, thickness: 1, color: kLightBlue), // Added color for Divider
-                          _buildBookingDetailRow(
-                            'Check-in:',
-                            '${DateFormat('yMMMd').format(booking.checkInDate)} at ${booking.checkInTime.format(context)}',
-                            Icons.calendar_today,
-                          ),
-                          _buildBookingDetailRow(
-                            'Check-out:',
-                            '${DateFormat('yMMMd').format(booking.checkOutDate)} at ${booking.checkOutTime.format(context)}',
-                            Icons.calendar_today,
-                          ),
-                          _buildBookingDetailRow(
-                            'Payment Method:',
-                            '${booking.paymentMethod} (${booking.cardType})',
-                            Icons.payment,
-                          ),
-                          _buildBookingDetailRow(
-                            'Cardholder:',
-                            booking.cardholderName,
-                            Icons.person,
-                          ),
-                          if (booking.specialRequests != null && booking.specialRequests!.isNotEmpty)
-                            _buildBookingDetailRow(
-                              'Requests:',
-                              booking.specialRequests!,
-                              Icons.notes,
-                            ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 },
