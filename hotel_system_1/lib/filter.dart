@@ -1,35 +1,13 @@
 //fliter.dart
-import 'bookings/bookingform.dart'; // For Amenity
-
-class Room {
-  final String name;
-  final int price;
-  final String type;
-  final int capacity;
-  final String features;
-  final String image;
-  final String description;
-  final List<Amenity> amenities;
-
-  Room({
-    required this.name,
-    required this.price,
-    required this.type,
-    required this.capacity,
-    required this.features,
-    required this.image,
-    required this.description,
-    required this.amenities,
-  });
-}
+import 'package:hotel_system_1/models/room.dart'; // Import the canonical Room model
 
 /// Filters rooms based on multiple criteria.
 /// If all filters are null or default, all rooms are returned.
 List<Room> filterRooms(
   List<Room> allRooms,
   String query, {
-  int? minPrice,
-  int? maxPrice,
+  double? minPrice, // Changed to double to match Room.pricePerNight
+  double? maxPrice, // Changed to double to match Room.pricePerNight
   int? capacity,
   String? type,
   bool reset = false, // 🔄 NEW reset flag
@@ -45,8 +23,8 @@ List<Room> filterRooms(
         room.features.toLowerCase().contains(lowerQuery) ||
         room.description.toLowerCase().contains(lowerQuery);
 
-    final matchesPrice = (minPrice == null || room.price >= minPrice) &&
-        (maxPrice == null || room.price <= maxPrice);
+    final matchesPrice = (minPrice == null || room.pricePerNight >= minPrice) && // Use pricePerNight
+        (maxPrice == null || room.pricePerNight <= maxPrice); // Use pricePerNight
 
     final matchesCapacity = capacity == null || room.capacity == capacity;
 
@@ -54,4 +32,4 @@ List<Room> filterRooms(
 
     return matchesQuery && matchesPrice && matchesCapacity && matchesType;
   }).toList();
-}
+} 

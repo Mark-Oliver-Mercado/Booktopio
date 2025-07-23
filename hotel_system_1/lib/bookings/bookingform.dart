@@ -5,18 +5,14 @@ import '../services/booking_service.dart'; // Import the BookingService
 import '../services/notification_service.dart'; // Import NotificationService
 import '../models/app_notification.dart'; // Import AppNotification model
 import '../utils/constants.dart';
+import '../screens/room_manager.dart'; // Import RoomManager
+import '../models/amenity.dart'; // Import Amenity model
 
-
-class Amenity {
-  final IconData icon;
-  final String label;
-  const Amenity({required this.icon, required this.label});
-}
 
 class BookingFormScreen extends StatefulWidget {
   final String hotelName;
   final String roomType;
-  final int price;
+  final double price; // Changed from int to double
   final String roomImagePath;
   final String roomDescription;
   final List<Amenity> amenities;
@@ -55,19 +51,17 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
   final _cardNumber = TextEditingController();
   final _cardExpiry = TextEditingController();
   final _cardCVV = TextEditingController();
-  final _cardholderName = TextEditingController(); // New controller for cardholder name
+  final _cardholderName = TextEditingController();
 
   DateTime? _checkInDate;
   DateTime? _checkOutDate;
   TimeOfDay? _checkInTime = TimeOfDay.now();
   TimeOfDay? _checkOutTime = TimeOfDay.now();
 
-  final String _paymentMethod = 'Credit Card'; // Default payment method changed to Credit Card
-
   String _selectedCardType = 'Visa'; // New state for selected card type
 
   int _numberOfNights = 0; // State to store the calculated number of nights
-  int _totalPrice = 0; // State to store the calculated total price
+  double _totalPrice = 0; // State to store the calculated total price (changed to double)
 
   @override
   void initState() {
@@ -95,7 +89,7 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
       final Duration difference = _checkOutDate!.difference(_checkInDate!);
       setState(() {
         _numberOfNights = difference.inDays;
-        _totalPrice = _numberOfNights * widget.price;
+        _totalPrice = _numberOfNights * widget.price; // widget.price is now double
       });
     } else {
       setState(() {
@@ -302,66 +296,52 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
   void _submitForm() {
     // 1. Create the Booking object
     final newBooking = Booking(
-      hotelName: widget.hotelName,
       roomType: widget.roomType,
-      pricePerNight: widget.price,
+      pricePerNight: widget.price.toInt(), // Convert double to int
       numberOfNights: _numberOfNights,
-      totalPrice: _totalPrice,
-      checkInDate: _checkInDate!, // Assumed non-null due to validation
+      totalPrice: _totalPrice.toInt(),
+      checkInDate: _checkInDate!,
       checkInTime: _checkInTime!,
       checkOutDate: _checkOutDate!,
       checkOutTime: _checkOutTime!,
-      paymentMethod: _paymentMethod,
+      paymentMethod: _selectedCardType == 'Paypal' ? 'PayPal' : 'Credit Card',
       cardType: _selectedCardType,
       cardholderName: _cardholderName.text,
-      specialRequests: _requests.text.isNotEmpty ? _requests.text : null,
+      specialRequests: _requests.text.isNotEmpty ? _requests.text : null, hotelName: '',
     );
 
     // 2. Add the new booking to the BookingService singleton
     BookingService().addBooking(newBooking);
 
-    // 3. Add a notification about the successful booking
+    // 3. Update the room status to 'booked' in RoomManager
+    // Assuming roomType is the unique name for the room.
+    // You might need a more robust way to identify the room if roomType isn't unique.
+    RoomManager().updateRoomStatus(widget.roomType, 'booked');
+
+    // 4. Add a notification about the successful booking
     NotificationService().addNotification(
       AppNotification(
         title: 'Booking Confirmed!',
-        message: 'Your reservation at ${widget.hotelName} for ${newBooking.numberOfNights} nights has been successfully confirmed.',
+        message: 'Your reservation at ${widget.hotelName} for ${newBooking.numberOfNights} nights has been successfully confirmed for room type ${newBooking.roomType}.',
         timestamp: DateTime.now(),
         type: 'booking',
       ),
     );
 
-    // 4. Show the confirmation dialog
+    // 5. Show the confirmation dialog
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Booking Confirmed',
             style: TextStyle(color: kDarkBlue, fontWeight: FontWeight.bold)),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text('Thanks, ${_firstName.text} ${_lastName.text}!',
-                  style: const TextStyle(fontSize: 16)),
-              const SizedBox(height: 15),
-              _buildConfirmationRow('Hotel:', widget.hotelName),
-              _buildConfirmationRow('Room Type:', widget.roomType),
-              _buildConfirmationRow('Price per night:', '₱${widget.price}'),
-              _buildConfirmationRow('Number of nights:', '$_numberOfNights'),
-              _buildConfirmationRow('Total Price:', '₱$_totalPrice',
-                  isBold: true, color: kPrimaryBlue),
-              const SizedBox(height: 15),
-              _buildConfirmationRow(
-                  'Check-in:',
-                  '${DateFormat('yMMMd').format(_checkInDate!)} at ${_checkInTime!.format(context)}'),
-              _buildConfirmationRow(
-                  'Check-out:',
-                  '${DateFormat('yMMMd').format(_checkOutDate!)} at ${_checkOutTime!.format(context)}'),
-              _buildConfirmationRow('Payment Method:', _paymentMethod),
-              _buildConfirmationRow('Card Type:', _selectedCardType),
-              _buildConfirmationRow('Cardholder Name:', _cardholderName.text),
-              if (_requests.text.isNotEmpty)
-                _buildConfirmationRow('Special Requests:', _requests.text),
-            ],
-          ),
+        content: BookingConfirmationCard(
+          confirmationNumber: DateTime.now().millisecondsSinceEpoch.toString(),
+          hotelName: widget.hotelName,
+          roomType: widget.roomType,
+          checkIn: DateFormat('yyyy-MM-dd').format(_checkInDate!),
+          checkOut: DateFormat('yyyy-MM-dd').format(_checkOutDate!),
+          guests: '${_firstName.text} ${_lastName.text}', // Or use guest count if available
+          totalPrice: _totalPrice,
         ),
         actionsAlignment: MainAxisAlignment.center, // Center the actions
         actions: [
@@ -396,38 +376,7 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
     );
   }
 
-  // Helper widget for confirmation dialog rows
-  Widget _buildConfirmationRow(String label, String value,
-      {bool isBold = false, Color? color}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              color: color ?? kDarkBlue, // Use provided color or default to kDarkBlue
-              fontSize: isBold ? 18 : 16,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-                color: color ?? Colors.black87,
-                fontSize: isBold ? 18 : 16,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
+ 
   List<Step> _buildSteps() {
     return [
       Step(
@@ -528,7 +477,7 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                       children: [
                         Text('Nights: $_numberOfNights',
                             style: const TextStyle(fontSize: 16, color: kDarkBlue)),
-                        Text('Total Price: ₱$_totalPrice',
+                        Text('Total Price: ₱${_totalPrice.toStringAsFixed(2)}', // Format total price
                             style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -712,12 +661,23 @@ if (widget.roomImagePath.isNotEmpty)
     ),
     child: ClipRRect( // Clips the image to the rounded corners
       borderRadius: BorderRadius.circular(12),
-      child: Image.asset(
+      child: Image.network( // Changed to Image.network for dynamic image paths
         widget.roomImagePath,
         height: 200, // Fixed height for the image
         width: double.infinity, // Image takes full width
         fit: BoxFit.cover, // Ensures image covers the area, cropping if necessary
-        // ... errorBuilder for missing image
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            height: 200,
+            width: double.infinity,
+            color: Colors.grey[300],
+            child: const Icon(
+              Icons.broken_image,
+              size: 60,
+              color: Colors.grey,
+            ),
+          );
+        },
       ),
     ),
   ),
@@ -734,7 +694,7 @@ Text(
 ),
 const SizedBox(height: 8), // Spacing between room type and price
 Text(
-  '₱${widget.price} / night', // Displays "₱2800 / night"
+  '₱${widget.price.toStringAsFixed(2)} / night', // Displays "₱2800 / night"
   style: const TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.bold,
@@ -890,6 +850,87 @@ const SizedBox(height: 20), // Spacing below amenities
       ),
     );
   }
+}
+
+class BookingConfirmationCard extends StatelessWidget {
+  final String confirmationNumber;
+  final String hotelName;
+  final String roomType;
+  final String checkIn;
+  final String checkOut;
+  final String guests;
+  final double totalPrice;
+  const BookingConfirmationCard({
+    super.key,
+    required this.confirmationNumber,
+    required this.hotelName,
+    required this.roomType,
+    required this.checkIn,
+    required this.checkOut,
+    required this.guests,
+    required this.totalPrice,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: const EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.check_circle, color: Colors.green, size: 48),
+              const SizedBox(height: 10),
+              const Text(
+                'Booking Confirmed!',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.green),
+              ),
+              const SizedBox(height: 6),
+              Text('Confirmation #: $confirmationNumber', style: const TextStyle(fontSize: 14, color: Colors.black54)),
+              const SizedBox(height: 18),
+              Table(
+                columnWidths: const {
+                  0: IntrinsicColumnWidth(),
+                  1: FlexColumnWidth(),
+                },
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                children: [
+                  _row('Hotel:', hotelName),
+                  _row('Room Type:', roomType),
+                  _row('Check-in:', checkIn),
+                  _row('Check-out:', checkOut),
+                  _row('Guests:', guests),
+                ],
+              ),
+              const SizedBox(height: 18),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Total Price:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text('₱${totalPrice.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.green)),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  TableRow _row(String label, String value) => TableRow(
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Text(label, style: const TextStyle(color: Colors.black54, fontSize: 15)),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+      ),
+    ],
+  );
 }
 
 class _AmenityDisplayIcon extends StatelessWidget {

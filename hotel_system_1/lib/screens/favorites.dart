@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'home.dart'; // Import home.dart to access its color constants and Hotel model
-import '../bookings/roomlist.dart'; // ADDED: Import for RoomListScreen
+import '../bookings/roomlist.dart'; // Import for RoomListScreen
 import '../utils/constants.dart';
-
+import 'package:hotel_system_1/models/hotel.dart';
+import 'package:hotel_system_1/screens/hotel_manager.dart'; // Import HotelManager
 
 class FavoritesScreen extends StatefulWidget {
   final VoidCallback? onFavoriteChanged; // Callback to notify HomePage of changes
@@ -20,46 +20,30 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   void initState() {
     super.initState();
     _loadFavorites();
+    // Listen for changes in HotelManager to update favorites in real-time
+    HotelManager().addListener(_onHotelManagerChanged);
   }
 
+  @override
+  void dispose() {
+    HotelManager().removeListener(_onHotelManagerChanged);
+    super.dispose();
+  }
+
+  void _onHotelManagerChanged() {
+    _loadFavorites(); // Reload favorites when HotelManager notifies changes
+  }
+
+  // Modified _loadFavorites to get data from HotelManager
   void _loadFavorites() {
     setState(() {
-      _favoriteHotels = HomeContent.getFavoriteHotels();
+      // Get all hotels from HotelManager and filter for favorites
+      _favoriteHotels = HotelManager().hotels.where((hotel) => hotel.isFavorite).toList();
     });
   }
 
-  // Map amenity strings to their respective IconData (copied from home.dart for convenience)
-  static const Map<String, IconData> _amenityIcons = {
-    'Wi-Fi': Icons.wifi,
-    'Pool': Icons.pool,
-    'Beach Access': Icons.beach_access,
-    'Spa': Icons.spa,
-    'Hiking Trails': Icons.landscape,
-    'Restaurant': Icons.restaurant,
-    'Parking': Icons.local_parking,
-    'Diving Center': Icons.scuba_diving,
-    'Private Beach': Icons.beach_access,
-    'Eco-friendly': Icons.eco,
-    'Conference Rooms': Icons.business_center,
-    'Fitness Center': Icons.fitness_center,
-    'Lake View': Icons.water,
-    'Balcony': Icons.balcony,
-    'Surf Lessons': Icons.surfing,
-    'Island Hopping': Icons.directions_boat,
-    'Motorbike Rental': Icons.motorcycle,
-    'Fine Dining': Icons.dinner_dining,
-    'Bar': Icons.local_bar,
-    'Valet Parking': Icons.car_rental,
-    'Fireplace': Icons.fireplace,
-    'Garden': Icons.local_florist,
-    'Pet-friendly': Icons.pets,
-    'Nature Tours': Icons.nature_people,
-    'Local Cuisine': Icons.food_bank,
-    'Airport Shuttle': Icons.airport_shuttle,
-    'Historical Tours': Icons.museum,
-    'Cafe': Icons.coffee,
-    'Laundry Service': Icons.local_laundry_service,
-  };
+  // Removed: Map amenity strings to their respective IconData (_amenityIcons)
+  // as Hotel.amenities now stores Amenity objects directly.
 
   Widget _buildHotelCard(
       BuildContext context,
@@ -87,7 +71,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   borderRadius: const BorderRadius.vertical( // Added const
                     top: Radius.circular(12),
                   ),
-                  child: Image.asset(
+                  child: Image.asset( // Assuming image is an asset for now
                     hotel.image,
                     height: 200,
                     width: double.infinity,
@@ -116,7 +100,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     ),
                     onPressed: () {
                       setState(() {
-                        hotel.isFavorite = !hotel.isFavorite; // Toggle status
+                        // Toggle status using HotelManager
+                        HotelManager().toggleFavoriteStatus(hotel);
                         _loadFavorites(); // Reload the list to update UI
                         if (widget.onFavoriteChanged != null) {
                           widget.onFavoriteChanged!(); // Notify HomePage
@@ -201,16 +186,16 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   Wrap(
                     spacing: 10.0,
                     runSpacing: 10.0,
-                    children: hotel.amenities.map((amenity) {
+                    children: hotel.amenities.map((amenity) { // Iterate over Amenity objects
                       return Column(
                         children: [
                           Icon(
-                            _amenityIcons[amenity] ?? Icons.help_outline,
+                            amenity.icon, // Access the icon directly from the Amenity object
                             size: 24,
                             color: kDarkBlue,
                           ),
                           const SizedBox(height: 5), // Added const
-                          Text(amenity, style: const TextStyle(fontSize: 12)), // Added const
+                          Text(amenity.label, style: const TextStyle(fontSize: 12)), // Access the label
                         ],
                       );
                     }).toList(),

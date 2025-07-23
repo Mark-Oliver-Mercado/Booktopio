@@ -1,63 +1,71 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
+import '../models/room.dart'; // Import the new Room model
+import '../screens/room_manager.dart'; // Import the RoomManager
+import '../models/amenity.dart'; // Import the canonical Amenity model
+import 'package:shared_preferences/shared_preferences.dart';
+import '../screens/hotel_manager.dart'; // Import HotelManager for debug print
 
-// Renamed from AddRoomScreen to AddRoomScreenContent
-// MODIFIED: This is now just the content, not a full Scaffold
 class AddRoomScreenContent extends StatefulWidget {
-  final ValueChanged<String> onRoomAdded;
-  final List<String> existingRoomNames;
+  final String? hotelName; // New parameter to receive the current hotel name
 
   const AddRoomScreenContent({
     Key? key,
-    required this.onRoomAdded,
-    required this.existingRoomNames,
+    this.hotelName, // Make it optional for now, but ideally required
   }) : super(key: key);
 
   @override
-  _AddRoomScreenContentState createState() => _AddRoomScreenContentState(); // State class name changed
+  _AddRoomScreenContentState createState() => _AddRoomScreenContentState();
 }
 
 class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
-  // State class name changed
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _roomNameController = TextEditingController();
   final TextEditingController _roomTypeController = TextEditingController();
   final TextEditingController _roomCapacityController = TextEditingController();
-  final TextEditingController _priceController =
-      TextEditingController(); // Added price controller
-  final TextEditingController _descriptionController =
-      TextEditingController(); // Added description controller
-  String? _selectedAmenity; // Added for radio buttons
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _roomImagePathController = TextEditingController();
 
-  final List<String> _amenities = [
-    'Wi-Fi',
-    'Air Conditioning',
-    'TV',
-    'Mini Bar',
-    'Balcony',
-    'Breakfast Included',
-  ]; // Example amenities
+  List<Amenity> _selectedAmenities = [];
+
+  final List<Amenity> _amenities = [
+    const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+    const Amenity(icon: Icons.ac_unit, label: 'Air Conditioning'),
+    const Amenity(icon: Icons.tv, label: 'TV'),
+    const Amenity(icon: Icons.local_bar, label: 'Mini Bar'),
+    const Amenity(icon: Icons.balcony, label: 'Balcony'),
+    const Amenity(icon: Icons.breakfast_dining, label: 'Breakfast Included'),
+  ];
 
   @override
   void dispose() {
     _roomNameController.dispose();
     _roomTypeController.dispose();
     _roomCapacityController.dispose();
-    _priceController.dispose(); // Dispose price controller
-    _descriptionController.dispose(); // Dispose description controller
+    _priceController.dispose();
+    _descriptionController.dispose();
+    _roomImagePathController.dispose();
     super.dispose();
   }
 
-  void _addRoom() {
+  void _addRoom() async {
     if (_formKey.currentState!.validate()) {
       final String roomName = _roomNameController.text.trim();
+      String currentHotelName = widget.hotelName ?? '';
+      if (currentHotelName.isEmpty) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        currentHotelName = prefs.getString('loggedInHotelName') ?? 'Default Hotel';
+      }
 
-      // Check for duplicate room names
-      if (widget.existingRoomNames.contains(roomName)) {
+      // Check for duplicate room names within the context of the current hotel
+      if (RoomManager().rooms.any((room) =>
+          room.hotelName == currentHotelName &&
+          room.name.toLowerCase() == roomName.toLowerCase())) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Room "$roomName" already exists. Please choose a different name.',
+              'Room "$roomName" already exists for $currentHotelName. Please choose a different name.',
             ),
             backgroundColor: Colors.red,
           ),
@@ -65,25 +73,44 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
         return;
       }
 
-      // You can access the new fields here:
-      // String imageUrl = _imageController.text; // If you add an image URL field
-      // double price = double.parse(_priceController.text);
-      // String description = _descriptionController.text;
-      // String? selectedAmenity = _selectedAmenity;
+      final newRoom = Room(
+        hotelName: currentHotelName, // Use the dynamically passed hotelName
+        name: roomName,
+        type: _roomTypeController.text.trim(),
+        capacity: int.parse(_roomCapacityController.text.trim()),
+        pricePerNight: double.parse(_priceController.text.trim()),
+        description: _descriptionController.text.trim(),
+        imagePath: _roomImagePathController.text.trim().isNotEmpty
+            ? _roomImagePathController.text.trim()
+            : null,
+        features: 'Added by Admin', // Placeholder for features
+        amenities: List<Amenity>.from(_selectedAmenities),
+        status: 'Available',
+      );
 
-      widget.onRoomAdded(roomName); // Call the callback
+      RoomManager().addRoom(newRoom);
+      // Debug print: show which hotel and its rooms
+      print('Added room to hotel: ' + currentHotelName);
+      final hotels = HotelManager().hotels.where((h) => h.name == currentHotelName);
+      if (hotels.isNotEmpty) {
+        print('Current rooms for hotel $currentHotelName: ' + hotels.first.rooms.map((r) => r.name).toList().toString());
+      } else {
+        print('Hotel $currentHotelName not found in HotelManager');
+      }
+
       _roomNameController.clear();
       _roomTypeController.clear();
       _roomCapacityController.clear();
-      _priceController.clear(); // Clear price
-      _descriptionController.clear(); // Clear description
+      _priceController.clear();
+      _descriptionController.clear();
+      _roomImagePathController.clear();
       setState(() {
-        _selectedAmenity = null; // Clear selected amenity
+        _selectedAmenities = [];
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Room "$roomName" added successfully!'),
+          content: Text('Room "$roomName" added successfully to $currentHotelName!'),
           backgroundColor: kPrimaryGreen,
         ),
       );
@@ -93,7 +120,6 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      // Changed from Scaffold to SingleChildScrollView
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +144,6 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    // Room Name
                     TextFormField(
                       controller: _roomNameController,
                       decoration: InputDecoration(
@@ -132,14 +157,16 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a room name';
                         }
-                        if (widget.existingRoomNames.contains(value.trim())) {
-                          return 'This room name already exists.';
+                        final String currentHotelName = widget.hotelName ?? 'Default Hotel';
+                        if (RoomManager().rooms.any((room) =>
+                            room.hotelName == currentHotelName &&
+                            room.name.toLowerCase() == value.trim().toLowerCase())) {
+                          return 'This room name already exists for $currentHotelName.';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
-                    // Room Type
                     TextFormField(
                       controller: _roomTypeController,
                       decoration: InputDecoration(
@@ -157,7 +184,6 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    // Capacity
                     TextFormField(
                       controller: _roomCapacityController,
                       keyboardType: TextInputType.number,
@@ -180,7 +206,6 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    // Price
                     TextFormField(
                       controller: _priceController,
                       keyboardType: TextInputType.number,
@@ -189,10 +214,11 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        prefixIcon: Icon(
-                          Icons.attach_money,
-                          color: kPrimaryGreen,
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 12, right: 8),
+                          child: Text('₱', style: TextStyle(fontSize: 20, color: kPrimaryGreen, fontWeight: FontWeight.bold)),
                         ),
+                        prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -206,7 +232,6 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    // Description
                     TextFormField(
                       controller: _descriptionController,
                       maxLines: 3,
@@ -229,80 +254,67 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    // Image Upload (Placeholder - actual implementation would be more complex)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Room Image',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: kDarkText,
-                          ),
+                    TextFormField(
+                      controller: _roomImagePathController,
+                      decoration: InputDecoration(
+                        labelText: 'Room Image URL (Optional)',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        const SizedBox(height: 8),
-                        // This is a placeholder for image upload.
-                        // In a real app, you'd use image_picker or similar.
-                        Container(
-                          height: 100,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: kLightGreen,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: kPrimaryGreen),
-                          ),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.cloud_upload,
-                                  size: 40,
-                                  color: kPrimaryGreen,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Tap to upload image',
-                                  style: TextStyle(color: kPrimaryGreen),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                        prefixIcon: Icon(Icons.image, color: kPrimaryGreen),
+                      ),
+                      keyboardType: TextInputType.url,
                     ),
                     const SizedBox(height: 16),
-                    // Amenities (Radio Buttons)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Amenities',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: kDarkText,
-                          ),
+                    const SizedBox(height: 8),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Amenities',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: kDarkText,
                         ),
-                        const SizedBox(height: 8),
-                        ..._amenities.map((amenity) {
-                          return RadioListTile<String>(
-                            title: Text(amenity),
-                            value: amenity,
-                            groupValue: _selectedAmenity,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _selectedAmenity = value;
-                              });
-                            },
-                            activeColor: kPrimaryGreen,
-                          );
-                        }).toList(),
-                      ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: _amenities.map((amenity) {
+                        final isSelected = _selectedAmenities.contains(amenity);
+                        return FilterChip(
+                          label: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(amenity.icon, size: 18, color: isSelected ? kPrimaryGreen : Colors.grey),
+                              const SizedBox(width: 4),
+                              Text(amenity.label),
+                            ],
+                          ),
+                          selected: isSelected,
+                          selectedColor: kPrimaryGreen.withOpacity(0.15),
+                          checkmarkColor: kPrimaryGreen,
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                _selectedAmenities.add(amenity);
+                              } else {
+                                _selectedAmenities.remove(amenity);
+                              }
+                            });
+                          },
+                          backgroundColor: Colors.grey[100],
+                          labelStyle: TextStyle(color: isSelected ? kPrimaryGreen : kDarkText),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(color: isSelected ? kPrimaryGreen : Colors.grey.shade300),
+                          ),
+                        );
+                      }).toList(),
                     ),
                     const SizedBox(height: 24),
-                    // Add Room Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
@@ -327,7 +339,6 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
               ),
             ),
           ),
-          // You might add a list of recently added rooms here or a confirmation message
         ],
       ),
     );

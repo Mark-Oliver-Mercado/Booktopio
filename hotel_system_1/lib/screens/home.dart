@@ -5,6 +5,8 @@ import 'favorites.dart'; // Screen for favorite hotels
 import 'profile.dart'; // User profile screen
 import '../services/notification_service.dart'; // Import NotificationService
 import '../auth/signup.dart';
+import '../screens/hotel_manager.dart'; // Import HotelManager to manage hotel data
+import '../models/amenity.dart'; // Import Amenity model
 
 // Import the new screens for the drawer, assuming they exist
 import 'about_us_screen.dart';
@@ -15,34 +17,8 @@ import 'terms_conditions_screen.dart';
 import 'support_screen.dart';
 import 'notification_screen.dart'; // Make sure this is also imported if used elsewhere
 import '../utils/constants.dart';
+import '../models/hotel.dart';
 
-
-// Define a simple Hotel data model
-class Hotel {
-  final String image;
-  final String name;
-  final String location;
-  final String rating;
-  final String description;
-  final List<String> categories;
-  final List<String> amenities;
-  final String priceRange;
-  bool isFavorite; // This field is not final
-
-  // Remove 'const' from here because 'isFavorite' is not final
-  Hotel({
-    // <--- REMOVE 'const' here
-    required this.image,
-    required this.name,
-    required this.location,
-    required this.rating,
-    required this.description,
-    this.categories = const [],
-    this.amenities = const [],
-    this.priceRange = '₱₱₱',
-    this.isFavorite = false,
-  });
-}
 
 // Define a GlobalKey for HomePage to access its state from other screens
 final GlobalKey<HomePageState> homePageKey = GlobalKey<HomePageState>();
@@ -130,139 +106,170 @@ class HomeContent extends StatefulWidget {
 
   const HomeContent({super.key, required this.onTabSelected});
 
-  // All available hotels - made static to be accessible from other screens
-  static final List<Hotel> _allHotels = [
+  // This list will now be used to *initialize* HotelManager if it's empty
+  // It's renamed to _initialHotels to clarify its purpose as initial data.
+  static final List<Hotel> _initialHotels = [
     Hotel(
-      image: '../assets/hotel1.png', // Placeholder, replace with actual image
+      image: 'assets/hotel1.png',
       name: 'Seaside Resort Boracay',
       location: 'Boracay, PH',
       rating: '4.8 (1200 reviews)',
-      description:
-          'A beachfront paradise with sparkling pools, vibrant tropical vibes, and exceptionally friendly service.',
+      description: 'A beachfront paradise with sparkling pools, vibrant tropical vibes, and exceptionally friendly service.',
       categories: ['Beach', 'Top Rated', 'Family'],
-      amenities: ['Wi-Fi', 'Pool', 'Beach Access', 'Spa'],
+      amenities: [
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.pool, label: 'Pool'),
+        const Amenity(icon: Icons.beach_access, label: 'Beach Access'),
+        const Amenity(icon: Icons.spa, label: 'Spa')
+      ],
       priceRange: '₱3,000 - ₱8,000',
-      isFavorite: false, // Initial favorite status
+      isFavorite: false,
     ),
     Hotel(
-      image: 'assets/hotel2.png', // Placeholder, replace with actual image
+      image: 'assets/hotel2.png',
       name: 'Malvar Mountain Retreat',
       location: 'Malvar, PH',
       rating: '4.9 (500 reviews)',
-      description:
-          'Escape to nature with breathtaking mountain views and serene surroundings, perfect for relaxation and hiking.',
+      description: 'Escape to nature with breathtaking mountain views and serene surroundings, perfect for relaxation and hiking.',
       categories: ['Nature', 'Top Rated', 'Family'],
-      amenities: ['Wi-Fi', 'Hiking Trails', 'Restaurant', 'Parking'],
+      amenities: [
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.landscape, label: 'Hiking Trails'),
+        const Amenity(icon: Icons.restaurant, label: 'Restaurant'),
+        const Amenity(icon: Icons.local_parking, label: 'Parking')
+      ],
       priceRange: '₱2,000 - ₱5,000',
-      isFavorite: false, // Initial favorite status
+      isFavorite: false,
     ),
     Hotel(
-      image: 'assets/hotel3.png', // Assuming you have this asset
+      image: 'assets/hotel3.png',
       name: 'El Nido Island Paradise',
       location: 'Palawan, PH',
       rating: '4.7 (950 reviews)',
-      description:
-          'An exclusive island paradise offering pristine beaches, world-class diving, and eco-friendly accommodations.',
+      description: 'An exclusive island paradise offering pristine beaches, world-class diving, and eco-friendly accommodations.',
       categories: ['Beach', 'Luxury', 'Nature'],
-      amenities: ['Wi-Fi', 'Diving Center', 'Private Beach', 'Eco-friendly'],
+      amenities: [
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.scuba_diving, label: 'Diving Center'),
+        const Amenity(icon: Icons.beach_access, label: 'Private Beach'),
+        const Amenity(icon: Icons.eco, label: 'Eco-friendly')
+      ],
       priceRange: '₱7,000 - ₱15,000',
-      isFavorite: true, // Example: Set this one as favorite initially
+      isFavorite: true,
     ),
     Hotel(
-      image: 'assets/hotel4.png', // Assuming you have this asset
+      image: 'assets/hotel4.png',
       name: 'Cebu City Business Hotel',
       location: 'Cebu, PH',
       rating: '4.2 (780 reviews)',
-      description:
-          'Strategically located in the city center, ideal for business travelers with modern facilities and conference rooms.',
+      description: 'Strategically located in the city center, ideal for business travelers with modern facilities and conference rooms.',
       categories: ['City', 'Business', 'Budget'],
-      amenities: ['Wi-Fi', 'Conference Rooms', 'Fitness Center', 'Restaurant'],
+      amenities: [
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.business_center, label: 'Conference Rooms'),
+        const Amenity(icon: Icons.fitness_center, label: 'Fitness Center'),
+        const Amenity(icon: Icons.restaurant, label: 'Restaurant')
+      ],
       priceRange: '₱1,800 - ₱4,500',
       isFavorite: false,
     ),
     Hotel(
-      image: 'assets/hotel5.png', // Assuming you have this asset
+      image: 'assets/hotel5.png',
       name: 'Tagaytay Lakeview Suites',
       location: 'Tagaytay, PH',
       rating: '4.6 (620 reviews)',
-      description:
-          'Enjoy the cool climate and stunning Taal Lake views from our elegant suites, perfect for a romantic getaway.',
+      description: 'Enjoy the cool climate and stunning Taal Lake views from our elegant suites, perfect for a romantic getaway.',
       categories: ['Nature', 'Romantic', 'Luxury'],
-      amenities: ['Wi-Fi', 'Lake View', 'Spa', 'Balcony'],
+      amenities: [
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.water, label: 'Lake View'),
+        const Amenity(icon: Icons.spa, label: 'Spa'),
+        const Amenity(icon: Icons.balcony, label: 'Balcony')
+      ],
       priceRange: '₱2,500 - ₱7,000',
       isFavorite: false,
     ),
     Hotel(
-      image: 'assets/hotel6.png', // Assuming you have this asset
+      image: 'assets/hotel6.png',
       name: 'Siargao Surfer\'s Haven',
       location: 'Siargao, PH',
       rating: '4.5 (800 reviews)',
-      description:
-          'The ultimate spot for surfers and adventurers, offering easy access to famous surf breaks and island hopping tours.',
+      description: 'The ultimate spot for surfers and adventurers, offering easy access to famous surf breaks and island hopping tours.',
       categories: ['Beach', 'Adventure', 'Budget'],
       amenities: [
-        'Wi-Fi',
-        'Surf Lessons',
-        'Island Hopping',
-        'Motorbike Rental',
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.surfing, label: 'Surf Lessons'),
+        const Amenity(icon: Icons.directions_boat, label: 'Island Hopping'),
+        const Amenity(icon: Icons.motorcycle, label: 'Motorbike Rental'),
       ],
       priceRange: '₱1,200 - ₱3,500',
       isFavorite: false,
     ),
     Hotel(
-      image: 'assets/hotel7.png', // Assuming you have this asset
+      image: 'assets/hotel7.png',
       name: 'Manila Urban Grand',
       location: 'Manila, PH',
       rating: '4.3 (1500 reviews)',
-      description:
-          'Experience urban luxury with exquisite dining options and vibrant nightlife right at your doorstep.',
+      description: 'Experience urban luxury with exquisite dining options and vibrant nightlife right at your doorstep.',
       categories: ['City', 'Luxury', 'Nightlife'],
-      amenities: ['Wi-Fi', 'Fine Dining', 'Bar', 'Valet Parking'],
+      amenities: [
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.dinner_dining, label: 'Fine Dining'),
+        const Amenity(icon: Icons.local_bar, label: 'Bar'),
+        const Amenity(icon: Icons.car_rental, label: 'Valet Parking')
+      ],
       priceRange: '₱4,000 - ₱10,000',
       isFavorite: false,
     ),
     Hotel(
-      image: 'assets/hotel8.png', // Assuming you have this asset
+      image: 'assets/hotel8.png',
       name: 'Baguio Pine Forest Lodge',
       location: 'Baguio, PH',
       rating: '4.7 (700 reviews)',
-      description:
-          'A cozy lodge nestled among pine trees, offering a refreshing cool weather escape and a peaceful atmosphere.',
+      description: 'A cozy lodge nestled among pine trees, offering a refreshing cool weather escape and a peaceful atmosphere.',
       categories: ['Nature', 'Family', 'Relaxation'],
-      amenities: ['Wi-Fi', 'Fireplace', 'Garden', 'Pet-friendly'],
+      amenities: [
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.fireplace, label: 'Fireplace'),
+        const Amenity(icon: Icons.local_florist, label: 'Garden'),
+        const Amenity(icon: Icons.pets, label: 'Pet-friendly')
+      ],
       priceRange: '₱2,200 - ₱5,500',
       isFavorite: false,
     ),
     Hotel(
-      image: 'assets/hotel9.png', // Assuming you have this asset
+      image: 'assets/hotel9.png',
       name: 'Davao Nature Park Hotel',
       location: 'Davao, PH',
       rating: '4.4 (550 reviews)',
-      description:
-          'Close to nature parks and cultural sites, offering a unique blend of adventure and local experiences.',
+      description: 'Close to nature parks and cultural sites, offering a unique blend of adventure and local experiences.',
       categories: ['Nature', 'Cultural', 'Adventure'],
-      amenities: ['Wi-Fi', 'Nature Tours', 'Local Cuisine', 'Airport Shuttle'],
+      amenities: [
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.nature_people, label: 'Nature Tours'),
+        const Amenity(icon: Icons.food_bank, label: 'Local Cuisine'),
+        const Amenity(icon: Icons.airport_shuttle, label: 'Airport Shuttle')
+      ],
       priceRange: '₱1,500 - ₱4,000',
       isFavorite: false,
     ),
     Hotel(
-      image: 'assets/hotel10.png', // Assuming you have this asset
+      image: 'assets/hotel10.png',
       name: 'Iloilo Heritage Inn',
       location: 'Iloilo, PH',
       rating: '4.1 (480 reviews)',
-      description:
-          'Step back in time in this heritage city, perfect for culinary tours and exploring historical landmarks.',
+      description: 'Step back in time in this heritage city, perfect for culinary tours and exploring historical landmarks.',
       categories: ['Cultural', 'Budget', 'Historical'],
-      amenities: ['Wi-Fi', 'Historical Tours', 'Cafe', 'Laundry Service'],
+      amenities: [
+        const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+        const Amenity(icon: Icons.museum, label: 'Historical Tours'),
+        const Amenity(icon: Icons.coffee, label: 'Cafe'),
+        const Amenity(icon: Icons.local_laundry_service, label: 'Laundry Service')
+      ],
       priceRange: '₱1,000 - ₱3,000',
       isFavorite: false,
     ),
   ];
-
-  // Static method to get favorite hotels
-  static List<Hotel> getFavoriteHotels() {
-    return _allHotels.where((hotel) => hotel.isFavorite).toList();
-  }
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -275,45 +282,24 @@ class _HomeContentState extends State<HomeContent> {
   final NotificationService _notificationService = NotificationService();
   int _notificationCount = 0;
 
-  // Map amenity strings to their respective IconData
-  static const Map<String, IconData> _amenityIcons = {
-    'Wi-Fi': Icons.wifi,
-    'Pool': Icons.pool,
-    'Beach Access': Icons.beach_access,
-    'Spa': Icons.spa,
-    'Hiking Trails': Icons.landscape,
-    'Restaurant': Icons.restaurant,
-    'Parking': Icons.local_parking,
-    'Diving Center': Icons.scuba_diving,
-    'Private Beach': Icons.beach_access,
-    'Eco-friendly': Icons.eco,
-    'Conference Rooms': Icons.business_center,
-    'Fitness Center': Icons.fitness_center,
-    'Lake View': Icons.water,
-    'Balcony': Icons.balcony,
-    'Surf Lessons': Icons.surfing,
-    'Island Hopping': Icons.directions_boat,
-    'Motorbike Rental': Icons.motorcycle,
-    'Fine Dining': Icons.dinner_dining,
-    'Bar': Icons.local_bar,
-    'Valet Parking': Icons.car_rental,
-    'Fireplace': Icons.fireplace,
-    'Garden': Icons.local_florist,
-    'Pet-friendly': Icons.pets,
-    'Nature Tours': Icons.nature_people,
-    'Local Cuisine': Icons.food_bank,
-    'Airport Shuttle': Icons.airport_shuttle,
-    'Historical Tours': Icons.museum,
-    'Cafe': Icons.coffee,
-    'Laundry Service': Icons.local_laundry_service,
-  };
-
   @override
   void initState() {
     super.initState();
-    _displayedHotels = List.from(HomeContent._allHotels); // Use the static list
-    _searchController.addListener(_onSearchChanged);
 
+    // Initialize HotelManager with initial hotels if it's empty
+    // This ensures that both pre-defined and admin-added hotels are in HotelManager.
+    // This check prevents adding duplicates if the app hot-restarts or if data is persistent.
+    if (HotelManager().hotels.isEmpty) {
+      for (var hotel in HomeContent._initialHotels) {
+        HotelManager().addHotel(hotel);
+      }
+    }
+
+    // Always get the displayed hotels from the HotelManager
+    _displayedHotels = List.from(HotelManager().hotels);
+
+
+    _searchController.addListener(_onSearchChanged);
     _notificationCount = _notificationService.notifications.length;
     _notificationService.addListener(_onNotificationsChanged);
   }
@@ -339,17 +325,19 @@ class _HomeContentState extends State<HomeContent> {
   void _filterHotels(String queryOrCategory) {
     setState(() {
       if (queryOrCategory == 'All' || queryOrCategory.isEmpty) {
-        _displayedHotels = List.from(HomeContent._allHotels);
+        _displayedHotels = List.from(HotelManager().hotels); // Source from HotelManager
       } else {
         final lowerCaseQuery = queryOrCategory.toLowerCase();
-        _displayedHotels = HomeContent._allHotels.where((hotel) {
+        // Filter from the comprehensive list held by HotelManager
+        _displayedHotels = HotelManager().hotels.where((hotel) {
           return hotel.categories.any(
                 (category) => category.toLowerCase().contains(lowerCaseQuery),
               ) ||
               hotel.name.toLowerCase().contains(lowerCaseQuery) ||
               hotel.location.toLowerCase().contains(lowerCaseQuery) ||
+              // Check amenity labels for search
               hotel.amenities.any(
-                (amenity) => amenity.toLowerCase().contains(lowerCaseQuery),
+                (amenity) => amenity.label.toLowerCase().contains(lowerCaseQuery),
               ) ||
               hotel.priceRange.toLowerCase().contains(lowerCaseQuery);
         }).toList();
@@ -357,64 +345,77 @@ class _HomeContentState extends State<HomeContent> {
     });
   }
 
-  void _toggleHotelFavorite(Hotel hotel, bool isFavorite) {
+  // Modified _toggleHotelFavorite to use HotelManager and refresh displayed list
+  void _toggleHotelFavorite(Hotel hotel) {
     setState(() {
-      final index = HomeContent._allHotels.indexOf(hotel);
-      if (index != -1) {
-        HomeContent._allHotels[index].isFavorite = isFavorite;
+      // Toggle the status via HotelManager. This modifies the shared object.
+      HotelManager().toggleFavoriteStatus(hotel);
+
+      // Re-initialize _displayedHotels from HotelManager's current state
+      // This ensures that the displayed list (and thus the UI) reflects the latest data
+      // from your central HotelManager.
+      _displayedHotels = List.from(HotelManager().hotels);
+
+      // Optional: If a search filter is currently active, re-apply it to update the displayed list
+      if (_searchController.text.isNotEmpty && _searchController.text != 'All') {
+        _filterHotels(_searchController.text);
       }
-      // Re-filter to update the displayed list if filtering is active
-      _filterHotels(_searchController.text);
+
       // Notify HomePageState to potentially refresh FavoritesScreen
       homePageKey.currentState?.setState(() {});
     });
   }
 
-  Widget _buildQuickAccessButton(
-    IconData icon,
-    String label, {
-    VoidCallback? onPressed,
-  }) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 12.0),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: kPrimaryBlue.withAlpha((255 * 0.1).round()),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.all(16),
-              child: Icon(icon, size: 30, color: kDarkBlue),
-            ),
-            const SizedBox(height: 6),
-            Text(label, style: const TextStyle(color: kDarkBlue)),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildHotelCard(Hotel hotel) {
+    // Determine if the image is an asset or a network image
+    final bool isNetworkImage = hotel.image.startsWith('http://') || hotel.image.startsWith('https://');
 
-  Widget _buildHotelCard(
-    BuildContext context, {
-    required String image,
-    required String name,
-    required String location,
-    required String rating,
-    required String description,
-    required List<String> amenities,
-    required String priceRange,
-    required bool isFavorite, // New parameter for favorite status
-    required ValueChanged<bool>
-    onFavoriteChanged, // New callback for favorite changes
-  }) {
+    Widget hotelImageWidget;
+    if (isNetworkImage) {
+      hotelImageWidget = Image.network(
+        hotel.image,
+        height: 200,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            height: 200,
+            width: double.infinity,
+            color: Colors.grey[300],
+            child: const Icon(
+              Icons.broken_image,
+              size: 60,
+              color: Colors.grey,
+            ),
+          );
+        },
+      );
+    } else {
+      hotelImageWidget = Image.asset(
+        hotel.image,
+        height: 200,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            height: 200,
+            width: double.infinity,
+            color: Colors.grey[300],
+            child: const Icon(
+              Icons.image_not_supported,
+              size: 60,
+              color: Colors.grey,
+            ),
+          );
+        },
+      );
+    }
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => RoomListScreen(hotelName: name)),
+          MaterialPageRoute(builder: (_) => RoomListScreen(hotelName: hotel.name)),
         );
       },
       child: Card(
@@ -425,47 +426,23 @@ class _HomeContentState extends State<HomeContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(
-              // Use Stack to position the heart icon on top of the image
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(12),
                   ),
-                  child: Image.asset(
-                    image,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        height: 200,
-                        width: double.infinity,
-                        color: Colors.grey[300],
-                        child: const Icon(
-                          Icons.image_not_supported,
-                          size: 60,
-                          color: Colors.grey,
-                        ),
-                      );
-                    },
-                  ),
+                  child: hotelImageWidget,
                 ),
                 Positioned(
-                  // Position the IconButton for favorite
                   top: 8,
                   right: 8,
                   child: IconButton(
                     icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite
-                          ? Colors.red
-                          : Colors
-                                .white, // Changed color for visibility on image
+                      hotel.isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: hotel.isFavorite ? Colors.red : Colors.white,
                     ),
                     onPressed: () {
-                      onFavoriteChanged(
-                        !isFavorite,
-                      ); // Toggle the favorite status
+                      _toggleHotelFavorite(hotel);
                     },
                   ),
                 ),
@@ -477,91 +454,65 @@ class _HomeContentState extends State<HomeContent> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    hotel.name,
                     style: const TextStyle(
-                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: kDarkBlue,
+                      fontSize: 18,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            size: 16,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            location,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: kLightBlue,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          priceRange,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: kDarkBlue,
-                          ),
-                        ),
+                  const SizedBox(height: 8),
+                  Text(hotel.location),
+                  const SizedBox(height: 8),
+                  Text(hotel.priceRange),
+                  const SizedBox(height: 12),
+                  // Show categories as chips only if not empty
+                  if (hotel.categories.isNotEmpty)
+                    ...[
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        children: hotel.categories.map((cat) => Chip(label: Text(cat))).toList(),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      const Icon(Icons.star, color: Colors.orange, size: 18),
-                      const SizedBox(width: 5),
-                      Text(rating, style: const TextStyle(fontSize: 14)),
+                  // Show amenities as icons+labels only if not empty
+                  if (hotel.amenities.isNotEmpty)
+                    ...[
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 10.0,
+                        runSpacing: 10.0,
+                        children: hotel.amenities.map((a) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(a.icon, size: 24, color: kDarkBlue),
+                            Text(a.label, style: const TextStyle(fontSize: 12)),
+                          ],
+                        )).toList(),
+                      ),
                     ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    description,
-                    style: const TextStyle(fontSize: 14, color: Colors.black87),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 15),
-                  Wrap(
-                    spacing: 10.0,
-                    runSpacing: 10.0,
-                    children: amenities.map((amenity) {
-                      return Column(
-                        children: [
-                          Icon(
-                            _amenityIcons[amenity] ?? Icons.help_outline,
-                            size: 24,
-                            color: kDarkBlue,
-                          ),
-                          const SizedBox(height: 5),
-                          Text(amenity, style: const TextStyle(fontSize: 12)),
-                        ],
-                      );
-                    }).toList(),
-                  ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickAccessButton(IconData icon, String label, Function() onPressed) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10.0),
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon),
+        label: Text(label),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: kPrimaryBlue,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
         ),
       ),
     );
@@ -823,7 +774,7 @@ class _HomeContentState extends State<HomeContent> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('You have been logged out.'),
-                              ),
+                                ),
                             );
                           },
                           child: const Text('Logout'),
@@ -892,36 +843,12 @@ class _HomeContentState extends State<HomeContent> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _buildQuickAccessButton(
-                    Icons.all_inclusive,
-                    'All',
-                    onPressed: () => _filterHotels('All'),
-                  ),
-                  _buildQuickAccessButton(
-                    Icons.diamond,
-                    'Luxury',
-                    onPressed: () => _filterHotels('Luxury'),
-                  ),
-                  _buildQuickAccessButton(
-                    Icons.money,
-                    'Budget',
-                    onPressed: () => _filterHotels('Budget'),
-                  ),
-                  _buildQuickAccessButton(
-                    Icons.place,
-                    'Near Me',
-                    onPressed: () => _filterHotels('Malvar'),
-                  ),
-                  _buildQuickAccessButton(
-                    Icons.star,
-                    'Top Rated',
-                    onPressed: () => _filterHotels('Top Rated'),
-                  ),
-                  _buildQuickAccessButton(
-                    Icons.family_restroom,
-                    'Family',
-                    onPressed: () => _filterHotels('Family'),
-                  ),
+                  _buildQuickAccessButton(Icons.all_inclusive, 'All', () => _filterHotels('All')),
+                  _buildQuickAccessButton(Icons.diamond, 'Luxury', () => _filterHotels('Luxury')),
+                  _buildQuickAccessButton(Icons.money, 'Budget', () => _filterHotels('Budget')),
+                  _buildQuickAccessButton(Icons.place, 'Near Me', () => _filterHotels('Malvar')),
+                  _buildQuickAccessButton(Icons.star, 'Top Rated', () => _filterHotels('Top Rated')),
+                  _buildQuickAccessButton(Icons.family_restroom, 'Family', () => _filterHotels('Family')),
                 ],
               ),
             ),
@@ -937,26 +864,7 @@ class _HomeContentState extends State<HomeContent> {
             const SizedBox(height: 20),
             Column(
               children: _displayedHotels.map((hotel) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: _buildHotelCard(
-                    context,
-                    image: hotel.image,
-                    name: hotel.name,
-                    location: hotel.location,
-                    rating: hotel.rating,
-                    description: hotel.description,
-                    amenities: hotel.amenities,
-                    priceRange: hotel.priceRange,
-                    isFavorite: hotel.isFavorite, // Pass the favorite status
-                    onFavoriteChanged: (isFavorite) {
-                      _toggleHotelFavorite(
-                        hotel,
-                        isFavorite,
-                      ); // Handle favorite toggle
-                    },
-                  ),
-                );
+                return _buildHotelCard(hotel);
               }).toList(),
             ),
             const SizedBox(height: 30),

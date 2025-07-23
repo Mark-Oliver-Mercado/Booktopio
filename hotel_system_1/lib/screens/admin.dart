@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
 import '../auth/signup.dart';
-import '../screens/admin_settings.dart'; // Make sure this provides a content widget, not a full Scaffold
-import '../screens/add_room_screen.dart'; // Make sure this provides a content widget, not a full Scaffold
-import '../screens/transaction_screen.dart'; // Import the new content widget
+import '../screens/admin_settings.dart';
+import '../screens/add_room_screen.dart';
+import '../screens/transaction_screen.dart';
+import '../screens/room_manager.dart'; // Import RoomManager
+import '../models/room.dart'; // Import Room model
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
+
+// Add this extension at the top (after imports) if not already present
+extension ColorWithValues on Color {
+  Color withValues({double? alpha}) {
+    if (alpha != null) {
+      return withAlpha((255 * alpha).round());
+    }
+    return this;
+  }
+}
 
 class AdminDashboard extends StatefulWidget {
   @override
@@ -10,69 +23,41 @@ class AdminDashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
-  List<String> rooms = [
-    'Room 101',
-    'Room 111',
-    'Room 150',
-    'Room 201',
-    'Room A1',
-    'Room A2',
-    'Room B1',
-    'Room B2',
-    'Room B3',
-    'Room B4',
-    'Room C2',
-    'Room C3',
-    'Room C4',
-    'Room C5',
-    'Suite 1',
-    'Penthouse',
-  ];
+  // Remove static rooms list and roomStatus map
+  // List<String> rooms = [...];
+  // Map<String, String> roomStatus = {};
 
-  Map<String, String> roomStatus = {};
-  int _selectedDrawerIndex = 0; // New state variable for selected index
+  int _selectedDrawerIndex = 0;
+  String? _loggedInHotelName;
 
   @override
   void initState() {
     super.initState();
-    _initializeRoomData();
+    // No need to initialize static room data anymore
+    _loadLoggedInHotelName();
   }
 
-  void _initializeRoomData() {
-    roomStatus.clear();
-    for (var room in rooms) {
-      roomStatus[room] = 'available';
-      if (room == 'Room 101' || room == 'Room B2') {
-        roomStatus[room] = 'booked';
-      } else if (room == 'Room 150' || room == 'Room C4') {
-        roomStatus[room] = 'completed';
-      } else if (room == 'Room A1') {
-        roomStatus[room] = 'cleaning';
-      }
-    }
-    setState(() {});
+  void _loadLoggedInHotelName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _loggedInHotelName = prefs.getString('loggedInHotelName');
+      print('AdminDashboard loaded hotel: ' + (_loggedInHotelName ?? 'null'));
+    });
   }
 
   // Helper to get the content widget based on the selected drawer index
   Widget _getScreenWidget(int index) {
     switch (index) {
       case 0:
-        return _buildDashboardContent(); // The existing dashboard content
+        return _buildDashboardContent();
       case 1:
-        return AddRoomScreenContent(
-          // Use the content widget
-          onRoomAdded: (String newRoomName) {
-            setState(() {
-              rooms.add(newRoomName);
-              roomStatus[newRoomName] = 'available';
-            });
-          },
-          existingRoomNames: List.from(rooms),
-        );
+        return AddRoomScreenContent(hotelName: _loggedInHotelName); // Pass hotel name
       case 2:
-        return const AdminSettingsScreenContent(); // Use the content widget
+        return AdminSettingsScreenContent(
+          loggedInHotelName: _loggedInHotelName,
+        );
       case 3:
-        return TransactionScreenContent(); // Use the content widget
+        return TransactionScreenContent();
       default:
         return _buildDashboardContent();
     }
@@ -80,15 +65,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   // Extract your dashboard content into a separate widget for clarity
   Widget _buildDashboardContent() {
-    int totalBooked = roomStatus.values.where((s) => s == 'booked').length;
-    int totalCompleted = roomStatus.values
-        .where((s) => s == 'completed')
-        .length;
-    int totalAvailable = roomStatus.values
-        .where((s) => s == 'available')
-        .length;
-    int totalCleaning = roomStatus.values.where((s) => s == 'cleaning').length;
-    int totalRooms = rooms.length;
+    // Get rooms dynamically from RoomManager
+    final List<Room> currentRooms = RoomManager().rooms;
+
+    int totalBooked = currentRooms.where((r) => r.status == 'booked').length;
+    int totalCompleted = currentRooms.where((r) => r.status == 'completed').length;
+    int totalAvailable = currentRooms.where((r) => r.status == 'available').length;
+    int totalCleaning = currentRooms.where((r) => r.status == 'cleaning').length;
+    int totalRooms = currentRooms.length;
     final bool isSmallScreen = MediaQuery.of(context).size.width < 800;
 
     return SingleChildScrollView(
@@ -101,36 +85,63 @@ class _AdminDashboardState extends State<AdminDashboard> {
             style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: isSmallScreen ? 2 : 4,
-            mainAxisSpacing: 20,
-            crossAxisSpacing: 20,
-            childAspectRatio: 1.7,
-            children: [
-              _buildStatCard(
-                'TOTAL ROOMS',
-                '$totalRooms',
-                const Color(0xFF1A5276),
-              ),
-              _buildStatCard(
-                'AVAILABLE',
-                '$totalAvailable',
-                const Color(0xFF27AE60),
-              ),
-              _buildStatCard('BOOKED', '$totalBooked', const Color(0xFFE74C3C)),
-              _buildStatCard(
-                'COMPLETED',
-                '$totalCompleted',
-                const Color(0xFF2980B9),
-              ),
-              _buildStatCard(
-                'CLEANING',
-                '$totalCleaning',
-                const Color(0xFFF39C12),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final bool isSmallScreen = constraints.maxWidth < 800;
+              final double cardMinWidth = isSmallScreen ? 120 : 140;
+              final double cardMinHeight = isSmallScreen ? 90 : 110;
+              return GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: isSmallScreen ? 2 : 4,
+                mainAxisSpacing: 20,
+                crossAxisSpacing: 20,
+                childAspectRatio: 1.7,
+                children: [
+                  SizedBox(
+                    width: cardMinWidth,
+                    height: cardMinHeight,
+                    child: _buildStatCard(
+                      'TOTAL ROOMS',
+                      '$totalRooms',
+                      const Color(0xFF1A5276),
+                    ),
+                  ),
+                  SizedBox(
+                    width: cardMinWidth,
+                    height: cardMinHeight,
+                    child: _buildStatCard(
+                      'AVAILABLE',
+                      '$totalAvailable',
+                      const Color(0xFF27AE60),
+                    ),
+                  ),
+                  SizedBox(
+                    width: cardMinWidth,
+                    height: cardMinHeight,
+                    child: _buildStatCard('BOOKED', '$totalBooked', const Color(0xFFE74C3C)),
+                  ),
+                  SizedBox(
+                    width: cardMinWidth,
+                    height: cardMinHeight,
+                    child: _buildStatCard(
+                      'COMPLETED',
+                      '$totalCompleted',
+                      const Color(0xFF2980B9),
+                    ),
+                  ),
+                  SizedBox(
+                    width: cardMinWidth,
+                    height: cardMinHeight,
+                    child: _buildStatCard(
+                      'CLEANING',
+                      '$totalCleaning',
+                      const Color(0xFFF39C12),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 30),
           const Text(
@@ -138,94 +149,109 @@ class _AdminDashboardState extends State<AdminDashboard> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: rooms.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: isSmallScreen ? 3 : 5,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.1,
-            ),
-            itemBuilder: (context, index) {
-              final room = rooms[index];
-              final status = roomStatus[room];
-              Color tileColor;
-              IconData icon;
-              switch (status) {
-                case 'booked':
-                  tileColor = const Color(0xFFE74C3C);
-                  icon = Icons.event_busy;
-                  break;
-                case 'completed':
-                  tileColor = const Color(0xFF2980B9);
-                  icon = Icons.check_circle_outline;
-                  break;
-                case 'cleaning':
-                  tileColor = const Color(0xFFF39C12);
-                  icon = Icons.cleaning_services;
-                  break;
-                default:
-                  tileColor = const Color(0xFF27AE60);
-                  icon = Icons.hotel;
-                  break;
-              }
-              return InkWell(
-                onTap: () {
-                  setState(() {
-                    if (status == 'available') {
-                      roomStatus[room] = 'booked';
-                    } else if (status == 'booked') {
-                      roomStatus[room] = 'completed';
-                    } else if (status == 'completed') {
-                      roomStatus[room] = 'cleaning';
-                    } else {
-                      roomStatus[room] = 'available';
-                    }
-                  });
-                },
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Container(
-                    color: tileColor,
-                    padding: const EdgeInsets.all(6),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          icon,
-                          color: Colors.white,
-                          size: isSmallScreen ? 26 : 32,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          room,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          status!.toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
+          // Display dynamic rooms
+          currentRooms.isEmpty
+              ? const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Text(
+                      'No rooms added yet. Go to "Add Rooms" to get started!',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                      textAlign: TextAlign.center,
                     ),
                   ),
+                )
+              : GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: currentRooms.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: isSmallScreen ? 3 : 5,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 1.1,
+                  ),
+                  itemBuilder: (context, index) {
+                    final room = currentRooms[index];
+                    Color tileColor;
+                    IconData icon;
+                    switch (room.status) {
+                      case 'booked':
+                        tileColor = const Color(0xFFE74C3C);
+                        icon = Icons.event_busy;
+                        break;
+                      case 'completed':
+                        tileColor = const Color(0xFF2980B9);
+                        icon = Icons.check_circle_outline;
+                        break;
+                      case 'cleaning':
+                        tileColor = const Color(0xFFF39C12);
+                        icon = Icons.cleaning_services;
+                        break;
+                      default: // 'available'
+                        tileColor = const Color(0xFF27AE60);
+                        icon = Icons.hotel;
+                        break;
+                    }
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          // Update room status via RoomManager
+                          if (room.status == 'available') {
+                            RoomManager().updateRoomStatus(room.name, 'booked');
+                          } else if (room.status == 'booked') {
+                            RoomManager().updateRoomStatus(room.name, 'completed');
+                          } else if (room.status == 'completed') {
+                            RoomManager().updateRoomStatus(room.name, 'cleaning');
+                          } else { // 'cleaning'
+                            RoomManager().updateRoomStatus(room.name, 'available');
+                          }
+                          // Refresh the displayed rooms list to reflect changes
+                          // (This is important because RoomManager updates the original objects)
+                          _selectedDrawerIndex = 0; // Stay on dashboard to see updates
+                        });
+                      },
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Container(
+                          color: tileColor,
+                          padding: const EdgeInsets.all(6),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                icon,
+                                color: Colors.white,
+                                size: isSmallScreen ? 26 : 32,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                room.name, // Use room.name
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                room.status.toUpperCase(), // Use room.status
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ],
       ),
     );
@@ -236,38 +262,37 @@ class _AdminDashboardState extends State<AdminDashboard> {
     final bool isSmallScreen = MediaQuery.of(context).size.width < 800;
 
     return Scaffold(
-      // Remove the appBar property entirely
-      // appBar: isSmallScreen
-      //     ? AppBar(
-      //         title: const Text(
-      //           '',
-      //         ),
-      //         backgroundColor: Colors.transparent,
-      //         elevation: 0,
-      //         iconTheme: const IconThemeData(color: Colors.black),
-      //       )
-      //     : AppBar(
-      //         title: const Text(
-      //           '',
-      //         ),
-      //         backgroundColor: Colors.transparent,
-      //         elevation: 0,
-      //         automaticallyImplyLeading: false,
-      //       ),
+      appBar: isSmallScreen
+          ? AppBar(
+              title: const Text(
+                'Admin Dashboard',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: const Color(0xFF2E7D32),
+              elevation: 0,
+              iconTheme: const IconThemeData(color: Colors.white),
+              leading: Builder(
+                builder: (BuildContext context) {
+                  return IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            )
+          : null,
       drawer: isSmallScreen ? _buildDrawer() : null,
       body: Row(
         children: [
-          // Persistent sidebar for larger screens
           if (!isSmallScreen)
             Container(
               width: 250,
-              color: const Color(
-                0xFF2E7D32,
-              ), // Green color for the persistent sidebar
+              color: const Color(0xFF2E7D32),
               child: _buildWebSidebar(),
             ),
           Expanded(
-            // Display the selected screen content here
             child: _getScreenWidget(_selectedDrawerIndex),
           ),
         ],
@@ -276,76 +301,108 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Widget _buildWebSidebar() {
-    return ListView(
-      children: [
-        const DrawerHeader(
-          decoration: BoxDecoration(
-            color: Color(0xFF2E7D32),
-          ), // Green color for DrawerHeader
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.hotel_outlined, color: Colors.white, size: 40),
-              SizedBox(height: 10),
-              Text(
-                'Booktopia Admin',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+    return Container(
+      color: const Color(0xFFF7F7F7), // Light gray background for menu area
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Color(0xFF2E7D32),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.hotel_outlined, color: Colors.white, size: 40),
+                SizedBox(height: 10),
+                Text(
+                  'Booktopia Admin',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        _buildDrawerItem(Icons.dashboard, 'Dashboard', 0), // Pass index
-        _buildDrawerItem(Icons.home_work, 'Add Rooms', 1), // Pass index
-        _buildDrawerItem(Icons.settings, 'Settings', 2), // Pass index
-        _buildDrawerItem(Icons.receipt_long, 'Transactions', 3), // Pass index
-
-        const Divider(color: Colors.white38),
-        _buildDrawerItem(
-          Icons.logout,
-          'Logout',
-          4,
-        ), // Pass index (or handle logout separately)
-      ],
+          const Divider(height: 1, thickness: 1, color: Colors.black12),
+          const SizedBox(height: 8),
+          _buildDrawerItem(Icons.dashboard, 'Dashboard', 0),
+          const SizedBox(height: 4),
+          _buildDrawerItem(Icons.home_work, 'Add Rooms', 1),
+          const SizedBox(height: 4),
+          _buildDrawerItem(Icons.settings, 'Settings', 2),
+          const SizedBox(height: 4),
+          _buildDrawerItem(Icons.receipt_long, 'Transactions', 3),
+          const Divider(color: Colors.black12, height: 24),
+          _buildDrawerItem(Icons.logout, 'Logout', 4),
+        ],
+      ),
     );
   }
 
   Widget _buildDrawer() {
-    return Drawer(child: _buildWebSidebar());
-  }
-
-  // MODIFIED: onTap now takes an index
-  Widget _buildDrawerItem(IconData icon, String title, int index) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white),
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 16, color: Colors.white),
+    final double maxDrawerWidth = 320;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double drawerWidth = screenWidth * 0.85 < maxDrawerWidth ? screenWidth * 0.85 : maxDrawerWidth;
+    return Drawer(
+      elevation: 8,
+      backgroundColor: Colors.white,
+      child: SafeArea(
+        child: Scrollbar(
+          thumbVisibility: true,
+          child: Container(
+            width: drawerWidth,
+            color: Colors.white,
+            child: _buildWebSidebar(),
+          ),
+        ),
       ),
-      selected: _selectedDrawerIndex == index, // Highlight selected item
-      selectedTileColor: Colors.white12, // Color for selected item
-      onTap: () {
-        setState(() {
-          _selectedDrawerIndex = index;
-        });
-        // Close drawer only for small screens
-        if (MediaQuery.of(context).size.width < 800) {
-          Navigator.pop(context);
-        }
-
-        // Handle logout specifically as it doesn't change content, but navigates away
-        if (title == 'Logout') {
-          _showLogoutConfirmationDialog(context);
-        }
-      },
-      hoverColor: Colors.white24,
     );
   }
 
-  // ✅ FIXED HERE using FittedBox to prevent overflow
+  Widget _buildDrawerItem(IconData icon, String title, int index) {
+    final bool isSelected = _selectedDrawerIndex == index;
+    final Color iconColor = isSelected ? const Color(0xFF2E7D32) : Colors.black87;
+    final Color textColor = isSelected ? const Color(0xFF2E7D32) : Colors.black87;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.transparent,
+          border: isSelected
+              ? const Border(
+                  left: BorderSide(color: Color(0xFF2E7D32), width: 4),
+                )
+              : null,
+        ),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          leading: Icon(icon, color: iconColor, size: 26),
+          title: Text(
+            title,
+            style: TextStyle(fontSize: 16, color: textColor, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+          ),
+          selected: isSelected,
+          selectedTileColor: Colors.white,
+          onTap: () {
+            setState(() {
+              _selectedDrawerIndex = index;
+            });
+            if (MediaQuery.of(context).size.width < 800) {
+              Navigator.pop(context);
+            }
+            if (title == 'Logout') {
+              _showLogoutConfirmationDialog(context);
+            }
+          },
+          hoverColor: const Color(0xFFEDEDED),
+        ),
+      ),
+    );
+  }
+
   Widget _buildStatCard(String title, String value, Color color) {
     return Card(
       elevation: 4,

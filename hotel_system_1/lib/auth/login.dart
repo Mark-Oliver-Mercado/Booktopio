@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
+import '../utils/user_manager.dart'; // Import UserManager
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,13 +31,43 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // Function to handle login form submission
-  void _submitLogin() {
+  void _submitLogin() async { // <--- MAKE THIS METHOD ASYNC
     // Validate the form before proceeding
     if (_formKey.currentState!.validate()) {
-      // If the form is valid, proceed with login logic
-      // For demonstration, we'll navigate to the home page
-      // In a real app, you would integrate with an authentication service here
-      Navigator.pushReplacementNamed(context, '/'); // Navigate to the home screen
+      // Attempt to log in the user
+      final user = UserManager.loginUser(
+        _emailController.text,
+        _passwordController.text,
+      );
+
+      if (user != null) {
+        // --- CRUCIAL: Save login status and user role to SharedPreferences ---
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.clear(); // Clear previous session data
+        await prefs.setBool('isLoggedIn', true);
+        await prefs.setString('loggedInUserRole', user.role);
+        await prefs.setString('loggedInUserEmail', user.email);
+        if (user.role == 'Owner') {
+          // Look up the hotel for this owner
+          String? hotelName = prefs.getString('hotel_for_${user.email}');
+          if (hotelName != null) {
+            await prefs.setString('loggedInHotelName', hotelName);
+          }
+        }
+        // ------------------------------------------------------------------
+
+        // Navigate based on user role
+        if (user.role == 'Owner') {
+          Navigator.pushReplacementNamed(context, '/admin'); // Navigate to Admin Dashboard
+        } else {
+          Navigator.pushReplacementNamed(context, '/home'); // Navigate to Home Screen
+        }
+      } else {
+        // Show error message if login fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid email or password')),
+        );
+      }
     }
   }
 
@@ -45,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column( // Removed the top-level Form widget to wrap specific sections
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Logo
@@ -78,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.2), // Using withValues for alpha
+                      color: Colors.grey.withValues(alpha: 0.2), // Using withOpacity for alpha
                       spreadRadius: 2,
                       blurRadius: 8,
                       offset: const Offset(0, 4),
@@ -182,7 +215,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextButton(
                           onPressed: () {
                             // Logic for forgot password. Could navigate to a new screen.
-                            // Example: 
                             Navigator.pushNamed(context, '/forgot_password_screen');
                           },
                           child: Text(
@@ -217,7 +249,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
 
               const SizedBox(height: 25),
 
@@ -289,7 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black12.withValues(alpha: 0.1), // Using withValues for alpha
+              color: Colors.black12.withValues(alpha: 0.1), // Using withOpacity for alpha
               blurRadius: 3,
               offset: const Offset(1, 1),
             ),
