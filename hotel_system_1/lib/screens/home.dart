@@ -19,7 +19,6 @@ import 'notification_screen.dart'; // Make sure this is also imported if used el
 import '../utils/constants.dart';
 import '../models/hotel.dart';
 
-
 // Define a GlobalKey for HomePage to access its state from other screens
 final GlobalKey<HomePageState> homePageKey = GlobalKey<HomePageState>();
 
@@ -114,13 +113,14 @@ class HomeContent extends StatefulWidget {
       name: 'Seaside Resort Boracay',
       location: 'Boracay, PH',
       rating: '4.8 (1200 reviews)',
-      description: 'A beachfront paradise with sparkling pools, vibrant tropical vibes, and exceptionally friendly service.',
+      description:
+          'A beachfront paradise with sparkling pools, vibrant tropical vibes, and exceptionally friendly service.',
       categories: ['Beach', 'Top Rated', 'Family'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
         const Amenity(icon: Icons.pool, label: 'Pool'),
         const Amenity(icon: Icons.beach_access, label: 'Beach Access'),
-        const Amenity(icon: Icons.spa, label: 'Spa')
+        const Amenity(icon: Icons.spa, label: 'Spa'),
       ],
       priceRange: '₱3,000 - ₱8,000',
       isFavorite: false,
@@ -130,13 +130,14 @@ class HomeContent extends StatefulWidget {
       name: 'Malvar Mountain Retreat',
       location: 'Malvar, PH',
       rating: '4.9 (500 reviews)',
-      description: 'Escape to nature with breathtaking mountain views and serene surroundings, perfect for relaxation and hiking.',
+      description:
+          'Escape to nature with breathtaking mountain views and serene surroundings, perfect for relaxation and hiking.',
       categories: ['Nature', 'Top Rated', 'Family'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
         const Amenity(icon: Icons.landscape, label: 'Hiking Trails'),
         const Amenity(icon: Icons.restaurant, label: 'Restaurant'),
-        const Amenity(icon: Icons.local_parking, label: 'Parking')
+        const Amenity(icon: Icons.local_parking, label: 'Parking'),
       ],
       priceRange: '₱2,000 - ₱5,000',
       isFavorite: false,
@@ -146,13 +147,14 @@ class HomeContent extends StatefulWidget {
       name: 'El Nido Island Paradise',
       location: 'Palawan, PH',
       rating: '4.7 (950 reviews)',
-      description: 'An exclusive island paradise offering pristine beaches, world-class diving, and eco-friendly accommodations.',
+      description:
+          'An exclusive island paradise offering pristine beaches, world-class diving, and eco-friendly accommodations.',
       categories: ['Beach', 'Luxury', 'Nature'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
         const Amenity(icon: Icons.scuba_diving, label: 'Diving Center'),
         const Amenity(icon: Icons.beach_access, label: 'Private Beach'),
-        const Amenity(icon: Icons.eco, label: 'Eco-friendly')
+        const Amenity(icon: Icons.eco, label: 'Eco-friendly'),
       ],
       priceRange: '₱7,000 - ₱15,000',
       isFavorite: true,
@@ -162,13 +164,14 @@ class HomeContent extends StatefulWidget {
       name: 'Cebu City Business Hotel',
       location: 'Cebu, PH',
       rating: '4.2 (780 reviews)',
-      description: 'Strategically located in the city center, ideal for business travelers with modern facilities and conference rooms.',
+      description:
+          'Strategically located in the city center, ideal for business travelers with modern facilities and conference rooms.',
       categories: ['City', 'Business', 'Budget'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
         const Amenity(icon: Icons.business_center, label: 'Conference Rooms'),
         const Amenity(icon: Icons.fitness_center, label: 'Fitness Center'),
-        const Amenity(icon: Icons.restaurant, label: 'Restaurant')
+        const Amenity(icon: Icons.restaurant, label: 'Restaurant'),
       ],
       priceRange: '₱1,800 - ₱4,500',
       isFavorite: false,
@@ -178,13 +181,14 @@ class HomeContent extends StatefulWidget {
       name: 'Tagaytay Lakeview Suites',
       location: 'Tagaytay, PH',
       rating: '4.6 (620 reviews)',
-      description: 'Enjoy the cool climate and stunning Taal Lake views from our elegant suites, perfect for a romantic getaway.',
+      description:
+          'Enjoy the cool climate and stunning Taal Lake views from our elegant suites, perfect for a romantic getaway.',
       categories: ['Nature', 'Romantic', 'Luxury'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
         const Amenity(icon: Icons.water, label: 'Lake View'),
         const Amenity(icon: Icons.spa, label: 'Spa'),
-        const Amenity(icon: Icons.balcony, label: 'Balcony')
+        const Amenity(icon: Icons.balcony, label: 'Balcony'),
       ],
       priceRange: '₱2,500 - ₱7,000',
       isFavorite: false,
@@ -194,7 +198,8 @@ class HomeContent extends StatefulWidget {
       name: 'Siargao Surfer\'s Haven',
       location: 'Siargao, PH',
       rating: '4.5 (800 reviews)',
-      description: 'The ultimate spot for surfers and adventurers, offering easy access to famous surf breaks and island hopping tours.',
+      description:
+          'The ultimate spot for surfers and adventurers, offering easy access to famous surf breaks and island hopping tours.',
       categories: ['Beach', 'Adventure', 'Budget'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
@@ -210,13 +215,14 @@ class HomeContent extends StatefulWidget {
       name: 'Manila Urban Grand',
       location: 'Manila, PH',
       rating: '4.3 (1500 reviews)',
-      description: 'Experience urban luxury with exquisite dining options and vibrant nightlife right at your doorstep.',
+      description:
+          'Experience urban luxury with exquisite dining options and vibrant nightlife right at your doorstep.',
       categories: ['City', 'Luxury', 'Nightlife'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
         const Amenity(icon: Icons.dinner_dining, label: 'Fine Dining'),
         const Amenity(icon: Icons.local_bar, label: 'Bar'),
-        const Amenity(icon: Icons.car_rental, label: 'Valet Parking')
+        const Amenity(icon: Icons.car_rental, label: 'Valet Parking'),
       ],
       priceRange: '₱4,000 - ₱10,000',
       isFavorite: false,
@@ -226,13 +232,14 @@ class HomeContent extends StatefulWidget {
       name: 'Baguio Pine Forest Lodge',
       location: 'Baguio, PH',
       rating: '4.7 (700 reviews)',
-      description: 'A cozy lodge nestled among pine trees, offering a refreshing cool weather escape and a peaceful atmosphere.',
+      description:
+          'A cozy lodge nestled among pine trees, offering a refreshing cool weather escape and a peaceful atmosphere.',
       categories: ['Nature', 'Family', 'Relaxation'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
         const Amenity(icon: Icons.fireplace, label: 'Fireplace'),
         const Amenity(icon: Icons.local_florist, label: 'Garden'),
-        const Amenity(icon: Icons.pets, label: 'Pet-friendly')
+        const Amenity(icon: Icons.pets, label: 'Pet-friendly'),
       ],
       priceRange: '₱2,200 - ₱5,500',
       isFavorite: false,
@@ -242,13 +249,14 @@ class HomeContent extends StatefulWidget {
       name: 'Davao Nature Park Hotel',
       location: 'Davao, PH',
       rating: '4.4 (550 reviews)',
-      description: 'Close to nature parks and cultural sites, offering a unique blend of adventure and local experiences.',
+      description:
+          'Close to nature parks and cultural sites, offering a unique blend of adventure and local experiences.',
       categories: ['Nature', 'Cultural', 'Adventure'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
         const Amenity(icon: Icons.nature_people, label: 'Nature Tours'),
         const Amenity(icon: Icons.food_bank, label: 'Local Cuisine'),
-        const Amenity(icon: Icons.airport_shuttle, label: 'Airport Shuttle')
+        const Amenity(icon: Icons.airport_shuttle, label: 'Airport Shuttle'),
       ],
       priceRange: '₱1,500 - ₱4,000',
       isFavorite: false,
@@ -258,13 +266,17 @@ class HomeContent extends StatefulWidget {
       name: 'Iloilo Heritage Inn',
       location: 'Iloilo, PH',
       rating: '4.1 (480 reviews)',
-      description: 'Step back in time in this heritage city, perfect for culinary tours and exploring historical landmarks.',
+      description:
+          'Step back in time in this heritage city, perfect for culinary tours and exploring historical landmarks.',
       categories: ['Cultural', 'Budget', 'Historical'],
       amenities: [
         const Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
         const Amenity(icon: Icons.museum, label: 'Historical Tours'),
         const Amenity(icon: Icons.coffee, label: 'Cafe'),
-        const Amenity(icon: Icons.local_laundry_service, label: 'Laundry Service')
+        const Amenity(
+          icon: Icons.local_laundry_service,
+          label: 'Laundry Service',
+        ),
       ],
       priceRange: '₱1,000 - ₱3,000',
       isFavorite: false,
@@ -298,7 +310,6 @@ class _HomeContentState extends State<HomeContent> {
     // Always get the displayed hotels from the HotelManager
     _displayedHotels = List.from(HotelManager().hotels);
 
-
     _searchController.addListener(_onSearchChanged);
     _notificationCount = _notificationService.notifications.length;
     _notificationService.addListener(_onNotificationsChanged);
@@ -325,7 +336,9 @@ class _HomeContentState extends State<HomeContent> {
   void _filterHotels(String queryOrCategory) {
     setState(() {
       if (queryOrCategory == 'All' || queryOrCategory.isEmpty) {
-        _displayedHotels = List.from(HotelManager().hotels); // Source from HotelManager
+        _displayedHotels = List.from(
+          HotelManager().hotels,
+        ); // Source from HotelManager
       } else {
         final lowerCaseQuery = queryOrCategory.toLowerCase();
         // Filter from the comprehensive list held by HotelManager
@@ -337,7 +350,8 @@ class _HomeContentState extends State<HomeContent> {
               hotel.location.toLowerCase().contains(lowerCaseQuery) ||
               // Check amenity labels for search
               hotel.amenities.any(
-                (amenity) => amenity.label.toLowerCase().contains(lowerCaseQuery),
+                (amenity) =>
+                    amenity.label.toLowerCase().contains(lowerCaseQuery),
               ) ||
               hotel.priceRange.toLowerCase().contains(lowerCaseQuery);
         }).toList();
@@ -357,7 +371,8 @@ class _HomeContentState extends State<HomeContent> {
       _displayedHotels = List.from(HotelManager().hotels);
 
       // Optional: If a search filter is currently active, re-apply it to update the displayed list
-      if (_searchController.text.isNotEmpty && _searchController.text != 'All') {
+      if (_searchController.text.isNotEmpty &&
+          _searchController.text != 'All') {
         _filterHotels(_searchController.text);
       }
 
@@ -368,7 +383,8 @@ class _HomeContentState extends State<HomeContent> {
 
   Widget _buildHotelCard(Hotel hotel) {
     // Determine if the image is an asset or a network image
-    final bool isNetworkImage = hotel.image.startsWith('http://') || hotel.image.startsWith('https://');
+    final bool isNetworkImage =
+        hotel.image.startsWith('http://') || hotel.image.startsWith('https://');
 
     Widget hotelImageWidget;
     if (isNetworkImage) {
@@ -382,11 +398,7 @@ class _HomeContentState extends State<HomeContent> {
             height: 200,
             width: double.infinity,
             color: Colors.grey[300],
-            child: const Icon(
-              Icons.broken_image,
-              size: 60,
-              color: Colors.grey,
-            ),
+            child: const Icon(Icons.broken_image, size: 60, color: Colors.grey),
           );
         },
       );
@@ -415,7 +427,9 @@ class _HomeContentState extends State<HomeContent> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => RoomListScreen(hotelName: hotel.name)),
+          MaterialPageRoute(
+            builder: (_) => RoomListScreen(hotelName: hotel.name),
+          ),
         );
       },
       child: Card(
@@ -466,30 +480,37 @@ class _HomeContentState extends State<HomeContent> {
                   Text(hotel.priceRange),
                   const SizedBox(height: 12),
                   // Show categories as chips only if not empty
-                  if (hotel.categories.isNotEmpty)
-                    ...[
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        children: hotel.categories.map((cat) => Chip(label: Text(cat))).toList(),
-                      ),
-                    ],
+                  if (hotel.categories.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      children: hotel.categories
+                          .map((cat) => Chip(label: Text(cat)))
+                          .toList(),
+                    ),
+                  ],
                   // Show amenities as icons+labels only if not empty
-                  if (hotel.amenities.isNotEmpty)
-                    ...[
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 10.0,
-                        runSpacing: 10.0,
-                        children: hotel.amenities.map((a) => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(a.icon, size: 24, color: kDarkBlue),
-                            Text(a.label, style: const TextStyle(fontSize: 12)),
-                          ],
-                        )).toList(),
-                      ),
-                    ],
+                  if (hotel.amenities.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 10.0,
+                      runSpacing: 10.0,
+                      children: hotel.amenities
+                          .map(
+                            (a) => Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(a.icon, size: 24, color: kDarkBlue),
+                                Text(
+                                  a.label,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -499,7 +520,11 @@ class _HomeContentState extends State<HomeContent> {
     );
   }
 
-  Widget _buildQuickAccessButton(IconData icon, String label, Function() onPressed) {
+  Widget _buildQuickAccessButton(
+    IconData icon,
+    String label,
+    Function() onPressed,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(right: 10.0),
       child: ElevatedButton.icon(
@@ -774,7 +799,7 @@ class _HomeContentState extends State<HomeContent> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('You have been logged out.'),
-                                ),
+                              ),
                             );
                           },
                           child: const Text('Logout'),
@@ -843,12 +868,36 @@ class _HomeContentState extends State<HomeContent> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _buildQuickAccessButton(Icons.all_inclusive, 'All', () => _filterHotels('All')),
-                  _buildQuickAccessButton(Icons.diamond, 'Luxury', () => _filterHotels('Luxury')),
-                  _buildQuickAccessButton(Icons.money, 'Budget', () => _filterHotels('Budget')),
-                  _buildQuickAccessButton(Icons.place, 'Near Me', () => _filterHotels('Malvar')),
-                  _buildQuickAccessButton(Icons.star, 'Top Rated', () => _filterHotels('Top Rated')),
-                  _buildQuickAccessButton(Icons.family_restroom, 'Family', () => _filterHotels('Family')),
+                  _buildQuickAccessButton(
+                    Icons.all_inclusive,
+                    'All',
+                    () => _filterHotels('All'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.diamond,
+                    'Luxury',
+                    () => _filterHotels('Luxury'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.money,
+                    'Budget',
+                    () => _filterHotels('Budget'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.place,
+                    'Near Me',
+                    () => _filterHotels('Malvar'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.star,
+                    'Top Rated',
+                    () => _filterHotels('Top Rated'),
+                  ),
+                  _buildQuickAccessButton(
+                    Icons.family_restroom,
+                    'Family',
+                    () => _filterHotels('Family'),
+                  ),
                 ],
               ),
             ),

@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
-import '../utils/constants.dart';
+import '../utils/constants.dart'; // This might contain kPrimaryGreen, kDarkText. We'll replace them.
 import '../models/room.dart'; // Import the new Room model
 import '../screens/room_manager.dart'; // Import the RoomManager
 import '../models/amenity.dart'; // Import the canonical Amenity model
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/hotel_manager.dart'; // Import HotelManager for debug print
+
+// Re-defining AppColors here for clarity within this file,
+// or ensure it's accessible from a common constants file if preferred.
+// Assuming AppColors is defined in admin_dashboard.dart, you might
+// want to move it to a shared file (e.g., app_colors.dart) and import it.
+// For now, I'll include it here for a self-contained solution.
+class AppColors {
+  static const Color sapphire = Color(0xFF3C5070);
+  static const Color royalBlue = Color(0xFF112250);
+  static const Color quicksand = Color(0xFFE0C58F);
+  static const Color swanWing = Color(0xFFF5F0E9);
+  static const Color shellstone = Color(0xFFD9CBC2);
+}
 
 class AddRoomScreenContent extends StatefulWidget {
   final String? hotelName; // New parameter to receive the current hotel name
@@ -25,7 +38,8 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
   final TextEditingController _roomCapacityController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _roomImagePathController = TextEditingController();
+  final TextEditingController _roomImagePathController =
+      TextEditingController();
 
   List<Amenity> _selectedAmenities = [];
 
@@ -55,19 +69,26 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
       String currentHotelName = widget.hotelName ?? '';
       if (currentHotelName.isEmpty) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        currentHotelName = prefs.getString('loggedInHotelName') ?? 'Default Hotel';
+        currentHotelName =
+            prefs.getString('loggedInHotelName') ?? 'Default Hotel';
       }
 
       // Check for duplicate room names within the context of the current hotel
-      if (RoomManager().rooms.any((room) =>
-          room.hotelName == currentHotelName &&
-          room.name.toLowerCase() == roomName.toLowerCase())) {
+      if (RoomManager().rooms.any(
+        (room) =>
+            room.hotelName == currentHotelName &&
+            room.name.toLowerCase() == roomName.toLowerCase(),
+      )) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               'Room "$roomName" already exists for $currentHotelName. Please choose a different name.',
+              style: const TextStyle(
+                color: AppColors.swanWing,
+              ), // Use Swan Wing for text
             ),
-            backgroundColor: Colors.red,
+            backgroundColor:
+                AppColors.royalBlue, // Use Royal Blue for background
           ),
         );
         return;
@@ -91,9 +112,14 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
       RoomManager().addRoom(newRoom);
       // Debug print: show which hotel and its rooms
       print('Added room to hotel: ' + currentHotelName);
-      final hotels = HotelManager().hotels.where((h) => h.name == currentHotelName);
+      final hotels = HotelManager().hotels.where(
+        (h) => h.name == currentHotelName,
+      );
       if (hotels.isNotEmpty) {
-        print('Current rooms for hotel $currentHotelName: ' + hotels.first.rooms.map((r) => r.name).toList().toString());
+        print(
+          'Current rooms for hotel $currentHotelName: ' +
+              hotels.first.rooms.map((r) => r.name).toList().toString(),
+        );
       } else {
         print('Hotel $currentHotelName not found in HotelManager');
       }
@@ -110,8 +136,11 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Room "$roomName" added successfully to $currentHotelName!'),
-          backgroundColor: kPrimaryGreen,
+          content: Text(
+            'Room "$roomName" added successfully to $currentHotelName!',
+            style: const TextStyle(color: AppColors.swanWing),
+          ), // Use Swan Wing for text
+          backgroundColor: AppColors.sapphire, // Use Sapphire for background
         ),
       );
     }
@@ -129,7 +158,7 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: kDarkText,
+              color: AppColors.royalBlue, // Use Royal Blue for heading
             ),
           ),
           const SizedBox(height: 24),
@@ -138,44 +167,39 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
+            color: AppColors.swanWing, // Card background color
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
+                    _buildTextFormField(
                       controller: _roomNameController,
-                      decoration: InputDecoration(
-                        labelText: 'Room Name (e.g., Room 101, Suite A)',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        prefixIcon: Icon(Icons.label, color: kPrimaryGreen),
-                      ),
+                      labelText: 'Room Name (e.g., Room 101, Suite A)',
+                      icon: Icons.label,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a room name';
                         }
-                        final String currentHotelName = widget.hotelName ?? 'Default Hotel';
-                        if (RoomManager().rooms.any((room) =>
-                            room.hotelName == currentHotelName &&
-                            room.name.toLowerCase() == value.trim().toLowerCase())) {
+                        final String currentHotelName =
+                            widget.hotelName ?? 'Default Hotel';
+                        if (RoomManager().rooms.any(
+                          (room) =>
+                              room.hotelName == currentHotelName &&
+                              room.name.toLowerCase() ==
+                                  value.trim().toLowerCase(),
+                        )) {
                           return 'This room name already exists for $currentHotelName.';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
+                    _buildTextFormField(
                       controller: _roomTypeController,
-                      decoration: InputDecoration(
-                        labelText: 'Room Type (e.g., Standard, Deluxe, Suite)',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        prefixIcon: Icon(Icons.category, color: kPrimaryGreen),
-                      ),
+                      labelText: 'Room Type (e.g., Standard, Deluxe, Suite)',
+                      icon: Icons.category,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a room type';
@@ -184,16 +208,11 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
+                    _buildTextFormField(
                       controller: _roomCapacityController,
+                      labelText: 'Capacity (Number of Guests)',
+                      icon: Icons.people,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'Capacity (Number of Guests)',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        prefixIcon: Icon(Icons.people, color: kPrimaryGreen),
-                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter room capacity';
@@ -206,20 +225,11 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
+                    _buildTextFormField(
                       controller: _priceController,
+                      labelText: 'Price per Night',
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'Price per Night',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.only(left: 12, right: 8),
-                          child: Text('₱', style: TextStyle(fontSize: 20, color: kPrimaryGreen, fontWeight: FontWeight.bold)),
-                        ),
-                        prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                      ),
+                      prefixText: '₱',
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter the price';
@@ -232,20 +242,12 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
+                    _buildTextFormField(
                       controller: _descriptionController,
+                      labelText: 'Room Description',
+                      icon: Icons.description,
                       maxLines: 3,
-                      decoration: InputDecoration(
-                        labelText: 'Room Description',
-                        alignLabelWithHint: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.description,
-                          color: kPrimaryGreen,
-                        ),
-                      ),
+                      alignLabelWithHint: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a room description';
@@ -254,27 +256,22 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
+                    _buildTextFormField(
                       controller: _roomImagePathController,
-                      decoration: InputDecoration(
-                        labelText: 'Room Image URL (Optional)',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        prefixIcon: Icon(Icons.image, color: kPrimaryGreen),
-                      ),
+                      labelText: 'Room Image URL (Optional)',
+                      icon: Icons.image,
                       keyboardType: TextInputType.url,
                     ),
                     const SizedBox(height: 16),
-                    const SizedBox(height: 8),
-                    Container(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Amenities',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: kDarkText,
+                          color: AppColors
+                              .royalBlue, // Use Royal Blue for amenities heading
                         ),
                       ),
                     ),
@@ -288,14 +285,30 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                           label: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(amenity.icon, size: 18, color: isSelected ? kPrimaryGreen : Colors.grey),
+                              Icon(
+                                amenity.icon,
+                                size: 18,
+                                color: isSelected
+                                    ? AppColors.royalBlue
+                                    : AppColors.sapphire,
+                              ), // Royal Blue for selected icon, Sapphire for unselected
                               const SizedBox(width: 4),
-                              Text(amenity.label),
+                              Text(
+                                amenity.label,
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? AppColors.royalBlue
+                                      : AppColors.sapphire,
+                                ),
+                              ), // Royal Blue for selected label, Sapphire for unselected
                             ],
                           ),
                           selected: isSelected,
-                          selectedColor: kPrimaryGreen.withOpacity(0.15),
-                          checkmarkColor: kPrimaryGreen,
+                          selectedColor: AppColors.quicksand.withOpacity(
+                            0.4,
+                          ), // Quicksand with opacity when selected
+                          checkmarkColor:
+                              AppColors.royalBlue, // Royal Blue for checkmark
                           onSelected: (selected) {
                             setState(() {
                               if (selected) {
@@ -305,11 +318,20 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                               }
                             });
                           },
-                          backgroundColor: Colors.grey[100],
-                          labelStyle: TextStyle(color: isSelected ? kPrimaryGreen : kDarkText),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(color: isSelected ? kPrimaryGreen : Colors.grey.shade300),
+                          backgroundColor: AppColors.shellstone.withOpacity(
+                            0.5,
+                          ), // Shellstone with opacity for background
+                          labelStyle: TextStyle(
+                            color: isSelected
+                                ? AppColors.royalBlue
+                                : AppColors.sapphire,
+                          ), // Consistent with icon and label
+                          side: BorderSide(
+                            color: isSelected
+                                ? AppColors.royalBlue
+                                : AppColors
+                                      .shellstone, // Border color based on selection
+                            width: 1,
                           ),
                         );
                       }).toList(),
@@ -319,18 +341,20 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: _addRoom,
-                        icon: const Icon(Icons.add, color: Colors.white),
-                        label: const Text(
-                          'Add Room',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: kPrimaryGreen,
+                          backgroundColor: AppColors
+                              .royalBlue, // Royal Blue for button background
+                          foregroundColor: AppColors
+                              .swanWing, // Swan Wing for button text/icon
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          elevation: 3,
+                        ),
+                        icon: const Icon(Icons.add),
+                        label: const Text(
+                          'Add Room',
+                          style: TextStyle(fontSize: 18),
                         ),
                       ),
                     ),
@@ -341,6 +365,78 @@ class _AddRoomScreenContentState extends State<AddRoomScreenContent> {
           ),
         ],
       ),
+    );
+  }
+
+  // Helper widget for consistent TextFormField styling
+  Widget _buildTextFormField({
+    required TextEditingController controller,
+    required String labelText,
+    IconData? icon,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+    bool alignLabelWithHint = false,
+    String? Function(String?)? validator,
+    String? prefixText,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: const TextStyle(
+          color: AppColors.sapphire,
+        ), // Sapphire for label text
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(
+            color: AppColors.shellstone,
+          ), // Shellstone for border
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(
+            color: AppColors.shellstone,
+          ), // Shellstone for enabled border
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(
+            color: AppColors.royalBlue,
+            width: 2,
+          ), // Royal Blue for focused border
+        ),
+        prefixIcon: icon != null
+            ? Icon(
+                icon,
+                color: AppColors.royalBlue,
+              ) // Royal Blue for prefix icons
+            : (prefixText != null
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 12, right: 8),
+                      child: Text(
+                        prefixText,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: AppColors.royalBlue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ), // Royal Blue for prefix text
+                    )
+                  : null),
+        prefixIconConstraints: icon != null
+            ? null
+            : const BoxConstraints(minWidth: 0, minHeight: 0),
+        alignLabelWithHint: alignLabelWithHint,
+        filled: true,
+        fillColor: AppColors.swanWing.withOpacity(0.7), // Subtle Swan Wing fill
+      ),
+      style: const TextStyle(
+        color: AppColors.royalBlue,
+      ), // Royal Blue for input text
+      cursorColor: AppColors.royalBlue, // Royal Blue for cursor
+      validator: validator,
     );
   }
 }

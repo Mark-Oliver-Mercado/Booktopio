@@ -90,140 +90,135 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: Container(
-        color: kLightBlue,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment
-                  .center, // Keep this for overall column centering
-              children: [
-                const CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage('assets/profile_placeholder.png'),
-                  backgroundColor: kWhite,
-                ),
-                const SizedBox(height: 20),
-                _isEditing
-                    ? SizedBox(
-                        // Wrap TextField in SizedBox to control width
-                        width:
-                            MediaQuery.of(context).size.width *
-                            0.7, // Adjust width as needed
-                        child: TextField(
-                          controller: _nameController,
-                          textAlign: TextAlign
-                              .center, // Center the text within the TextField
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: kDarkBlue,
-                          ),
-                          decoration: const InputDecoration(
-                            hintText: 'Enter Name',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      )
-                    : Text(
-                        _memberName,
+      backgroundColor: kLightBlue, // <--- Set the background color here
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment
+                .center, // Keep this for overall column centering
+            children: [
+              const CircleAvatar(
+                radius: 60,
+                backgroundImage: AssetImage('assets/profile_placeholder.png'),
+                backgroundColor: kWhite,
+              ),
+              const SizedBox(height: 20),
+              _isEditing
+                  ? SizedBox(
+                      // Wrap TextField in SizedBox to control width
+                      width:
+                          MediaQuery.of(context).size.width *
+                          0.7, // Adjust width as needed
+                      child: TextField(
+                        controller: _nameController,
+                        textAlign: TextAlign
+                            .center, // Center the text within the TextField
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: kDarkBlue,
                         ),
-                      ),
-                const SizedBox(height: 8),
-                _isEditing
-                    ? SizedBox(
-                        // Wrap TextField in SizedBox to control width
-                        width:
-                            MediaQuery.of(context).size.width *
-                            0.7, // Adjust width as needed
-                        child: TextField(
-                          controller: _emailController,
-                          textAlign: TextAlign
-                              .center, // Center the text within the TextField
-                          keyboardType: TextInputType.emailAddress,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: kGreyText,
-                          ),
-                          decoration: const InputDecoration(
-                            hintText: 'Enter Email',
-                            border: InputBorder.none,
-                          ),
+                        decoration: const InputDecoration(
+                          hintText: 'Enter Name',
+                          border: InputBorder.none,
                         ),
-                      )
-                    : Text(
-                        _memberEmail,
+                      ),
+                    )
+                  : Text(
+                      _memberName,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: kDarkBlue,
+                      ),
+                    ),
+              const SizedBox(height: 8),
+              _isEditing
+                  ? SizedBox(
+                      // Wrap TextField in SizedBox to control width
+                      width:
+                          MediaQuery.of(context).size.width *
+                          0.7, // Adjust width as needed
+                      child: TextField(
+                        controller: _emailController,
+                        textAlign: TextAlign
+                            .center, // Center the text within the TextField
+                        keyboardType: TextInputType.emailAddress,
                         style: const TextStyle(fontSize: 16, color: kGreyText),
+                        decoration: const InputDecoration(
+                          hintText: 'Enter Email',
+                          border: InputBorder.none,
+                        ),
                       ),
-                const SizedBox(height: 30),
-                // All rows now use the same _buildProfileInfoRow for consistent alignment
-                _buildProfileInfoRow(
-                  Icons.phone,
-                  'Phone',
-                  _memberPhone,
-                  isEditable: _isEditing,
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                ),
-                _buildProfileInfoRow(
-                  Icons.location_on,
-                  'Address',
-                  _memberAddress,
-                  isEditable: _isEditing,
-                  controller: _addressController,
-                ),
-                _buildProfileInfoRow(
-                  Icons.calendar_month,
-                  'Member Since',
-                  _memberSince,
-                  isEditable: false, // This one is never editable
-                ),
-                const SizedBox(height: 30),
-                if (!_isEditing)
-                  ElevatedButton(
-                    onPressed: _toggleEdit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryBlue,
-                      foregroundColor: kWhite,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                    )
+                  : Text(
+                      _memberEmail,
+                      style: const TextStyle(fontSize: 16, color: kGreyText),
                     ),
-                    child: const Text(
-                      'Edit Profile',
-                      style: TextStyle(fontSize: 18),
+              const SizedBox(height: 30),
+              // All rows now use the same _buildProfileInfoRow for consistent alignment
+              _buildProfileInfoRow(
+                Icons.phone,
+                'Phone',
+                _memberPhone,
+                isEditable: _isEditing,
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+              ),
+              _buildProfileInfoRow(
+                Icons.location_on,
+                'Address',
+                _memberAddress,
+                isEditable: _isEditing,
+                controller: _addressController,
+              ),
+              _buildProfileInfoRow(
+                Icons.calendar_month,
+                'Member Since',
+                _memberSince,
+                isEditable: false, // This one is never editable
+              ),
+              const SizedBox(height: 30),
+              if (!_isEditing)
+                ElevatedButton(
+                  onPressed: _toggleEdit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kPrimaryBlue,
+                    foregroundColor: kWhite,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 15,
                     ),
-                  ),
-                if (_isEditing)
-                  ElevatedButton(
-                    onPressed: _saveProfile,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryBlue,
-                      foregroundColor: kWhite,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'Save Profile',
-                      style: TextStyle(fontSize: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-              ],
-            ),
+                  child: const Text(
+                    'Edit Profile',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              if (_isEditing)
+                ElevatedButton(
+                  onPressed: _saveProfile,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kPrimaryBlue,
+                    foregroundColor: kWhite,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Save Profile',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+            ],
           ),
         ),
       ),

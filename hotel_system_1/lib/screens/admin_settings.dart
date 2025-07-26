@@ -7,7 +7,8 @@ import '../models/amenity.dart'; // Import Amenity model
 class AdminSettingsScreenContent extends StatefulWidget {
   final String? loggedInHotelName; // New parameter to receive the hotel name
 
-  const AdminSettingsScreenContent({Key? key, this.loggedInHotelName}) : super(key: key);
+  const AdminSettingsScreenContent({Key? key, this.loggedInHotelName})
+    : super(key: key);
 
   @override
   State<AdminSettingsScreenContent> createState() =>
@@ -21,7 +22,7 @@ class _AdminSettingsScreenContentState
   bool _isNotificationsExpanded = false;
   bool _isAboutAppExpanded = false;
   bool _isDarkModeEnabled = false;
-// New state for global features
+  // New state for global features
 
   // State to control edit mode for account information
   bool _isEditingAccount = false;
@@ -48,7 +49,7 @@ class _AdminSettingsScreenContentState
   late TextEditingController _editRoomCountController;
   late TextEditingController _editHotelImageController;
   late TextEditingController _editPriceRangeController;
-  
+
   // Controllers for managing global categories and amenities
   late TextEditingController _newCategoryController;
   late TextEditingController _newAmenityLabelController;
@@ -56,26 +57,52 @@ class _AdminSettingsScreenContentState
 
   // Lists for interactive word pools (categories and amenities)
   List<String> _editedCategories = []; // Hotel-specific categories
-  List<Amenity> _editedAmenities = []; // Hotel-specific amenities (Amenity objects)
+  List<Amenity> _editedAmenities =
+      []; // Hotel-specific amenities (Amenity objects)
 
   // List of all Material Icons (a subset for practical use)
   final Map<String, IconData> _allMaterialIcons = {
     'wifi': Icons.wifi, 'pool': Icons.pool, 'beach_access': Icons.beach_access,
-    'spa': Icons.spa, 'restaurant': Icons.restaurant, 'local_parking': Icons.local_parking,
-    'fitness_center': Icons.fitness_center, 'ac_unit': Icons.ac_unit, 'tv': Icons.tv,
-    'local_bar': Icons.local_bar, 'balcony': Icons.balcony, 'breakfast_dining': Icons.breakfast_dining,
+    'spa': Icons.spa,
+    'restaurant': Icons.restaurant,
+    'local_parking': Icons.local_parking,
+    'fitness_center': Icons.fitness_center,
+    'ac_unit': Icons.ac_unit,
+    'tv': Icons.tv,
+    'local_bar': Icons.local_bar,
+    'balcony': Icons.balcony,
+    'breakfast_dining': Icons.breakfast_dining,
     'fireplace': Icons.fireplace, 'pets': Icons.pets, 'bathtub': Icons.bathtub,
-    'room_service': Icons.room_service, 'dry_cleaning': Icons.dry_cleaning, 'airport_shuttle': Icons.airport_shuttle,
-    'desk': Icons.desk, 'kitchen': Icons.kitchen, 'accessible_forward': Icons.accessible_forward,
-    'hiking': Icons.hiking, 'nature': Icons.nature, 'business_center': Icons.business_center,
-    'hotel': Icons.hotel, 'meeting_room': Icons.meeting_room, 'single_bed': Icons.single_bed,
-    'family_restroom': Icons.family_restroom, 'wine_bar': Icons.wine_bar, 'eco': Icons.eco,
-    'scuba_diving': Icons.scuba_diving, 'wb_sunny': Icons.wb_sunny, 'directions_boat': Icons.directions_boat,
+    'room_service': Icons.room_service,
+    'dry_cleaning': Icons.dry_cleaning,
+    'airport_shuttle': Icons.airport_shuttle,
+    'desk': Icons.desk,
+    'kitchen': Icons.kitchen,
+    'accessible_forward': Icons.accessible_forward,
+    'hiking': Icons.hiking,
+    'nature': Icons.nature,
+    'business_center': Icons.business_center,
+    'hotel': Icons.hotel,
+    'meeting_room': Icons.meeting_room,
+    'single_bed': Icons.single_bed,
+    'family_restroom': Icons.family_restroom,
+    'wine_bar': Icons.wine_bar,
+    'eco': Icons.eco,
+    'scuba_diving': Icons.scuba_diving,
+    'wb_sunny': Icons.wb_sunny,
+    'directions_boat': Icons.directions_boat,
     'lock': Icons.lock, 'palette': Icons.palette, 'brush': Icons.brush,
-    'outdoor_grill': Icons.outdoor_grill, 'deck': Icons.deck, 'chair': Icons.chair,
-    'book': Icons.book, 'museum': Icons.museum, 'location_city': Icons.location_city,
-    'streetview': Icons.streetview, 'local_laundry_service': Icons.local_laundry_service,
-    'coffee': Icons.coffee, 'print': Icons.print, 'living_outlined': Icons.living_outlined,
+    'outdoor_grill': Icons.outdoor_grill,
+    'deck': Icons.deck,
+    'chair': Icons.chair,
+    'book': Icons.book,
+    'museum': Icons.museum,
+    'location_city': Icons.location_city,
+    'streetview': Icons.streetview,
+    'local_laundry_service': Icons.local_laundry_service,
+    'coffee': Icons.coffee,
+    'print': Icons.print,
+    'living_outlined': Icons.living_outlined,
     'wind_power': Icons.wind_power, 'self_improvement': Icons.self_improvement,
     // Add more as needed
   };
@@ -108,7 +135,8 @@ class _AdminSettingsScreenContentState
     if (widget.loggedInHotelName != null && HotelManager().hotels.isNotEmpty) {
       _currentHotel = HotelManager().hotels.firstWhere(
         (hotel) => hotel.name == widget.loggedInHotelName,
-        orElse: () => Hotel( // Provide a default/placeholder hotel if not found
+        orElse: () => Hotel(
+          // Provide a default/placeholder hotel if not found
           image: 'assets/placeholder_hotel.png',
           name: 'No Hotel Found',
           location: 'N/A',
@@ -124,15 +152,31 @@ class _AdminSettingsScreenContentState
     }
 
     // Initialize controllers with current hotel data or empty strings
-    _editHotelNameController = TextEditingController(text: _currentHotel?.name ?? '');
-    _editHotelAddressController = TextEditingController(text: _currentHotel?.location ?? '');
-    _editContactNumberController = TextEditingController(text: _currentHotel?.contactNumber ?? '');
-    _editHotelDescriptionController = TextEditingController(text: _currentHotel?.description ?? '');
-    _editLicenseNumberController = TextEditingController(text: _currentHotel?.licenseNumber ?? '');
-    _editRoomCountController = TextEditingController(text: _currentHotel?.roomCount?.toString() ?? '');
-    _editHotelImageController = TextEditingController(text: _currentHotel?.image ?? '');
-    _editPriceRangeController = TextEditingController(text: _currentHotel?.priceRange ?? '');
-    
+    _editHotelNameController = TextEditingController(
+      text: _currentHotel?.name ?? '',
+    );
+    _editHotelAddressController = TextEditingController(
+      text: _currentHotel?.location ?? '',
+    );
+    _editContactNumberController = TextEditingController(
+      text: _currentHotel?.contactNumber ?? '',
+    );
+    _editHotelDescriptionController = TextEditingController(
+      text: _currentHotel?.description ?? '',
+    );
+    _editLicenseNumberController = TextEditingController(
+      text: _currentHotel?.licenseNumber ?? '',
+    );
+    _editRoomCountController = TextEditingController(
+      text: _currentHotel?.roomCount?.toString() ?? '',
+    );
+    _editHotelImageController = TextEditingController(
+      text: _currentHotel?.image ?? '',
+    );
+    _editPriceRangeController = TextEditingController(
+      text: _currentHotel?.priceRange ?? '',
+    );
+
     _editedCategories = List.from(_currentHotel?.categories ?? []);
     _editedAmenities = List.from(_currentHotel?.amenities ?? []);
   }
@@ -198,7 +242,8 @@ class _AdminSettingsScreenContentState
         _editContactNumberController.text = _currentHotel?.contactNumber ?? '';
         _editHotelDescriptionController.text = _currentHotel?.description ?? '';
         _editLicenseNumberController.text = _currentHotel?.licenseNumber ?? '';
-        _editRoomCountController.text = _currentHotel?.roomCount?.toString() ?? '';
+        _editRoomCountController.text =
+            _currentHotel?.roomCount?.toString() ?? '';
         _editHotelImageController.text = _currentHotel?.image ?? '';
         _editPriceRangeController.text = _currentHotel?.priceRange ?? '';
         _editedCategories = List.from(_currentHotel?.categories ?? []);
@@ -228,11 +273,16 @@ class _AdminSettingsScreenContentState
         // We need to find the updated hotel in the manager's list again
         _currentHotel = HotelManager().hotels.firstWhere(
           (h) => h.name == _currentHotel!.name, // Find by name or a unique ID
-          orElse: () => _currentHotel!, // Fallback to old if not found (shouldn't happen if update was successful)
+          orElse: () =>
+              _currentHotel!, // Fallback to old if not found (shouldn't happen if update was successful)
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No hotel found to update. Please register as an owner first.')),
+          const SnackBar(
+            content: Text(
+              'No hotel found to update. Please register as an owner first.',
+            ),
+          ),
         );
       }
       _isEditingHotel = false; // Exit edit mode
@@ -268,14 +318,18 @@ class _AdminSettingsScreenContentState
           controller: controller,
           decoration: InputDecoration(
             labelText: labelText,
-            prefixIcon: Icon(icon, color: kDarkBlue), // Use the icon parameter here
+            prefixIcon: Icon(
+              icon,
+              color: kDarkBlue,
+            ), // Use the icon parameter here
             suffixIcon: IconButton(
               icon: const Icon(Icons.add_circle_outline, color: kPrimaryBlue),
               onPressed: () {
                 if (controller.text.isNotEmpty) {
                   setState(() {
                     final newItem = controller.text.trim();
-                    if (!currentList.contains(newItem)) { // Avoid duplicates
+                    if (!currentList.contains(newItem)) {
+                      // Avoid duplicates
                       currentList.add(newItem);
                     }
                     controller.clear(); // Clear input field after adding
@@ -288,7 +342,8 @@ class _AdminSettingsScreenContentState
             fillColor: Colors.white,
           ),
           validator: validator,
-          onFieldSubmitted: (value) { // Allows adding by pressing enter
+          onFieldSubmitted: (value) {
+            // Allows adding by pressing enter
             if (controller.text.isNotEmpty) {
               setState(() {
                 final newItem = controller.text.trim();
@@ -324,7 +379,8 @@ class _AdminSettingsScreenContentState
           }).toList(),
         ),
         // Add a small space below the chips, useful if no validator message
-        if (currentList.isEmpty && _isEditingHotel) // Show validator hint only when editing and list is empty
+        if (currentList.isEmpty &&
+            _isEditingHotel) // Show validator hint only when editing and list is empty
           const Padding(
             padding: EdgeInsets.only(top: 8.0),
             child: Text(
@@ -351,7 +407,10 @@ class _AdminSettingsScreenContentState
           controller: controller,
           decoration: InputDecoration(
             labelText: labelText,
-            prefixIcon: Icon(icon, color: kDarkBlue), // Use the icon parameter here
+            prefixIcon: Icon(
+              icon,
+              color: kDarkBlue,
+            ), // Use the icon parameter here
             suffixIcon: IconButton(
               icon: const Icon(Icons.add_circle_outline, color: kPrimaryBlue),
               onPressed: () async {
@@ -360,17 +419,26 @@ class _AdminSettingsScreenContentState
                   final selectedIcon = await _showIconPickerDialog(context);
                   if (selectedIcon != null) {
                     setState(() {
-                      final newAmenity = Amenity(label: controller.text.trim(), icon: selectedIcon);
-                      if (!currentList.any((a) => a.label == newAmenity.label)) { // Avoid duplicates by label
+                      final newAmenity = Amenity(
+                        label: controller.text.trim(),
+                        icon: selectedIcon,
+                      );
+                      if (!currentList.any(
+                        (a) => a.label == newAmenity.label,
+                      )) {
+                        // Avoid duplicates by label
                         currentList.add(newAmenity);
                       }
                       controller.clear(); // Clear input field after adding
-                      _selectedAmenityIcon = Icons.help_outline; // Reset selected icon
+                      _selectedAmenityIcon =
+                          Icons.help_outline; // Reset selected icon
                     });
                   } else {
-                     ScaffoldMessenger.of(context).showSnackBar(
-                       const SnackBar(content: Text('Please select an icon for the amenity.')),
-                     );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select an icon for the amenity.'),
+                      ),
+                    );
                   }
                 }
               },
@@ -380,12 +448,16 @@ class _AdminSettingsScreenContentState
             fillColor: Colors.white,
           ),
           validator: validator,
-          onFieldSubmitted: (value) async { // Allows adding by pressing enter
+          onFieldSubmitted: (value) async {
+            // Allows adding by pressing enter
             if (controller.text.isNotEmpty) {
               final selectedIcon = await _showIconPickerDialog(context);
               if (selectedIcon != null) {
                 setState(() {
-                  final newAmenity = Amenity(label: controller.text.trim(), icon: selectedIcon);
+                  final newAmenity = Amenity(
+                    label: controller.text.trim(),
+                    icon: selectedIcon,
+                  );
                   if (!currentList.any((a) => a.label == newAmenity.label)) {
                     currentList.add(newAmenity);
                   }
@@ -393,9 +465,11 @@ class _AdminSettingsScreenContentState
                   _selectedAmenityIcon = Icons.help_outline;
                 });
               } else {
-                 ScaffoldMessenger.of(context).showSnackBar(
-                   const SnackBar(content: Text('Please select an icon for the amenity.')),
-                 );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please select an icon for the amenity.'),
+                  ),
+                );
               }
             }
           },
@@ -425,7 +499,8 @@ class _AdminSettingsScreenContentState
           }).toList(),
         ),
         // Add a small space below the chips, useful if no validator message
-        if (currentList.isEmpty && _isEditingHotel) // Show validator hint only when editing and list is empty
+        if (currentList.isEmpty &&
+            _isEditingHotel) // Show validator hint only when editing and list is empty
           const Padding(
             padding: EdgeInsets.only(top: 8.0),
             child: Text(
@@ -439,7 +514,8 @@ class _AdminSettingsScreenContentState
 
   // Dialog to pick an icon
   Future<IconData?> _showIconPickerDialog(BuildContext context) async {
-    IconData? tempSelectedIcon = _selectedAmenityIcon; // Use a temporary variable for selection
+    IconData? tempSelectedIcon =
+        _selectedAmenityIcon; // Use a temporary variable for selection
 
     return showDialog<IconData?>(
       context: context,
@@ -464,18 +540,35 @@ class _AdminSettingsScreenContentState
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        tempSelectedIcon = iconData; // Update the temporary selected icon
+                        tempSelectedIcon =
+                            iconData; // Update the temporary selected icon
                       });
-                      Navigator.of(dialogContext).pop(iconData); // Pass the selected icon back
+                      Navigator.of(
+                        dialogContext,
+                      ).pop(iconData); // Pass the selected icon back
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(iconData, size: 30, color: tempSelectedIcon == iconData ? kPrimaryBlue : Colors.grey),
+                        Icon(
+                          iconData,
+                          size: 30,
+                          color: tempSelectedIcon == iconData
+                              ? kPrimaryBlue
+                              : Colors.grey,
+                        ),
                         Text(
-                          iconName.replaceAll('_', '\n'), // Display name, break long words
+                          iconName.replaceAll(
+                            '_',
+                            '\n',
+                          ), // Display name, break long words
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 8, color: tempSelectedIcon == iconData ? kPrimaryBlue : Colors.grey),
+                          style: TextStyle(
+                            fontSize: 8,
+                            color: tempSelectedIcon == iconData
+                                ? kPrimaryBlue
+                                : Colors.grey,
+                          ),
                         ),
                       ],
                     ),
@@ -488,7 +581,9 @@ class _AdminSettingsScreenContentState
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(dialogContext).pop(null); // Return null if cancelled
+                Navigator.of(
+                  dialogContext,
+                ).pop(null); // Return null if cancelled
               },
             ),
           ],
@@ -512,8 +607,14 @@ class _AdminSettingsScreenContentState
                 children: [
                   CircleAvatar(
                     radius: 36,
-                    backgroundColor: kPrimaryGreen.withValues(alpha: 0.15),
-                    child: Icon(Icons.admin_panel_settings, size: 40, color: kPrimaryGreen),
+                    backgroundColor: kPrimaryBlue.withOpacity(
+                      0.15,
+                    ), // Changed to kPrimaryBlue
+                    child: Icon(
+                      Icons.admin_panel_settings,
+                      size: 40,
+                      color: kPrimaryBlue,
+                    ), // Changed to kPrimaryBlue
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -538,25 +639,40 @@ class _AdminSettingsScreenContentState
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 4.0,
+                ),
                 child: Column(
                   children: [
                     // Account Information
                     Theme(
                       data: Theme.of(context).copyWith(
                         dividerColor: Colors.transparent,
-                        splashColor: kPrimaryGreen.withValues(alpha: 0.1),
-                        highlightColor: kPrimaryGreen.withValues(alpha: 0.05),
+                        splashColor: kPrimaryBlue.withOpacity(
+                          0.1,
+                        ), // Changed to kPrimaryBlue
+                        highlightColor: kPrimaryBlue.withOpacity(
+                          0.05,
+                        ), // Changed to kPrimaryBlue
                         cardColor: Colors.white,
                       ),
                       child: ExpansionTile(
-                        leading: Icon(Icons.person, color: kPrimaryGreen),
-                        title: const Text('Account Information', style: TextStyle(fontWeight: FontWeight.bold)),
+                        leading: Icon(
+                          Icons.person,
+                          color: kPrimaryBlue,
+                        ), // Changed to kPrimaryBlue
+                        title: const Text(
+                          'Account Information',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         subtitle: const Text('Manage your profile'),
                         initiallyExpanded: _isAccountInfoExpanded,
-                        backgroundColor: kLightBlue.withValues(alpha: 0.08),
+                        backgroundColor: kLightBlue.withOpacity(0.08),
                         collapsedBackgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         onExpansionChanged: (bool expanded) {
                           setState(() {
                             _isAccountInfoExpanded = expanded;
@@ -579,13 +695,23 @@ class _AdminSettingsScreenContentState
                                         controller: _editUsernameController,
                                         decoration: InputDecoration(
                                           labelText: 'Username',
-                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                          prefixIcon: Icon(Icons.account_circle),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          prefixIcon: Icon(
+                                            Icons.account_circle,
+                                            color: kPrimaryBlue,
+                                          ), // Changed to kPrimaryBlue
                                         ),
                                       )
                                     : ListTile(
                                         contentPadding: EdgeInsets.zero,
-                                        leading: Icon(Icons.account_circle, color: kPrimaryGreen),
+                                        leading: Icon(
+                                          Icons.account_circle,
+                                          color: kPrimaryBlue,
+                                        ), // Changed to kPrimaryBlue
                                         title: const Text('Username'),
                                         subtitle: Text(_currentUsername),
                                       ),
@@ -595,33 +721,61 @@ class _AdminSettingsScreenContentState
                                         controller: _editEmailController,
                                         decoration: InputDecoration(
                                           labelText: 'Email',
-                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                          prefixIcon: Icon(Icons.email),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          prefixIcon: Icon(
+                                            Icons.email,
+                                            color: kPrimaryBlue,
+                                          ), // Changed to kPrimaryBlue
                                         ),
                                       )
                                     : ListTile(
                                         contentPadding: EdgeInsets.zero,
-                                        leading: Icon(Icons.email, color: kPrimaryGreen),
+                                        leading: Icon(
+                                          Icons.email,
+                                          color: kPrimaryBlue,
+                                        ), // Changed to kPrimaryBlue
                                         title: const Text('Email'),
                                         subtitle: Text(_currentEmail),
                                       ),
                                 const SizedBox(height: 12),
                                 _isEditingAccount
                                     ? Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           TextButton(
                                             onPressed: _cancelEditAccount,
-                                            child: const Text('Cancel'),
+                                            child: const Text(
+                                              'Cancel',
+                                              style: TextStyle(
+                                                color: kPrimaryBlue,
+                                              ),
+                                            ), // Changed to kPrimaryBlue
                                           ),
                                           const SizedBox(width: 8),
                                           ElevatedButton.icon(
                                             onPressed: _saveAccountInfo,
-                                            icon: const Icon(Icons.save, color: Colors.white),
-                                            label: const Text('Save', style: TextStyle(color: Colors.white)),
+                                            icon: const Icon(
+                                              Icons.save,
+                                              color: Colors.white,
+                                            ),
+                                            label: const Text(
+                                              'Save',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: kPrimaryGreen,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                              backgroundColor:
+                                                  kPrimaryBlue, // Changed to kPrimaryBlue
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -630,12 +784,26 @@ class _AdminSettingsScreenContentState
                                         width: double.infinity,
                                         child: ElevatedButton.icon(
                                           onPressed: _toggleEditAccountMode,
-                                          icon: const Icon(Icons.edit, color: Colors.white),
-                                          label: const Text('Edit Account Info', style: TextStyle(color: Colors.white)),
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            color: Colors.white,
+                                          ),
+                                          label: const Text(
+                                            'Edit Account Info',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: kPrimaryGreen,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                            padding: const EdgeInsets.symmetric(vertical: 12),
+                                            backgroundColor:
+                                                kPrimaryBlue, // Changed to kPrimaryBlue
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 12,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -650,18 +818,28 @@ class _AdminSettingsScreenContentState
                     Theme(
                       data: Theme.of(context).copyWith(
                         dividerColor: Colors.transparent,
-                        splashColor: kPrimaryBlue.withValues(alpha: 0.1),
-                        highlightColor: kPrimaryBlue.withValues(alpha: 0.05),
+                        splashColor: kPrimaryBlue.withOpacity(0.1),
+                        highlightColor: kPrimaryBlue.withOpacity(0.05),
                         cardColor: Colors.white,
                       ),
                       child: ExpansionTile(
-                        leading: Icon(Icons.hotel, color: kPrimaryGreen),
-                        title: const Text('Hotel Information', style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text(_currentHotel?.name ?? 'No Hotel Registered'),
+                        leading: Icon(
+                          Icons.hotel,
+                          color: kPrimaryBlue,
+                        ), // Changed to kPrimaryBlue
+                        title: const Text(
+                          'Hotel Information',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          _currentHotel?.name ?? 'No Hotel Registered',
+                        ),
                         initiallyExpanded: _isHotelInfoExpanded,
-                        backgroundColor: kLightBlue.withValues(alpha: 0.08),
+                        backgroundColor: kLightBlue.withOpacity(0.08),
                         collapsedBackgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         onExpansionChanged: (bool expanded) {
                           setState(() {
                             _isHotelInfoExpanded = expanded;
@@ -687,234 +865,440 @@ class _AdminSettingsScreenContentState
                                       const SizedBox(height: 20),
                                       ElevatedButton.icon(
                                         onPressed: () {
-                                          Navigator.pushReplacementNamed(context, '/signup');
+                                          Navigator.pushReplacementNamed(
+                                            context,
+                                            '/signup',
+                                          );
                                         },
-                                        icon: const Icon(Icons.add_business, color: Colors.white),
-                                        label: const Text('Register Your Hotel', style: TextStyle(color: Colors.white)),
+                                        icon: const Icon(
+                                          Icons.add_business,
+                                          color: Colors.white,
+                                        ),
+                                        label: const Text(
+                                          'Register Your Hotel',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: kPrimaryBlue,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ],
                                   )
                                 : Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
+                                      // Hotel Name
                                       _isEditingHotel
-                                          ? Column(
-                                              children: [
-                                                TextFormField(
-                                                  controller: _editHotelNameController,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Hotel Name',
-                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                                    prefixIcon: Icon(Icons.business),
-                                                  ),
+                                          ? TextFormField(
+                                              controller:
+                                                  _editHotelNameController,
+                                              decoration: InputDecoration(
+                                                labelText: 'Hotel Name',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
                                                 ),
-                                                const SizedBox(height: 12),
-                                                TextFormField(
-                                                  controller: _editHotelAddressController,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Hotel Address',
-                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                                    prefixIcon: Icon(Icons.location_on),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 12),
-                                                TextFormField(
-                                                  controller: _editContactNumberController,
-                                                  keyboardType: TextInputType.phone,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Contact Number',
-                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                                    prefixIcon: Icon(Icons.phone),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 12),
-                                                TextFormField(
-                                                  controller: _editHotelDescriptionController,
-                                                  maxLines: 3,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Description',
-                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                                    prefixIcon: Icon(Icons.description),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 12),
-                                                TextFormField(
-                                                  controller: _editLicenseNumberController,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'License Number',
-                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                                    prefixIcon: Icon(Icons.confirmation_number),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 12),
-                                                TextFormField(
-                                                  controller: _editRoomCountController,
-                                                  keyboardType: TextInputType.number,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Number of Rooms',
-                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                                    prefixIcon: Icon(Icons.hotel),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 12),
-                                                TextFormField(
-                                                  controller: _editHotelImageController,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Image URL',
-                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                                    prefixIcon: Icon(Icons.image),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 12),
-                                                TextFormField(
-                                                  controller: _editPriceRangeController,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Price Range (e.g., ₱1,000 - ₱5,000)',
-                                                    prefixIcon: Padding(
-                                                      padding: const EdgeInsets.only(left: 12, right: 8),
-                                                      child: Text('₱', style: TextStyle(fontSize: 20, color: kDarkBlue, fontWeight: FontWeight.bold)),
-                                                    ),
-                                                    prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                                    filled: true,
-                                                    fillColor: Colors.white,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 20),
-                                                Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Text('Categories', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                _buildCategoryChipInput(
-                                                  labelText: 'Add Category',
-                                                  controller: TextEditingController(),
-                                                  currentList: _editedCategories,
-                                                  icon: Icons.category,
-                                                  validator: (value) {
-                                                    if (_editedCategories.isEmpty && (value == null || value.isEmpty)) {
-                                                      return 'Please add at least one category';
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
-                                                const SizedBox(height: 20),
-                                                Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Text('Amenities', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                _buildAmenityChipInput(
-                                                  labelText: 'Add Amenity',
-                                                  controller: TextEditingController(),
-                                                  currentList: _editedAmenities,
-                                                  icon: Icons.local_hospital,
-                                                  validator: (value) {
-                                                    if (_editedAmenities.isEmpty && (value == null || value.isEmpty)) {
-                                                      return 'Please add at least one amenity';
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
-                                              ],
+                                                prefixIcon: Icon(
+                                                  Icons.hotel,
+                                                  color: kPrimaryBlue,
+                                                ), // Changed to kPrimaryBlue
+                                              ),
                                             )
-                                          : Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  leading: Icon(Icons.business, color: kPrimaryGreen),
-                                                  title: const Text('Hotel Name'),
-                                                  subtitle: Text(_currentHotel?.name ?? 'N/A'),
-                                                ),
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  leading: Icon(Icons.location_on, color: kPrimaryGreen),
-                                                  title: const Text('Address'),
-                                                  subtitle: Text(_currentHotel?.location ?? 'N/A'),
-                                                ),
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  leading: Icon(Icons.phone, color: kPrimaryGreen),
-                                                  title: const Text('Contact Number'),
-                                                  subtitle: Text(_currentHotel?.contactNumber ?? 'N/A'),
-                                                ),
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  leading: Icon(Icons.description, color: kPrimaryGreen),
-                                                  title: const Text('Description'),
-                                                  subtitle: Text(_currentHotel?.description ?? 'N/A'),
-                                                ),
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  leading: Icon(Icons.confirmation_number, color: kPrimaryGreen),
-                                                  title: const Text('License Number'),
-                                                  subtitle: Text(_currentHotel?.licenseNumber ?? 'N/A'),
-                                                ),
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  leading: Icon(Icons.hotel, color: kPrimaryGreen),
-                                                  title: const Text('Number of Rooms'),
-                                                  subtitle: Text(_currentHotel?.roomCount?.toString() ?? 'N/A'),
-                                                ),
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  leading: Icon(Icons.image, color: kPrimaryGreen),
-                                                  title: const Text('Image URL'),
-                                                  subtitle: Text(_currentHotel?.image ?? 'N/A'),
-                                                ),
-                                                ListTile(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  leading: Padding(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2),
-                                                    child: Text('₱', style: TextStyle(fontSize: 20, color: kPrimaryGreen, fontWeight: FontWeight.bold)),
-                                                  ),
-                                                  title: const Text('Price Range'),
-                                                  subtitle: Text(_currentHotel?.priceRange ?? 'N/A'),
-                                                ),
-                                                if (_currentHotel!.categories.isNotEmpty)
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                                                    child: Wrap(
-                                                      spacing: 8.0,
-                                                      children: _currentHotel!.categories.map((cat) => Chip(label: Text(cat), backgroundColor: kLightBlue)).toList(),
-                                                    ),
-                                                  ),
-                                                if (_currentHotel!.amenities.isNotEmpty)
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                                                    child: Wrap(
-                                                      spacing: 10.0,
-                                                      children: _currentHotel!.amenities.map((a) => Chip(
-                                                        avatar: Icon(a.icon, color: kPrimaryBlue, size: 18),
-                                                        label: Text(a.label),
-                                                        backgroundColor: kLightBlue,
-                                                      )).toList(),
-                                                    ),
-                                                  ),
-                                              ],
+                                          : ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              leading: Icon(
+                                                Icons.hotel,
+                                                color: kPrimaryBlue,
+                                              ), // Changed to kPrimaryBlue
+                                              title: const Text('Hotel Name'),
+                                              subtitle: Text(
+                                                _currentHotel?.name ?? 'N/A',
+                                              ),
                                             ),
                                       const SizedBox(height: 12),
+
+                                      // Hotel Address
+                                      _isEditingHotel
+                                          ? TextFormField(
+                                              controller:
+                                                  _editHotelAddressController,
+                                              decoration: InputDecoration(
+                                                labelText: 'Address',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                prefixIcon: Icon(
+                                                  Icons.location_on,
+                                                  color: kPrimaryBlue,
+                                                ), // Changed to kPrimaryBlue
+                                              ),
+                                            )
+                                          : ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              leading: Icon(
+                                                Icons.location_on,
+                                                color: kPrimaryBlue,
+                                              ), // Changed to kPrimaryBlue
+                                              title: const Text('Address'),
+                                              subtitle: Text(
+                                                _currentHotel?.location ??
+                                                    'N/A',
+                                              ),
+                                            ),
+                                      const SizedBox(height: 12),
+
+                                      // Contact Number
+                                      _isEditingHotel
+                                          ? TextFormField(
+                                              controller:
+                                                  _editContactNumberController,
+                                              decoration: InputDecoration(
+                                                labelText: 'Contact Number',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                prefixIcon: Icon(
+                                                  Icons.phone,
+                                                  color: kPrimaryBlue,
+                                                ), // Changed to kPrimaryBlue
+                                              ),
+                                              keyboardType: TextInputType.phone,
+                                            )
+                                          : ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              leading: Icon(
+                                                Icons.phone,
+                                                color: kPrimaryBlue,
+                                              ), // Changed to kPrimaryBlue
+                                              title: const Text(
+                                                'Contact Number',
+                                              ),
+                                              subtitle: Text(
+                                                _currentHotel?.contactNumber ??
+                                                    'N/A',
+                                              ),
+                                            ),
+                                      const SizedBox(height: 12),
+
+                                      // Hotel Description
+                                      _isEditingHotel
+                                          ? TextFormField(
+                                              controller:
+                                                  _editHotelDescriptionController,
+                                              decoration: InputDecoration(
+                                                labelText: 'Description',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                prefixIcon: Icon(
+                                                  Icons.description,
+                                                  color: kPrimaryBlue,
+                                                ), // Changed to kPrimaryBlue
+                                              ),
+                                              maxLines: 3,
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                            )
+                                          : ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              leading: Icon(
+                                                Icons.description,
+                                                color: kPrimaryBlue,
+                                              ), // Changed to kPrimaryBlue
+                                              title: const Text('Description'),
+                                              subtitle: Text(
+                                                _currentHotel?.description ??
+                                                    'N/A',
+                                              ),
+                                            ),
+                                      const SizedBox(height: 12),
+
+                                      // License Number
+                                      _isEditingHotel
+                                          ? TextFormField(
+                                              controller:
+                                                  _editLicenseNumberController,
+                                              decoration: InputDecoration(
+                                                labelText: 'License Number',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                prefixIcon: Icon(
+                                                  Icons.article,
+                                                  color: kPrimaryBlue,
+                                                ), // Changed to kPrimaryBlue
+                                              ),
+                                            )
+                                          : ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              leading: Icon(
+                                                Icons.article,
+                                                color: kPrimaryBlue,
+                                              ), // Changed to kPrimaryBlue
+                                              title: const Text(
+                                                'License Number',
+                                              ),
+                                              subtitle: Text(
+                                                _currentHotel?.licenseNumber ??
+                                                    'N/A',
+                                              ),
+                                            ),
+                                      const SizedBox(height: 12),
+
+                                      // Room Count
+                                      _isEditingHotel
+                                          ? TextFormField(
+                                              controller:
+                                                  _editRoomCountController,
+                                              decoration: InputDecoration(
+                                                labelText: 'Number of Rooms',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                prefixIcon: Icon(
+                                                  Icons.room_service,
+                                                  color: kPrimaryBlue,
+                                                ), // Changed to kPrimaryBlue
+                                              ),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                            )
+                                          : ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              leading: Icon(
+                                                Icons.room_service,
+                                                color: kPrimaryBlue,
+                                              ), // Changed to kPrimaryBlue
+                                              title: const Text(
+                                                'Number of Rooms',
+                                              ),
+                                              subtitle: Text(
+                                                _currentHotel?.roomCount
+                                                        ?.toString() ??
+                                                    'N/A',
+                                              ),
+                                            ),
+                                      const SizedBox(height: 12),
+
+                                      // Hotel Image URL
+                                      _isEditingHotel
+                                          ? TextFormField(
+                                              controller:
+                                                  _editHotelImageController,
+                                              decoration: InputDecoration(
+                                                labelText: 'Hotel Image URL',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                prefixIcon: Icon(
+                                                  Icons.image,
+                                                  color: kPrimaryBlue,
+                                                ), // Changed to kPrimaryBlue
+                                              ),
+                                              keyboardType: TextInputType.url,
+                                            )
+                                          : ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              leading: Icon(
+                                                Icons.image,
+                                                color: kPrimaryBlue,
+                                              ), // Changed to kPrimaryBlue
+                                              title: const Text(
+                                                'Hotel Image URL',
+                                              ),
+                                              subtitle: Text(
+                                                _currentHotel?.image ?? 'N/A',
+                                              ),
+                                            ),
+                                      const SizedBox(height: 12),
+
+                                      // Price Range
+                                      _isEditingHotel
+                                          ? TextFormField(
+                                              controller:
+                                                  _editPriceRangeController,
+                                              decoration: InputDecoration(
+                                                labelText:
+                                                    'Price Range (e.g., \$100 - \$200)',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                prefixIcon: Icon(
+                                                  Icons.attach_money,
+                                                  color: kPrimaryBlue,
+                                                ), // Changed to kPrimaryBlue
+                                              ),
+                                            )
+                                          : ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              leading: Icon(
+                                                Icons.attach_money,
+                                                color: kPrimaryBlue,
+                                              ), // Changed to kPrimaryBlue
+                                              title: const Text('Price Range'),
+                                              subtitle: Text(
+                                                _currentHotel?.priceRange ??
+                                                    'N/A',
+                                              ),
+                                            ),
+                                      const SizedBox(height: 12),
+
+                                      // Categories (interactive word pool)
+                                      if (_isEditingHotel) ...[
+                                        _buildCategoryChipInput(
+                                          labelText: 'Add Categories',
+                                          controller: _newCategoryController,
+                                          currentList: _editedCategories,
+                                          icon: Icons.category,
+                                        ),
+                                        const SizedBox(height: 20),
+                                      ],
+                                      if (!_isEditingHotel &&
+                                          _currentHotel != null &&
+                                          _currentHotel!
+                                              .categories
+                                              .isNotEmpty) ...[
+                                        ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: Icon(
+                                            Icons.category,
+                                            color: kPrimaryBlue,
+                                          ), // Changed to kPrimaryBlue
+                                          title: const Text('Categories'),
+                                          subtitle: Wrap(
+                                            spacing: 8.0,
+                                            runSpacing: 4.0,
+                                            children: _currentHotel!.categories
+                                                .map((category) {
+                                                  return Chip(
+                                                    label: Text(category),
+                                                    backgroundColor: kLightBlue,
+                                                    labelStyle: const TextStyle(
+                                                      color: kDarkBlue,
+                                                    ),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      side: const BorderSide(
+                                                        color: kPrimaryBlue,
+                                                      ),
+                                                    ),
+                                                  );
+                                                })
+                                                .toList(),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                      ],
+
+                                      // Amenities (interactive word pool with icons)
+                                      if (_isEditingHotel) ...[
+                                        _buildAmenityChipInput(
+                                          labelText: 'Add Amenities',
+                                          controller:
+                                              _newAmenityLabelController,
+                                          currentList: _editedAmenities,
+                                          icon: Icons.local_activity,
+                                        ),
+                                        const SizedBox(height: 20),
+                                      ],
+                                      if (!_isEditingHotel &&
+                                          _currentHotel != null &&
+                                          _currentHotel!
+                                              .amenities
+                                              .isNotEmpty) ...[
+                                        ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: Icon(
+                                            Icons.local_activity,
+                                            color: kPrimaryBlue,
+                                          ), // Changed to kPrimaryBlue
+                                          title: const Text('Amenities'),
+                                          subtitle: Wrap(
+                                            spacing: 8.0,
+                                            runSpacing: 4.0,
+                                            children: _currentHotel!.amenities.map(
+                                              (amenity) {
+                                                return Chip(
+                                                  avatar: Icon(
+                                                    amenity.icon,
+                                                    color: kPrimaryBlue,
+                                                    size: 18,
+                                                  ), // Changed to kPrimaryBlue
+                                                  label: Text(amenity.label),
+                                                  backgroundColor: kLightBlue,
+                                                  labelStyle: const TextStyle(
+                                                    color: kDarkBlue,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                    side: const BorderSide(
+                                                      color: kPrimaryBlue,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ).toList(),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                      ],
+
+                                      // Save/Cancel Buttons for Hotel Info
                                       _isEditingHotel
                                           ? Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
                                               children: [
                                                 TextButton(
                                                   onPressed: _cancelEditHotel,
-                                                  child: const Text('Cancel'),
+                                                  child: const Text(
+                                                    'Cancel',
+                                                    style: TextStyle(
+                                                      color: kPrimaryBlue,
+                                                    ),
+                                                  ), // Changed to kPrimaryBlue
                                                 ),
                                                 const SizedBox(width: 8),
                                                 ElevatedButton.icon(
                                                   onPressed: _saveHotelInfo,
-                                                  icon: const Icon(Icons.save, color: Colors.white),
-                                                  label: const Text('Save', style: TextStyle(color: Colors.white)),
+                                                  icon: const Icon(
+                                                    Icons.save,
+                                                    color: Colors.white,
+                                                  ),
+                                                  label: const Text(
+                                                    'Save',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
                                                   style: ElevatedButton.styleFrom(
-                                                    backgroundColor: kPrimaryGreen,
-                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                    backgroundColor:
+                                                        kPrimaryBlue, // Changed to kPrimaryBlue
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -923,12 +1307,29 @@ class _AdminSettingsScreenContentState
                                               width: double.infinity,
                                               child: ElevatedButton.icon(
                                                 onPressed: _toggleEditHotelMode,
-                                                icon: const Icon(Icons.edit, color: Colors.white),
-                                                label: const Text('Edit Hotel Info', style: TextStyle(color: Colors.white)),
+                                                icon: const Icon(
+                                                  Icons.edit,
+                                                  color: Colors.white,
+                                                ),
+                                                label: const Text(
+                                                  'Edit Hotel Info',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor: kPrimaryGreen,
-                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                                  backgroundColor:
+                                                      kPrimaryBlue, // Changed to kPrimaryBlue
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        vertical: 12,
+                                                      ),
                                                 ),
                                               ),
                                             ),
@@ -939,22 +1340,30 @@ class _AdminSettingsScreenContentState
                       ),
                     ),
                     const Divider(),
-                    // Notifications
+                    // Notifications Settings
                     Theme(
                       data: Theme.of(context).copyWith(
                         dividerColor: Colors.transparent,
-                        splashColor: kPrimaryGreen.withValues(alpha: 0.1),
-                        highlightColor: kPrimaryGreen.withValues(alpha: 0.05),
+                        splashColor: kPrimaryBlue.withOpacity(0.1),
+                        highlightColor: kPrimaryBlue.withOpacity(0.05),
                         cardColor: Colors.white,
                       ),
                       child: ExpansionTile(
-                        leading: Icon(Icons.notifications, color: kPrimaryGreen),
-                        title: const Text('Notifications', style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: const Text('Configure notification preferences'),
+                        leading: Icon(
+                          Icons.notifications,
+                          color: kPrimaryBlue,
+                        ), // Changed to kPrimaryBlue
+                        title: const Text(
+                          'Notifications',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: const Text('Manage notification preferences'),
                         initiallyExpanded: _isNotificationsExpanded,
-                        backgroundColor: kLightBlue.withValues(alpha: 0.08),
+                        backgroundColor: kLightBlue.withOpacity(0.08),
                         collapsedBackgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         onExpansionChanged: (bool expanded) {
                           setState(() {
                             _isNotificationsExpanded = expanded;
@@ -969,34 +1378,30 @@ class _AdminSettingsScreenContentState
                             child: Column(
                               children: [
                                 SwitchListTile(
-                                  title: const Text('Booking Confirmations'),
-                                  value: true, // Mock data
+                                  title: const Text('Enable All Notifications'),
+                                  value: true, // Placeholder for actual state
                                   onChanged: (bool value) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Booking confirmations: $value')),
-                                    );
+                                    // Handle state change
                                   },
-                                  activeColor: kPrimaryGreen,
+                                  activeColor:
+                                      kPrimaryBlue, // Changed to kPrimaryBlue
+                                  secondary: Icon(
+                                    Icons.toggle_on,
+                                    color: kPrimaryBlue,
+                                  ), // Changed to kPrimaryBlue
                                 ),
                                 SwitchListTile(
-                                  title: const Text('Payment Reminders'),
-                                  value: false, // Mock data
+                                  title: const Text('Email Notifications'),
+                                  value: false, // Placeholder for actual state
                                   onChanged: (bool value) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Payment reminders: $value')),
-                                    );
+                                    // Handle state change
                                   },
-                                  activeColor: kPrimaryGreen,
-                                ),
-                                SwitchListTile(
-                                  title: const Text('Promotional Offers'),
-                                  value: true, // Mock data
-                                  onChanged: (bool value) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Promotional offers: $value')),
-                                    );
-                                  },
-                                  activeColor: kPrimaryGreen,
+                                  activeColor:
+                                      kPrimaryBlue, // Changed to kPrimaryBlue
+                                  secondary: Icon(
+                                    Icons.email,
+                                    color: kPrimaryBlue,
+                                  ), // Changed to kPrimaryBlue
                                 ),
                               ],
                             ),
@@ -1005,25 +1410,37 @@ class _AdminSettingsScreenContentState
                       ),
                     ),
                     const Divider(),
-                    // About App
+                    // App Theme and Display Settings
                     Theme(
                       data: Theme.of(context).copyWith(
                         dividerColor: Colors.transparent,
-                        splashColor: kPrimaryGreen.withValues(alpha: 0.1),
-                        highlightColor: kPrimaryGreen.withValues(alpha: 0.05),
+                        splashColor: kPrimaryBlue.withOpacity(0.1),
+                        highlightColor: kPrimaryBlue.withOpacity(0.05),
                         cardColor: Colors.white,
                       ),
                       child: ExpansionTile(
-                        leading: Icon(Icons.info, color: kPrimaryGreen),
-                        title: const Text('About App', style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: const Text('Version, licenses, and legal information'),
-                        initiallyExpanded: _isAboutAppExpanded,
-                        backgroundColor: kLightBlue.withValues(alpha: 0.08),
+                        leading: Icon(
+                          Icons.palette,
+                          color: kPrimaryBlue,
+                        ), // Changed to kPrimaryBlue
+                        title: const Text(
+                          'App Theme & Display',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: const Text(
+                          'Customize your app\'s appearance',
+                        ),
+                        initiallyExpanded:
+                            _isAboutAppExpanded, // This seems mislabeled, should be for theme/display
+                        backgroundColor: kLightBlue.withOpacity(0.08),
                         collapsedBackgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         onExpansionChanged: (bool expanded) {
                           setState(() {
-                            _isAboutAppExpanded = expanded;
+                            _isAboutAppExpanded =
+                                expanded; // Mislabeled, consider renaming
                           });
                         },
                         children: <Widget>[
@@ -1033,74 +1450,28 @@ class _AdminSettingsScreenContentState
                               vertical: 8.0,
                             ),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Booktopia Admin Dashboard',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
+                              children: [
+                                SwitchListTile(
+                                  title: const Text('Dark Mode'),
+                                  value: _isDarkModeEnabled,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      _isDarkModeEnabled = value;
+                                      // Implement theme change logic here
+                                    });
+                                  },
+                                  activeColor:
+                                      kPrimaryBlue, // Changed to kPrimaryBlue
+                                  secondary: Icon(
+                                    Icons.dark_mode,
+                                    color: kPrimaryBlue,
+                                  ), // Changed to kPrimaryBlue
                                 ),
-                                SizedBox(height: 8),
-                                Text('Version: 1.0.0'),
-                                Text('Build: 20250720.1'),
-                                SizedBox(height: 12),
-                                Text(
-                                  '© 2025 Booktopia Inc. All rights reserved.',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                                SizedBox(height: 12),
-                                Text(
-                                  'Legal Information:',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text('• Terms of Service'),
-                                Text('• Privacy Policy'),
-                                Text('• Open Source Licenses'),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.dark_mode, color: kPrimaryGreen),
-                        const SizedBox(width: 16),
-                        const Text('Dark Mode', style: TextStyle(fontSize: 16)),
-                      ],
-                    ),
-                    Switch(
-                      value: _isDarkModeEnabled,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _isDarkModeEnabled = value;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Dark mode is now: ${_isDarkModeEnabled ? "On" : "Off"}',
-                            ),
-                          ),
-                        );
-                      },
-                      activeColor: kPrimaryGreen,
                     ),
                   ],
                 ),

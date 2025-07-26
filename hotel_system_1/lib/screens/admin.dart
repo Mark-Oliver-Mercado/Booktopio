@@ -17,23 +17,27 @@ extension ColorWithValues on Color {
   }
 }
 
+// Define your NEW color palette based on the image
+class AppColors {
+  static const Color sapphire = Color(0xFF3C5070);
+  static const Color royalBlue = Color(0xFF112250);
+  static const Color quicksand = Color(0xFFE0C58F);
+  static const Color swanWing = Color(0xFFF5F0E9);
+  static const Color shellstone = Color(0xFFD9CBC2);
+}
+
 class AdminDashboard extends StatefulWidget {
   @override
   _AdminDashboardState createState() => _AdminDashboardState();
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
-  // Remove static rooms list and roomStatus map
-  // List<String> rooms = [...];
-  // Map<String, String> roomStatus = {};
-
   int _selectedDrawerIndex = 0;
   String? _loggedInHotelName;
 
   @override
   void initState() {
     super.initState();
-    // No need to initialize static room data anymore
     _loadLoggedInHotelName();
   }
 
@@ -45,13 +49,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
     });
   }
 
-  // Helper to get the content widget based on the selected drawer index
   Widget _getScreenWidget(int index) {
     switch (index) {
       case 0:
         return _buildDashboardContent();
       case 1:
-        return AddRoomScreenContent(hotelName: _loggedInHotelName); // Pass hotel name
+        return AddRoomScreenContent(
+          hotelName: _loggedInHotelName,
+        ); // Pass hotel name
       case 2:
         return AdminSettingsScreenContent(
           loggedInHotelName: _loggedInHotelName,
@@ -63,15 +68,19 @@ class _AdminDashboardState extends State<AdminDashboard> {
     }
   }
 
-  // Extract your dashboard content into a separate widget for clarity
   Widget _buildDashboardContent() {
-    // Get rooms dynamically from RoomManager
     final List<Room> currentRooms = RoomManager().rooms;
 
     int totalBooked = currentRooms.where((r) => r.status == 'booked').length;
-    int totalCompleted = currentRooms.where((r) => r.status == 'completed').length;
-    int totalAvailable = currentRooms.where((r) => r.status == 'available').length;
-    int totalCleaning = currentRooms.where((r) => r.status == 'cleaning').length;
+    int totalCompleted = currentRooms
+        .where((r) => r.status == 'completed')
+        .length;
+    int totalAvailable = currentRooms
+        .where((r) => r.status == 'available')
+        .length;
+    int totalCleaning = currentRooms
+        .where((r) => r.status == 'cleaning')
+        .length;
     int totalRooms = currentRooms.length;
     final bool isSmallScreen = MediaQuery.of(context).size.width < 800;
 
@@ -80,9 +89,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Dashboard Overview',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: AppColors.royalBlue,
+            ), // Royal Blue for text
           ),
           const SizedBox(height: 20),
           LayoutBuilder(
@@ -104,7 +117,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     child: _buildStatCard(
                       'TOTAL ROOMS',
                       '$totalRooms',
-                      const Color(0xFF1A5276),
+                      AppColors.sapphire, // Sapphire
                     ),
                   ),
                   SizedBox(
@@ -113,13 +126,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     child: _buildStatCard(
                       'AVAILABLE',
                       '$totalAvailable',
-                      const Color(0xFF27AE60),
+                      AppColors.quicksand, // Quicksand
                     ),
                   ),
                   SizedBox(
                     width: cardMinWidth,
                     height: cardMinHeight,
-                    child: _buildStatCard('BOOKED', '$totalBooked', const Color(0xFFE74C3C)),
+                    child: _buildStatCard(
+                      'BOOKED',
+                      '$totalBooked',
+                      AppColors.royalBlue,
+                    ), // Royal Blue
                   ),
                   SizedBox(
                     width: cardMinWidth,
@@ -127,7 +144,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     child: _buildStatCard(
                       'COMPLETED',
                       '$totalCompleted',
-                      const Color(0xFF2980B9),
+                      AppColors.shellstone, // Shellstone
                     ),
                   ),
                   SizedBox(
@@ -136,7 +153,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     child: _buildStatCard(
                       'CLEANING',
                       '$totalCleaning',
-                      const Color(0xFFF39C12),
+                      AppColors.royalBlue.withValues(
+                        alpha: 0.8,
+                      ), // A slightly lighter Royal Blue
                     ),
                   ),
                 ],
@@ -144,19 +163,25 @@ class _AdminDashboardState extends State<AdminDashboard> {
             },
           ),
           const SizedBox(height: 30),
-          const Text(
+          Text(
             'Manage Room Status',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.royalBlue,
+            ), // Royal Blue for text
           ),
           const SizedBox(height: 20),
-          // Display dynamic rooms
           currentRooms.isEmpty
-              ? const Center(
+              ? Center(
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Text(
                       'No rooms added yet. Go to "Add Rooms" to get started!',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.royalBlue.withOpacity(0.7),
+                      ), // Royal Blue with opacity
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -177,38 +202,45 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     IconData icon;
                     switch (room.status) {
                       case 'booked':
-                        tileColor = const Color(0xFFE74C3C);
+                        tileColor = AppColors.royalBlue;
                         icon = Icons.event_busy;
                         break;
                       case 'completed':
-                        tileColor = const Color(0xFF2980B9);
+                        tileColor = AppColors.shellstone;
                         icon = Icons.check_circle_outline;
                         break;
                       case 'cleaning':
-                        tileColor = const Color(0xFFF39C12);
+                        tileColor = AppColors.royalBlue.withValues(alpha: 0.8);
                         icon = Icons.cleaning_services;
                         break;
                       default: // 'available'
-                        tileColor = const Color(0xFF27AE60);
+                        tileColor = AppColors.quicksand;
                         icon = Icons.hotel;
                         break;
                     }
                     return InkWell(
                       onTap: () {
                         setState(() {
-                          // Update room status via RoomManager
                           if (room.status == 'available') {
                             RoomManager().updateRoomStatus(room.name, 'booked');
                           } else if (room.status == 'booked') {
-                            RoomManager().updateRoomStatus(room.name, 'completed');
+                            RoomManager().updateRoomStatus(
+                              room.name,
+                              'completed',
+                            );
                           } else if (room.status == 'completed') {
-                            RoomManager().updateRoomStatus(room.name, 'cleaning');
-                          } else { // 'cleaning'
-                            RoomManager().updateRoomStatus(room.name, 'available');
+                            RoomManager().updateRoomStatus(
+                              room.name,
+                              'cleaning',
+                            );
+                          } else {
+                            RoomManager().updateRoomStatus(
+                              room.name,
+                              'available',
+                            );
                           }
-                          // Refresh the displayed rooms list to reflect changes
-                          // (This is important because RoomManager updates the original objects)
-                          _selectedDrawerIndex = 0; // Stay on dashboard to see updates
+                          _selectedDrawerIndex =
+                              0; // Stay on dashboard to see updates
                         });
                       },
                       child: Card(
@@ -225,23 +257,27 @@ class _AdminDashboardState extends State<AdminDashboard> {
                             children: [
                               Icon(
                                 icon,
-                                color: Colors.white,
+                                color:
+                                    AppColors.swanWing, // Swan Wing for icons
                                 size: isSmallScreen ? 26 : 32,
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                room.name, // Use room.name
+                                room.name,
                                 style: const TextStyle(
-                                  color: Colors.white,
+                                  color:
+                                      AppColors.swanWing, // Swan Wing for text
                                   fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Text(
-                                room.status.toUpperCase(), // Use room.status
-                                style: const TextStyle(
-                                  color: Colors.white70,
+                                room.status.toUpperCase(),
+                                style: TextStyle(
+                                  color: AppColors.swanWing.withOpacity(
+                                    0.7,
+                                  ), // Slightly transparent Swan Wing
                                   fontSize: 11,
                                 ),
                               ),
@@ -266,11 +302,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ? AppBar(
               title: const Text(
                 'Admin Dashboard',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: AppColors.swanWing,
+                ), // Swan Wing for app bar title
               ),
-              backgroundColor: const Color(0xFF2E7D32),
+              backgroundColor: AppColors.royalBlue, // Royal Blue for app bar
               elevation: 0,
-              iconTheme: const IconThemeData(color: Colors.white),
+              iconTheme: const IconThemeData(
+                color: AppColors.swanWing,
+              ), // Swan Wing for icon
               leading: Builder(
                 builder: (BuildContext context) {
                   return IconButton(
@@ -289,12 +329,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
           if (!isSmallScreen)
             Container(
               width: 250,
-              color: const Color(0xFF2E7D32),
+              color: AppColors.sapphire, // Sapphire for web sidebar background
               child: _buildWebSidebar(),
             ),
-          Expanded(
-            child: _getScreenWidget(_selectedDrawerIndex),
-          ),
+          Expanded(child: _getScreenWidget(_selectedDrawerIndex)),
         ],
       ),
     );
@@ -302,23 +340,27 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   Widget _buildWebSidebar() {
     return Container(
-      color: const Color(0xFFF7F7F7), // Light gray background for menu area
+      color: AppColors.sapphire, // Sapphire background for menu area
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         children: [
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(
-              color: Color(0xFF2E7D32),
+              color: AppColors.royalBlue, // Royal Blue for drawer header
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.hotel_outlined, color: Colors.white, size: 40),
+                Icon(
+                  Icons.hotel_outlined,
+                  color: AppColors.swanWing,
+                  size: 40,
+                ), // Swan Wing for icon
                 SizedBox(height: 10),
                 Text(
                   'Booktopia Admin',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.swanWing, // Swan Wing for text
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -326,7 +368,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ],
             ),
           ),
-          const Divider(height: 1, thickness: 1, color: Colors.black12),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: AppColors.swanWing.withOpacity(0.3),
+          ), // Subtle divider
           const SizedBox(height: 8),
           _buildDrawerItem(Icons.dashboard, 'Dashboard', 0),
           const SizedBox(height: 4),
@@ -335,7 +381,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
           _buildDrawerItem(Icons.settings, 'Settings', 2),
           const SizedBox(height: 4),
           _buildDrawerItem(Icons.receipt_long, 'Transactions', 3),
-          const Divider(color: Colors.black12, height: 24),
+          Divider(
+            color: AppColors.swanWing.withOpacity(0.3),
+            height: 24,
+          ), // Subtle divider
           _buildDrawerItem(Icons.logout, 'Logout', 4),
         ],
       ),
@@ -345,16 +394,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Widget _buildDrawer() {
     final double maxDrawerWidth = 320;
     final double screenWidth = MediaQuery.of(context).size.width;
-    final double drawerWidth = screenWidth * 0.85 < maxDrawerWidth ? screenWidth * 0.85 : maxDrawerWidth;
+    final double drawerWidth = screenWidth * 0.85 < maxDrawerWidth
+        ? screenWidth * 0.85
+        : maxDrawerWidth;
     return Drawer(
       elevation: 8,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.sapphire, // Sapphire for drawer background
       child: SafeArea(
         child: Scrollbar(
           thumbVisibility: true,
           child: Container(
             width: drawerWidth,
-            color: Colors.white,
+            color: AppColors.sapphire, // Sapphire for drawer background
             child: _buildWebSidebar(),
           ),
         ),
@@ -364,28 +415,45 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   Widget _buildDrawerItem(IconData icon, String title, int index) {
     final bool isSelected = _selectedDrawerIndex == index;
-    final Color iconColor = isSelected ? const Color(0xFF2E7D32) : Colors.black87;
-    final Color textColor = isSelected ? const Color(0xFF2E7D32) : Colors.black87;
+    final Color iconColor = isSelected
+        ? AppColors.quicksand
+        : AppColors.swanWing; // Quicksand when selected, Swan Wing otherwise
+    final Color textColor = isSelected
+        ? AppColors.quicksand
+        : AppColors.swanWing; // Quicksand when selected, Swan Wing otherwise
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
+          color: isSelected
+              ? AppColors.royalBlue.withOpacity(0.3)
+              : Colors.transparent, // Royal Blue with opacity when selected
           border: isSelected
-              ? const Border(
-                  left: BorderSide(color: Color(0xFF2E7D32), width: 4),
+              ? Border(
+                  left: BorderSide(
+                    color: AppColors.quicksand,
+                    width: 4,
+                  ), // Quicksand border
                 )
               : null,
         ),
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 8,
+          ),
           leading: Icon(icon, color: iconColor, size: 26),
           title: Text(
             title,
-            style: TextStyle(fontSize: 16, color: textColor, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+            style: TextStyle(
+              fontSize: 16,
+              color: textColor,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
           ),
           selected: isSelected,
-          selectedTileColor: Colors.white,
+          selectedTileColor:
+              AppColors.sapphire, // Sapphire for selected tile background
           onTap: () {
             setState(() {
               _selectedDrawerIndex = index;
@@ -397,7 +465,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
               _showLogoutConfirmationDialog(context);
             }
           },
-          hoverColor: const Color(0xFFEDEDED),
+          hoverColor: AppColors.sapphire.withOpacity(
+            0.7,
+          ), // A subtle hover color
         ),
       ),
     );
@@ -419,9 +489,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 fit: BoxFit.scaleDown,
                 child: Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white70,
+                    color: AppColors.swanWing.withOpacity(
+                      0.8,
+                    ), // Swan Wing with opacity
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -436,7 +508,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppColors.swanWing, // Swan Wing for values
                   ),
                 ),
               ),
@@ -452,17 +524,25 @@ class _AdminDashboardState extends State<AdminDashboard> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Logout'),
+          title: Text(
+            'Confirm Logout',
+            style: TextStyle(color: AppColors.royalBlue),
+          ), // Royal Blue for title
           content: const Text('Are you sure you want to log out?'),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: AppColors.royalBlue),
+              ), // Royal Blue for cancel
               onPressed: () => Navigator.of(context).pop(),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE74C3C),
-                foregroundColor: Colors.white,
+                backgroundColor:
+                    AppColors.royalBlue, // Royal Blue for logout button
+                foregroundColor:
+                    AppColors.swanWing, // Swan Wing for button text
               ),
               child: const Text('Logout'),
               onPressed: () {
@@ -473,7 +553,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   (Route<dynamic> route) => false,
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('You have been logged out.')),
+                  SnackBar(
+                    content: Text(
+                      'You have been logged out.',
+                      style: TextStyle(color: AppColors.swanWing),
+                    ),
+                    backgroundColor: AppColors.sapphire,
+                  ), // Swan Wing for text, Sapphire for background
                 );
               },
             ),
