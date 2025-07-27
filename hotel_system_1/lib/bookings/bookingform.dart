@@ -8,7 +8,6 @@ import '../utils/constants.dart';
 import '../screens/room_manager.dart'; // Import RoomManager
 import '../models/amenity.dart'; // Import Amenity model
 
-
 class BookingFormScreen extends StatefulWidget {
   final String hotelName;
   final String roomType;
@@ -61,7 +60,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
   String _selectedCardType = 'Visa'; // New state for selected card type
 
   int _numberOfNights = 0; // State to store the calculated number of nights
-  double _totalPrice = 0; // State to store the calculated total price (changed to double)
+  double _totalPrice =
+      0; // State to store the calculated total price (changed to double)
 
   @override
   void initState() {
@@ -89,7 +89,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
       final Duration difference = _checkOutDate!.difference(_checkInDate!);
       setState(() {
         _numberOfNights = difference.inDays;
-        _totalPrice = _numberOfNights * widget.price; // widget.price is now double
+        _totalPrice =
+            _numberOfNights * widget.price; // widget.price is now double
       });
     } else {
       setState(() {
@@ -169,25 +170,42 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
     }
   }
 
-  InputDecoration _inputBox(String label, {String? hintText}) => InputDecoration(
+  InputDecoration _inputBox(String label, {String? hintText}) =>
+      InputDecoration(
         labelText: label,
         hintText: hintText, // Added hintText
         // Changed from BorderSide.none to a visible border
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14), // Increased border radius for rounded look
-          borderSide: const BorderSide(color: Colors.grey, width: 1.0), // Added a subtle grey border
+          borderRadius: BorderRadius.circular(
+            14,
+          ), // Increased border radius for rounded look
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1.0,
+          ), // Added a subtle grey border
         ),
-        enabledBorder: OutlineInputBorder( // Define enabled border for consistency
+        enabledBorder: OutlineInputBorder(
+          // Define enabled border for consistency
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.0), // Lighter grey for enabled state
+          borderSide: BorderSide(
+            color: Colors.grey.shade300,
+            width: 1.0,
+          ), // Lighter grey for enabled state
         ),
-        focusedBorder: OutlineInputBorder( // Define focused border for consistency
+        focusedBorder: OutlineInputBorder(
+          // Define focused border for consistency
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: kPrimaryBlue, width: 2.0), // Primary blue for focused state
+          borderSide: const BorderSide(
+            color: kPrimaryBlue,
+            width: 2.0,
+          ), // Primary blue for focused state
         ),
         filled: true,
         fillColor: kWhite, // White background for input fields
-        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 16,
+        ),
       );
 
   Widget _buildTextField(
@@ -203,8 +221,13 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
       child: TextFormField(
         controller: controller,
         keyboardType: type,
-        validator: validator ?? (v) => v == null || v.isEmpty ? 'Please enter $label' : null,
-        decoration: _inputBox(label, hintText: exampleText ?? 'Enter $label'.toLowerCase()), // Use exampleText if provided
+        validator:
+            validator ??
+            (v) => v == null || v.isEmpty ? 'Please enter $label' : null,
+        decoration: _inputBox(
+          label,
+          hintText: exampleText ?? 'Enter $label'.toLowerCase(),
+        ), // Use exampleText if provided
         maxLines: maxLines,
       ),
     );
@@ -227,7 +250,13 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: kDarkBlue)),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: kDarkBlue,
+            ),
+          ),
         ),
         Row(
           children: [
@@ -235,22 +264,36 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
               child: InkWell(
                 onTap: onDateTap,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: kWhite,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: Colors.grey.shade300, width: 1.0),
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min, // Use min to prevent excessive width
+                    mainAxisSize:
+                        MainAxisSize.min, // Use min to prevent excessive width
                     children: [
-                      const Icon(Icons.calendar_today, color: kPrimaryBlue, size: 20),
+                      const Icon(
+                        Icons.calendar_today,
+                        color: kPrimaryBlue,
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
-                      Flexible( // Use Flexible to prevent overflow
+                      Flexible(
+                        // Use Flexible to prevent overflow
                         child: Text(
                           dateStr,
-                          style: TextStyle(color: date != null ? Colors.black87 : Colors.grey[600]),
-                          overflow: TextOverflow.ellipsis, // Add ellipsis for overflow
+                          style: TextStyle(
+                            color: date != null
+                                ? Colors.black87
+                                : Colors.grey[600],
+                          ),
+                          overflow: TextOverflow
+                              .ellipsis, // Add ellipsis for overflow
                         ),
                       ),
                     ],
@@ -263,22 +306,36 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
               child: InkWell(
                 onTap: onTimeTap,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: kWhite,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: Colors.grey.shade300, width: 1.0),
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min, // Use min to prevent excessive width
+                    mainAxisSize:
+                        MainAxisSize.min, // Use min to prevent excessive width
                     children: [
-                      const Icon(Icons.access_time, color: kPrimaryBlue, size: 20),
+                      const Icon(
+                        Icons.access_time,
+                        color: kPrimaryBlue,
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
-                      Flexible( // Use Flexible to prevent overflow
+                      Flexible(
+                        // Use Flexible to prevent overflow
                         child: Text(
                           timeStr,
-                          style: TextStyle(color: time != null ? Colors.black87 : Colors.grey[600]),
-                          overflow: TextOverflow.ellipsis, // Add ellipsis for overflow
+                          style: TextStyle(
+                            color: time != null
+                                ? Colors.black87
+                                : Colors.grey[600],
+                          ),
+                          overflow: TextOverflow
+                              .ellipsis, // Add ellipsis for overflow
                         ),
                       ),
                     ],
@@ -307,7 +364,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
       paymentMethod: _selectedCardType == 'Paypal' ? 'PayPal' : 'Credit Card',
       cardType: _selectedCardType,
       cardholderName: _cardholderName.text,
-      specialRequests: _requests.text.isNotEmpty ? _requests.text : null, hotelName: '',
+      specialRequests: _requests.text.isNotEmpty ? _requests.text : null,
+      hotelName: '',
     );
 
     // 2. Add the new booking to the BookingService singleton
@@ -322,7 +380,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
     NotificationService().addNotification(
       AppNotification(
         title: 'Booking Confirmed!',
-        message: 'Your reservation at ${widget.hotelName} for ${newBooking.numberOfNights} nights has been successfully confirmed for room type ${newBooking.roomType}.',
+        message:
+            'Your reservation at ${widget.hotelName} for ${newBooking.numberOfNights} nights has been successfully confirmed for room type ${newBooking.roomType}.',
         timestamp: DateTime.now(),
         type: 'booking',
       ),
@@ -332,22 +391,27 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Booking Confirmed',
-            style: TextStyle(color: kDarkBlue, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Booking Confirmed',
+          style: TextStyle(color: kDarkBlue, fontWeight: FontWeight.bold),
+        ),
         content: BookingConfirmationCard(
           confirmationNumber: DateTime.now().millisecondsSinceEpoch.toString(),
           hotelName: widget.hotelName,
           roomType: widget.roomType,
           checkIn: DateFormat('yyyy-MM-dd').format(_checkInDate!),
           checkOut: DateFormat('yyyy-MM-dd').format(_checkOutDate!),
-          guests: '${_firstName.text} ${_lastName.text}', // Or use guest count if available
+          guests:
+              '${_firstName.text} ${_lastName.text}', // Or use guest count if available
           totalPrice: _totalPrice,
         ),
         actionsAlignment: MainAxisAlignment.center, // Center the actions
         actions: [
           SizedBox(
             // Use SizedBox to control the width
-            width: MediaQuery.of(context).size.width * 0.7, // Adjust 0.7 as needed for desired width
+            width:
+                MediaQuery.of(context).size.width *
+                0.3, // Adjust 0.7 as needed for desired width
             child: ElevatedButton(
               onPressed: () {
                 // Dismiss the dialog
@@ -359,7 +423,9 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: kPrimaryBlue, // Use your primary blue color
                 foregroundColor: kWhite, // Text color for the button
-                padding: const EdgeInsets.symmetric(vertical: 15), // Adjust padding
+                padding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                ), // Adjust padding
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10), // Rounded corners
                 ),
@@ -376,7 +442,6 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
     );
   }
 
- 
   List<Step> _buildSteps() {
     return [
       Step(
@@ -389,7 +454,12 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: const Color.fromARGB(51, 0, 0, 0), // Replaced Colors.black.withOpacity(0.2)
+                color: const Color.fromARGB(
+                  51,
+                  0,
+                  0,
+                  0,
+                ), // Replaced Colors.black.withOpacity(0.2)
                 spreadRadius: 2,
                 blurRadius: 8,
                 offset: const Offset(0, 4),
@@ -401,30 +471,48 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
             key: _personalInfoFormKey,
             child: Column(
               children: [
-                _buildTextField(_firstName, 'First Name', TextInputType.name,
-                    exampleText: 'e.g., John'),
-                _buildTextField(_lastName, 'Last Name', TextInputType.name,
-                    exampleText: 'e.g., Doe'),
-                _buildTextField(_email, 'Email', TextInputType.emailAddress,
-                    validator: (v) {
-                  if (v == null || v.isEmpty) {
-                    return 'Please enter email';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
-                    return 'Enter a valid email';
-                  }
-                  return null;
-                }, exampleText: 'e.g., john.doe@example.com'),
-                _buildTextField(_phone, 'Phone Number', TextInputType.phone,
-                    validator: (v) {
-                  if (v == null || v.isEmpty) {
-                    return 'Please enter phone number';
-                  }
-                  if (!RegExp(r'^[0-9]{10,15}$').hasMatch(v)) {
-                    return 'Enter a valid phone number';
-                  }
-                  return null;
-                }, exampleText: 'e.g., 09123456789'),
+                _buildTextField(
+                  _firstName,
+                  'First Name',
+                  TextInputType.name,
+                  exampleText: 'e.g., John',
+                ),
+                _buildTextField(
+                  _lastName,
+                  'Last Name',
+                  TextInputType.name,
+                  exampleText: 'e.g., Doe',
+                ),
+                _buildTextField(
+                  _email,
+                  'Email',
+                  TextInputType.emailAddress,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) {
+                      return 'Please enter email';
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
+                      return 'Enter a valid email';
+                    }
+                    return null;
+                  },
+                  exampleText: 'e.g., john.doe@example.com',
+                ),
+                _buildTextField(
+                  _phone,
+                  'Phone Number',
+                  TextInputType.phone,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) {
+                      return 'Please enter phone number';
+                    }
+                    if (!RegExp(r'^[0-9]{10,15}$').hasMatch(v)) {
+                      return 'Enter a valid phone number';
+                    }
+                    return null;
+                  },
+                  exampleText: 'e.g., 09123456789',
+                ),
               ],
             ),
           ),
@@ -442,7 +530,12 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: const Color.fromARGB(51, 0, 0, 0), // Replaced Colors.black.withOpacity(0.2)
+                color: const Color.fromARGB(
+                  51,
+                  0,
+                  0,
+                  0,
+                ), // Replaced Colors.black.withOpacity(0.2)
                 spreadRadius: 2,
                 blurRadius: 8,
                 offset: const Offset(0, 4),
@@ -475,13 +568,21 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Nights: $_numberOfNights',
-                            style: const TextStyle(fontSize: 16, color: kDarkBlue)),
-                        Text('Total Price: ₱${_totalPrice.toStringAsFixed(2)}', // Format total price
-                            style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: kPrimaryBlue)),
+                        Text(
+                          'Nights: $_numberOfNights',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: kDarkBlue,
+                          ),
+                        ),
+                        Text(
+                          'Total Price: ₱${_totalPrice.toStringAsFixed(2)}', // Format total price
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: kPrimaryBlue,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -493,7 +594,10 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
         state: _currentStep > 1 ? StepState.complete : StepState.indexed,
       ),
       Step(
-        title: const Text('Payment & Notes', style: TextStyle(color: kDarkBlue)),
+        title: const Text(
+          'Payment & Notes',
+          style: TextStyle(color: kDarkBlue),
+        ),
         content: Container(
           // Wrap content in a Container for styling
           padding: const EdgeInsets.all(20.0),
@@ -502,7 +606,12 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: const Color.fromARGB(51, 0, 0, 0), // Replaced Colors.black.withOpacity(0.2)
+                color: const Color.fromARGB(
+                  51,
+                  0,
+                  0,
+                  0,
+                ), // Replaced Colors.black.withOpacity(0.2)
                 spreadRadius: 2,
                 blurRadius: 8,
                 offset: const Offset(0, 4),
@@ -517,7 +626,10 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
               children: [
                 const Text(
                   'Payment Method:',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: kDarkBlue),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: kDarkBlue,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
@@ -527,19 +639,21 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                   decoration: _inputBox('Card Type').copyWith(
                     prefixIcon: const Icon(Icons.credit_card, color: kDarkBlue),
                   ),
-                  items: <String>[
-                    'Visa',
-                    'Mastercard',
-                    'AMEX',
-                    'Discover',
-                    'Paypal'
-                  ] // Added Paypal here
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                  items:
+                      <String>[
+                            'Visa',
+                            'Mastercard',
+                            'AMEX',
+                            'Discover',
+                            'Paypal',
+                          ] // Added Paypal here
+                          .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          })
+                          .toList(),
                   onChanged: (String? newValue) {
                     setState(() {
                       _selectedCardType = newValue!;
@@ -558,59 +672,82 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                 if (_selectedCardType != 'Paypal') ...[
                   // Conditionally show card fields
                   const SizedBox(height: 10),
-                  _buildTextField(_cardNumber, 'Card Number', TextInputType.number,
-                      validator: (v) {
-                    if (v == null || v.isEmpty) return 'Please enter card number';
-                    if (!RegExp(r'^[0-9]{16}$').hasMatch(v)) {
-                      return 'Enter a valid 16-digit card number';
-                    }
-                    return null;
-                  }, exampleText: 'e.g., XXXX XXXX XXXX XXXX'), // Updated example
+                  _buildTextField(
+                    _cardNumber,
+                    'Card Number',
+                    TextInputType.number,
+                    validator: (v) {
+                      if (v == null || v.isEmpty)
+                        return 'Please enter card number';
+                      if (!RegExp(r'^[0-9]{16}$').hasMatch(v)) {
+                        return 'Enter a valid 16-digit card number';
+                      }
+                      return null;
+                    },
+                    exampleText: 'e.g., XXXX XXXX XXXX XXXX',
+                  ), // Updated example
                   Row(
                     children: [
                       Expanded(
                         child: _buildTextField(
-                            _cardExpiry,
-                            'Expiry Date', // Changed label
-                            TextInputType.datetime, validator: (v) {
-                          if (v == null || v.isEmpty) {
-                            return 'Please enter expiry date';
-                          }
-                          if (!RegExp(r'^(0[1-9]|1[0-2])\/?([0-9]{2})$')
-                              .hasMatch(v)) {
-                            return 'Enter a valid MM/YY format';
-                          }
-                          return null;
-                        }, exampleText: 'MM/YY'), // Updated example
+                          _cardExpiry,
+                          'Expiry Date', // Changed label
+                          TextInputType.datetime,
+                          validator: (v) {
+                            if (v == null || v.isEmpty) {
+                              return 'Please enter expiry date';
+                            }
+                            if (!RegExp(
+                              r'^(0[1-9]|1[0-2])\/?([0-9]{2})$',
+                            ).hasMatch(v)) {
+                              return 'Enter a valid MM/YY format';
+                            }
+                            return null;
+                          },
+                          exampleText: 'MM/YY',
+                        ), // Updated example
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: _buildTextField(_cardCVV, 'CVV', TextInputType.number,
-                            validator: (v) {
-                          if (v == null || v.isEmpty) return 'Please enter CVV';
-                          if (!RegExp(r'^[0-9]{3,4}$').hasMatch(v)) {
-                            return 'Enter a valid 3 or 4 digit CVV';
-                          }
-                          return null;
-                        }, exampleText: 'XXX'), // Updated example
+                        child: _buildTextField(
+                          _cardCVV,
+                          'CVV',
+                          TextInputType.number,
+                          validator: (v) {
+                            if (v == null || v.isEmpty)
+                              return 'Please enter CVV';
+                            if (!RegExp(r'^[0-9]{3,4}$').hasMatch(v)) {
+                              return 'Enter a valid 3 or 4 digit CVV';
+                            }
+                            return null;
+                          },
+                          exampleText: 'XXX',
+                        ), // Updated example
                       ),
                     ],
                   ),
                   _buildTextField(
-                      _cardholderName, 'Cardholder Name', TextInputType.name,
-                      validator: (v) {
-                    if (v == null || v.isEmpty) {
-                      return 'Please enter cardholder name';
-                    }
-                    return null;
-                  }, exampleText: 'e.g., John Doe'), // New field and example
+                    _cardholderName,
+                    'Cardholder Name',
+                    TextInputType.name,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'Please enter cardholder name';
+                      }
+                      return null;
+                    },
+                    exampleText: 'e.g., John Doe',
+                  ), // New field and example
                 ],
                 const SizedBox(height: 10),
-                _buildTextField(_requests, 'Special Requests (Optional)',
-                    TextInputType.multiline,
-                    maxLines: 3,
-                    validator: (v) => null,
-                    exampleText: 'e.g., Early check-in, extra towels'),
+                _buildTextField(
+                  _requests,
+                  'Special Requests (Optional)',
+                  TextInputType.multiline,
+                  maxLines: 3,
+                  validator: (v) => null,
+                  exampleText: 'e.g., Early check-in, extra towels',
+                ),
               ],
             ),
           ),
@@ -635,7 +772,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
       ),
       backgroundColor: kLightBlue, // Changed to kLightBlue
       body: Form(
-        key: _formKey, // Keep the main form key for overall form context if needed, but step validation will use specific keys
+        key:
+            _formKey, // Keep the main form key for overall form context if needed, but step validation will use specific keys
         child: Column(
           // Use Column instead of SingleChildScrollView directly for better control
           children: [
@@ -646,105 +784,122 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Room Image
-if (widget.roomImagePath.isNotEmpty)
-  Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(12), // Rounded corners for the image container
-      boxShadow: [
-        BoxShadow(
-          color: const Color.fromARGB(51, 0, 0, 0), // Shadow for depth
-          spreadRadius: 2,
-          blurRadius: 8,
-          offset: const Offset(0, 4),
-        ),
-      ],
-    ),
-    child: ClipRRect( // Clips the image to the rounded corners
-      borderRadius: BorderRadius.circular(12),
-      child: Image.network( // Changed to Image.network for dynamic image paths
-        widget.roomImagePath,
-        height: 200, // Fixed height for the image
-        width: double.infinity, // Image takes full width
-        fit: BoxFit.cover, // Ensures image covers the area, cropping if necessary
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            height: 200,
-            width: double.infinity,
-            color: Colors.grey[300],
-            child: const Icon(
-              Icons.broken_image,
-              size: 60,
-              color: Colors.grey,
-            ),
-          );
-        },
-      ),
-    ),
-  ),
-const SizedBox(height: 20), // Spacing below the image
-
-// Room Type and Price
-Text(
-  widget.roomType, // Displays "Heritage Deluxe Room"
-  style: const TextStyle(
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-    color: kDarkBlue,
-  ),
-),
-const SizedBox(height: 8), // Spacing between room type and price
-Text(
-  '₱${widget.price.toStringAsFixed(2)} / night', // Displays "₱2800 / night"
-  style: const TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-    color: kPrimaryBlue,
-  ),
-),
-const SizedBox(height: 15), // Spacing below the price
-
-// Room Description
-Text(
-  widget.roomDescription, // Displays the room description
-  style: TextStyle(color: Colors.grey[700], fontSize: 15),
-),
-const SizedBox(height: 20), // Spacing below the description
-
+                    if (widget.roomImagePath.isNotEmpty)
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            12,
+                          ), // Rounded corners for the image container
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color.fromARGB(
+                                51,
+                                0,
+                                0,
+                                0,
+                              ), // Shadow for depth
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          // Clips the image to the rounded corners
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            // Changed to Image.network for dynamic image paths
+                            widget.roomImagePath,
+                            height: 200, // Fixed height for the image
+                            width: double.infinity, // Image takes full width
+                            fit: BoxFit
+                                .cover, // Ensures image covers the area, cropping if necessary
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                height: 200,
+                                width: double.infinity,
+                                color: Colors.grey[300],
+                                child: const Icon(
+                                  Icons.broken_image,
+                                  size: 60,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 20), // Spacing below the image
+                    // Room Type and Price
+                    Text(
+                      widget.roomType, // Displays "Heritage Deluxe Room"
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: kDarkBlue,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ), // Spacing between room type and price
+                    Text(
+                      '₱${widget.price.toStringAsFixed(2)} / night', // Displays "₱2800 / night"
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryBlue,
+                      ),
+                    ),
+                    const SizedBox(height: 15), // Spacing below the price
+                    // Room Description
+                    Text(
+                      widget.roomDescription, // Displays the room description
+                      style: TextStyle(color: Colors.grey[700], fontSize: 15),
+                    ),
+                    const SizedBox(height: 20), // Spacing below the description
                     // Amenities
-if (widget.amenities.isNotEmpty) // Only show if amenities exist
-  Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Amenities', // "Amenities" title
-        style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: kDarkBlue),
-      ),
-      const SizedBox(height: 10), // Spacing below the title
-      Wrap( // Arranges amenity items with wrapping behavior
-        spacing: 15, // Horizontal spacing between items
-        runSpacing: 15, // Vertical spacing between lines of items
-        children: widget.amenities
-            .map((a) => _AmenityDisplayIcon(amenity: a)) // Maps each amenity to a custom widget
-            .toList(),
-      ),
-    ],
-  ),
-const SizedBox(height: 20), // Spacing below amenities
-
+                    if (widget
+                        .amenities
+                        .isNotEmpty) // Only show if amenities exist
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Amenities', // "Amenities" title
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: kDarkBlue,
+                            ),
+                          ),
+                          const SizedBox(height: 10), // Spacing below the title
+                          Wrap(
+                            // Arranges amenity items with wrapping behavior
+                            spacing: 15, // Horizontal spacing between items
+                            runSpacing:
+                                15, // Vertical spacing between lines of items
+                            children: widget.amenities
+                                .map(
+                                  (a) => _AmenityDisplayIcon(amenity: a),
+                                ) // Maps each amenity to a custom widget
+                                .toList(),
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 20), // Spacing below amenities
                     // Stepper for Booking Form
                     Theme(
                       data: Theme.of(context).copyWith(
                         colorScheme: Theme.of(context).colorScheme.copyWith(
-                              primary: kPrimaryBlue, // Active step color
-                              onSurface: Colors.grey
-                                  .shade600, // Inactive step content color (adjusted for lighter grey)
-                            ),
-                        canvasColor:
-                            Colors.transparent, // Transparent background for stepper
-                        shadowColor: Colors.transparent, // Remove shadow from stepper
+                          primary: kPrimaryBlue, // Active step color
+                          onSurface: Colors
+                              .grey
+                              .shade600, // Inactive step content color (adjusted for lighter grey)
+                        ),
+                        canvasColor: Colors
+                            .transparent, // Transparent background for stepper
+                        shadowColor:
+                            Colors.transparent, // Remove shadow from stepper
                       ),
                       child: Stepper(
                         type: StepperType.vertical,
@@ -758,14 +913,25 @@ const SizedBox(height: 20), // Spacing below amenities
                             }
                           } else if (_currentStep == 1) {
                             if (_bookingInfoFormKey.currentState!.validate()) {
-                              if (_checkInDate == null || _checkOutDate == null) {
+                              if (_checkInDate == null ||
+                                  _checkOutDate == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Please select both check-in and check-out dates.')),
+                                  const SnackBar(
+                                    content: Text(
+                                      'Please select both check-in and check-out dates.',
+                                    ),
+                                  ),
                                 );
                                 isCurrentStepValid = false;
-                              } else if (_checkOutDate!.isBefore(_checkInDate!)) {
+                              } else if (_checkOutDate!.isBefore(
+                                _checkInDate!,
+                              )) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Check-out date cannot be before check-in date.')),
+                                  const SnackBar(
+                                    content: Text(
+                                      'Check-out date cannot be before check-in date.',
+                                    ),
+                                  ),
                                 );
                                 isCurrentStepValid = false;
                               } else {
@@ -808,28 +974,37 @@ const SizedBox(height: 20), // Spacing below amenities
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: kPrimaryBlue,
                                       foregroundColor: kWhite,
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
-                                    child: Text(_currentStep == _buildSteps().length - 1
-                                        ? 'Confirm Booking'
-                                        : 'Next'),
+                                    child: Text(
+                                      _currentStep == _buildSteps().length - 1
+                                          ? 'Confirm Booking'
+                                          : 'Next',
+                                    ),
                                   ),
                                 ),
-                                if (_currentStep > 0)
-                                  const SizedBox(width: 10),
+                                if (_currentStep > 0) const SizedBox(width: 10),
                                 if (_currentStep > 0)
                                   Expanded(
                                     child: OutlinedButton(
                                       onPressed: details.onStepCancel,
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: kPrimaryBlue,
-                                        side: const BorderSide(color: kPrimaryBlue),
-                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        side: const BorderSide(
+                                          color: kPrimaryBlue,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                        ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
                                       ),
                                       child: const Text('Back'),
@@ -886,10 +1061,17 @@ class BookingConfirmationCard extends StatelessWidget {
               const SizedBox(height: 10),
               const Text(
                 'Booking Confirmed!',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.green),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
               ),
               const SizedBox(height: 6),
-              Text('Confirmation #: $confirmationNumber', style: const TextStyle(fontSize: 14, color: Colors.black54)),
+              Text(
+                'Confirmation #: $confirmationNumber',
+                style: const TextStyle(fontSize: 14, color: Colors.black54),
+              ),
               const SizedBox(height: 18),
               Table(
                 columnWidths: const {
@@ -909,8 +1091,18 @@ class BookingConfirmationCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Total Price:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  Text('₱${totalPrice.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.green)),
+                  const Text(
+                    'Total Price:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Text(
+                    '₱${totalPrice.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.green,
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -919,15 +1111,22 @@ class BookingConfirmationCard extends StatelessWidget {
       ),
     );
   }
+
   TableRow _row(String label, String value) => TableRow(
     children: [
       Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Text(label, style: const TextStyle(color: Colors.black54, fontSize: 15)),
+        child: Text(
+          label,
+          style: const TextStyle(color: Colors.black54, fontSize: 15),
+        ),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+        child: Text(
+          value,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
       ),
     ],
   );
